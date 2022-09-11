@@ -7,6 +7,9 @@ public class PlayerController : MonoBehaviour
     public CharacterController controller;
     public float speed = 6f; 
     public float turnSmoothTime = 0.1f;
+    public ArrayList  Materials;
+
+	private GameObject guardDogObject;
 
     float turnSmoothVelocity;
 
@@ -33,4 +36,5 @@ public class PlayerController : MonoBehaviour
             controller.Move(direction * speed * Time.deltaTime);
         } 
     }
+
 }
