@@ -49,8 +49,8 @@ public class DogController : MonoBehaviour
         spawnRotation = transform.rotation;
         exclamation = gameObject.transform.Find( "Exclamation" ).gameObject;
         fieldOfView = gameObject.transform.Find("ViewVisualization").gameObject;
-				visionAlertedMaterial = gameObject.GetComponent<FieldOfView>().alertedMaterial;
-				visionUndetectedMaterial = gameObject.GetComponent<FieldOfView>().undetectedMaterial;
+        visionAlertedMaterial = gameObject.GetComponent<FieldOfView>().alertedMaterial;
+        visionUndetectedMaterial = gameObject.GetComponent<FieldOfView>().undetectedMaterial;
         visionDetectedMaterial = gameObject.GetComponent<FieldOfView>().detectedMaterial;
         toBeAlerted = GameObject.FindGameObjectsWithTag("Enemy");
     }
@@ -94,12 +94,17 @@ public class DogController : MonoBehaviour
         }
 
         if (alerted && alertedTimer > 0f ) {
-            alertedTimer = alertedTimer - Time.deltaTime;
+            /* .. countdown till when the bots stop being alerted ... */
+            alertedTimer -= Time.deltaTime;
+            
             /* .. Set Exclamation mark to Active ... */
             exclamation.SetActive(true);
 
+            /* .. turnTowardNavSteeringTarget is the navigation mesh agent's target ... */
             var turnTowardNavSteeringTarget = agent.steeringTarget;
+            /* .. Calculate a direction by subtracting the transform.position from steeringTarget ... */
             Vector3 direction = (turnTowardNavSteeringTarget - transform.position).normalized;
+
             lookRotationVector = new Vector3(direction.x, 0, direction.z);
 
             if (lookRotationVector != Vector3.zero)
@@ -110,11 +115,17 @@ public class DogController : MonoBehaviour
         } else {
             /* beneath this line resets the DogController and VisionLine's materials */
             this.fieldOfView.GetComponent<Renderer>().material = visionUndetectedMaterial;
-			this.alerted = false;
-			exclamation.SetActive(false);
-            alertedTimer = 5.0f;
+
+			/* .. set alerted to false, as we are no longer alerted ... */
+            this.alerted = false;
+
+            /* .. No more exclamation point! ... */
+            exclamation.SetActive(false);
+
             /* .. Set the alerted-timer to the default alerted timer .. */
             alertedTimer = defaultAlertedTimer;
+
+            /* .. Tell AI movement to move to startPosition ... */
             agent.SetDestination(startPosition);
         }
     }
@@ -167,8 +178,8 @@ public class DogController : MonoBehaviour
             /* Makes sure the detecting vision cone stays red. (detectingVision) */
             if (!exitTriggered && toBeAlerted[i].gameObject.GetInstanceID() == gameObject.GetInstanceID())
                 continue;
-            /* Alerts all other GameObjects with Enemy tag. */
 
+            /* Alerts all other GameObjects with Enemy tag. */
             this.toBeAlerted[i].GetComponent<DogController>().BecomeAlerted(target);
         }
     }
