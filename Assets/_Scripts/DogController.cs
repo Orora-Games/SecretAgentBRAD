@@ -64,6 +64,9 @@ public class DogController : MonoBehaviour
         /* .. if this Entity (Enemy) sees Player (target) ... */
         if (visibleTargets.Count > 0)
         {
+            /* .. Set the alerted-timer to the default alerted timer .. */
+            alertedTimer = defaultAlertedTimer;
+
             foreach (var target in visibleTargets)
             {
                 lastTarget = target;
@@ -110,6 +113,8 @@ public class DogController : MonoBehaviour
 			this.alerted = false;
 			exclamation.SetActive(false);
             alertedTimer = 5.0f;
+            /* .. Set the alerted-timer to the default alerted timer .. */
+            alertedTimer = defaultAlertedTimer;
             agent.SetDestination(startPosition);
         }
     }
