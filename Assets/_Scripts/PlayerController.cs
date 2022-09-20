@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
 
     private GameObject guardDogObject;
 
-    float turnSmoothVelocity;
+    private float turnSmoothVelocity;
 
     // Start is called before the first frame update
     void Start()
