@@ -9,7 +9,7 @@ public class DogController : MonoBehaviour
     public float alertedTimer = 5.0f;
 
     /* Movement turn smoothing*/
-    public float turnSmoothTime = 0.1f;
+    public float turnSmoothTime = 0.5f;
 
     /* How long will the bots stay alerted? Is set to alertedTimer, used to restore the timer after use. */
     private float defaultAlertedTimer;
@@ -35,7 +35,9 @@ public class DogController : MonoBehaviour
     private Vector3 startPosition;
     private Vector3 lookRotationVector;
     private Quaternion spawnRotation;
-    public UnityEngine.AI.NavMeshAgent agent;
+	private float turnSmoothVelocity;
+
+	public UnityEngine.AI.NavMeshAgent agent;
     private Transform lastTarget;
 
     // These are the objects that need to be alerted when a Player has been detected.
@@ -49,8 +51,8 @@ public class DogController : MonoBehaviour
         spawnRotation = transform.rotation;
         exclamation = gameObject.transform.Find( "Exclamation" ).gameObject;
         fieldOfView = gameObject.transform.Find("ViewVisualization").gameObject;
-				visionAlertedMaterial = gameObject.GetComponent<FieldOfView>().alertedMaterial;
-				visionUndetectedMaterial = gameObject.GetComponent<FieldOfView>().undetectedMaterial;
+        visionAlertedMaterial = gameObject.GetComponent<FieldOfView>().alertedMaterial;
+        visionUndetectedMaterial = gameObject.GetComponent<FieldOfView>().undetectedMaterial;
         visionDetectedMaterial = gameObject.GetComponent<FieldOfView>().detectedMaterial;
         toBeAlerted = GameObject.FindGameObjectsWithTag("Enemy");
     }
@@ -117,6 +119,12 @@ public class DogController : MonoBehaviour
             alertedTimer = defaultAlertedTimer;
             agent.SetDestination(startPosition);
         }
+
+        /* Checks that the angle between current and spawnRotation is over 2f, and checks that current and start position is less than 2 meters from each other */
+		if ( Quaternion.Angle( transform.rotation, spawnRotation ) > 2f  && (transform.position - startPosition ).magnitude < 2) {
+            /* TODO: Make them turn slowly. */
+            transform.rotation = spawnRotation;
+		}
     }
     public void BecomeAlerted (Transform target) {
         /* agent.SetDestination / Navigation Mesh code/setup
