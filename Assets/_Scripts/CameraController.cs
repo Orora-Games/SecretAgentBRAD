@@ -15,7 +15,7 @@ public class CameraController : MonoBehaviour
         Vector3 targetPosition = target.position;
 
         transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
-        transform.position -= transform.forward * 2; /* Move the camera forwards to avoid clipping through the level */
+        transform.position -= transform.forward * 5; /* Move the camera forwards to avoid clipping through the level */
     }
 }
 
