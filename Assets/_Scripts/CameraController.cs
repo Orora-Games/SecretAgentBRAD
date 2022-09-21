@@ -13,6 +13,8 @@ public class CameraController : MonoBehaviour
 	private GameObject next;
 
 	private void Start () {
+		target = ( !target ) ? GameObject.FindGameObjectWithTag( "Player" ).transform : target;
+
 		/* Start by setting our camera to the target, wherever they are. */
 		Vector3 targetPosition = target.position;
 
@@ -38,6 +40,8 @@ public class CameraController : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
+		target = ( !target ) ? GameObject.FindGameObjectWithTag( "Player" ).transform : target;
+
 		if ( Input.GetKeyDown( KeyCode.E ) ) {
 			next.SetActive(true);
             gameObject.SetActive(false);
