@@ -74,14 +74,41 @@ public class DogController : MonoBehaviour
                 /* .. Set Exclamation to Active ... */
                 exclamation.SetActive(true);
 
+                /* .. alerted-check is used when Enemies are no longer spotting Player  ... */
                 this.alerted = true;
+
+                /* .. When the Enemy spots the Player they are supposed to alert everyone to their location ... */
                 if (!hasAlerted)
                 {
+                    /* .. Tell every Enemy where the Player was spotted ... */
                     this.AlertEveryone(target);
+                    /* .. set the hasAlerted state, this way the spotting Enemy only alerts once per spot ... */
                     this.hasAlerted = true;
                 }
+                /* hadEyesOnTarget is used when Player leaves the Enemy Field of view to trigger the "they just ran away here"-alert */
                 this.hadEyesOnTarget = true;
-                EyesOnTarget(target);
+
+                /* Start by becoming angry (change fov to red) ... */
+                this.fieldOfView.GetComponent<Renderer>().material = visionDetectedMaterial;
+
+                /* .. Get our target position ... */
+                targetPosition = target.position;
+                /* .. Tell AI movement to move to target location ... */
+                agent.SetDestination(targetPosition);
+                /* .. Find out what direction to look in ... */
+                Vector3 direction = (targetPosition - transform.position).normalized;
+                /* .. Convert that to a Vector ... */
+                lookRotationVector = new Vector3(direction.x, 0, direction.z);
+
+                /* .. When the Enemy hasn't changed where he looks, we get a zero vector ... */
+                if (lookRotationVector != Vector3.zero)
+                {
+                    /* TODO: figure out what Quaternion.LookRotation does exactly. */
+                    Quaternion lookRotation = Quaternion.LookRotation(lookRotationVector);
+
+                    /* TODO: figure out what Quaternion.Slerp does exactly. */
+                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5);
+                }
             }
 
             return;
@@ -95,12 +122,17 @@ public class DogController : MonoBehaviour
         }
 
         if (alerted && alertedTimer > 0f ) {
-            alertedTimer = alertedTimer - Time.deltaTime;
+            /* .. countdown till when the bots stop being alerted ... */
+            alertedTimer -= Time.deltaTime;
+            
             /* .. Set Exclamation mark to Active ... */
             exclamation.SetActive(true);
 
+            /* .. turnTowardNavSteeringTarget is the navigation mesh agent's target ... */
             var turnTowardNavSteeringTarget = agent.steeringTarget;
+            /* .. Calculate a direction by subtracting the transform.position from steeringTarget ... */
             Vector3 direction = (turnTowardNavSteeringTarget - transform.position).normalized;
+
             lookRotationVector = new Vector3(direction.x, 0, direction.z);
 
             if (lookRotationVector != Vector3.zero)
@@ -111,11 +143,17 @@ public class DogController : MonoBehaviour
         } else {
             /* beneath this line resets the DogController and VisionLine's materials */
             this.fieldOfView.GetComponent<Renderer>().material = visionUndetectedMaterial;
-			this.alerted = false;
-			exclamation.SetActive(false);
-            alertedTimer = 5.0f;
+
+			/* .. set alerted to false, as we are no longer alerted ... */
+            this.alerted = false;
+
+            /* .. No more exclamation point! ... */
+            exclamation.SetActive(false);
+
             /* .. Set the alerted-timer to the default alerted timer .. */
             alertedTimer = defaultAlertedTimer;
+
+            /* .. Tell AI movement to move to startPosition ... */
             agent.SetDestination(startPosition);
         }
 
@@ -140,33 +178,7 @@ public class DogController : MonoBehaviour
         /* .. Trigger the red vision-indicator. */
 		this.fieldOfView.GetComponent<Renderer>().material = visionAlertedMaterial;
 	}
-    private void EyesOnTarget (Transform target)
-    {
-        /* Start by becoming angry (change fov to red) ... */
-        this.fieldOfView.GetComponent<Renderer>().material = visionDetectedMaterial;
-
-        /* Activate Alerted state (Exclamation model checks for this) ... */
-        this.alerted = true;
-
-        /* .. Get our target position ... */
-        targetPosition = target.position;
-        /* .. Tell AI movement to move to target location ... */
-        agent.SetDestination(targetPosition);
-        /* .. Find out what direction to look in ... */
-        Vector3 direction = (targetPosition - transform.position).normalized;
-        /* .. Convert that to a Vector ... */
-        lookRotationVector = new Vector3(direction.x, 0, direction.z);
-
-        /* .. When the Enemy hasn't changed where he looks, we get a zero vector ... */
-        if (lookRotationVector != Vector3.zero)
-        {
-            /* TODO: figure out what Quaternion.LookRotation does exactly. */
-            Quaternion lookRotation = Quaternion.LookRotation(lookRotationVector);
-
-            /* TODO: figure out what Quaternion.Slerp does exactly. */
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5);
-        }
-    }
+  
     void AlertEveryone(Transform target, bool exitTriggered = false)
     { //exitTriggered is used to skip detectingVision-check.
         for (int i = 0; i < toBeAlerted.Length; i++)
@@ -174,8 +186,8 @@ public class DogController : MonoBehaviour
             /* Makes sure the detecting vision cone stays red. (detectingVision) */
             if (!exitTriggered && toBeAlerted[i].gameObject.GetInstanceID() == gameObject.GetInstanceID())
                 continue;
-            /* Alerts all other GameObjects with Enemy tag. */
 
+            /* Alerts all other GameObjects with Enemy tag. */
             this.toBeAlerted[i].GetComponent<DogController>().BecomeAlerted(target);
         }
     }
