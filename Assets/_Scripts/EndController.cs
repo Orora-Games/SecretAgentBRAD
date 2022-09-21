@@ -5,8 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class EndController : MonoBehaviour
 {
-    public float anykeyTimer = 2f;
-
+    public float anykeyTimer = 1f;
+    public string loadScene;
     private void Start()
     {
     }
@@ -19,7 +19,7 @@ public class EndController : MonoBehaviour
         }
         else if (anykeyTimer < 0f && Input.anyKey)
         {
-            SceneManager.LoadScene("PrototypeScene");
+            SceneManager.LoadScene( loadScene );
         }
         anykeyTimer -= Time.deltaTime;
     }
