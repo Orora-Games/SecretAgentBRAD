@@ -9,20 +9,25 @@ public class CameraController : MonoBehaviour
     public float smoothTime = 0.3F;
     private Vector3 velocity = Vector3.zero;
 
+	/* cameraContainer is how we are getting all the cameras, it's set in the prefab. */
+	public GameObject cameraContainer;
 	private GameObject previous;
 	private GameObject next;
 
 	private void Start () {
-		target = ( !target ) ? GameObject.FindGameObjectWithTag( "Player" ).transform : target;
+		/* This is here to allow us to check for targetPlayer not existing*/
+		GameObject targetPlayer = GameObject.FindGameObjectWithTag( "Player" );
 
-		/* Start by setting our camera to the target, wherever they are. */
-		Vector3 targetPosition = target.position;
+		target = ( !target && targetPlayer) ? targetPlayer.transform: target;
+		if ( target ) {
+			/* Start by setting our camera to the target, wherever they are. */
+			Vector3 targetPosition = target.position;
 
-		transform.position = targetPosition;
-		transform.position -= transform.forward * 5; /* Move the camera forwards to avoid clipping through the level */
-
+			transform.position = targetPosition;
+			transform.position -= transform.forward * 5; /* Move the camera forwards to avoid clipping through the level */
+		}
 		/* .. Continue by figuring out what camera is next and previous ...*/
-		GameObject cameraContainer = transform.parent.gameObject; /* .. this is an inoptimal assumption. */
+		cameraContainer = transform.parent.gameObject; /* .. this is an inoptimal assumption. */
         int childIndex = 0;
         List<Transform> childTransforms = new List<Transform>();
 
