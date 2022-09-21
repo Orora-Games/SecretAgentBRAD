@@ -35,7 +35,6 @@ public class DogController : MonoBehaviour
     private Vector3 startPosition;
     private Vector3 lookRotationVector;
     private Quaternion spawnRotation;
-	private float turnSmoothVelocity;
 
 	public UnityEngine.AI.NavMeshAgent agent;
     private Transform lastTarget;
@@ -122,10 +121,10 @@ public class DogController : MonoBehaviour
 
         /* Checks that the angle between current and spawnRotation is over 2f, and checks that current and start position is less than 2 meters from each other */
 		if ( Quaternion.Angle( transform.rotation, spawnRotation ) > 2f  && (transform.position - startPosition ).magnitude < 2) {
-            /* TODO: Make them turn slowly. */
-            transform.rotation = spawnRotation;
+            /* .. we're now resetting the rotation ... */
+            transform.Rotate(new Vector3(spawnRotation.eulerAngles.x, spawnRotation.eulerAngles.y,spawnRotation.eulerAngles.z) * Time.deltaTime * turnSmoothTime );
 		}
-    }
+	}
     public void BecomeAlerted (Transform target) {
         /* agent.SetDestination / Navigation Mesh code/setup
          *   Source: How to use Unity NavMesh Pathfinding! (Unity Tutorial) https://www.youtube.com/watch?v=atCOd4o7tG4 - Code Monkey (youtube)    */
