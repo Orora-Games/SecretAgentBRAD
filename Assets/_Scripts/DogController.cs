@@ -45,6 +45,7 @@ public class DogController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         defaultAlertedTimer = alertedTimer;
         startPosition = transform.position;
         spawnRotation = transform.rotation;
