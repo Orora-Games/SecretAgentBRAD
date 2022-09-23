@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class CaughtController : MonoBehaviour
 {
+    public string endSceneToLoad;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,7 +23,7 @@ public class CaughtController : MonoBehaviour
     {
         if (other.transform.tag == "Player")
         {
-            SceneManager.LoadScene("YouLost");
+            SceneManager.LoadScene( endSceneToLoad );
         }
     }
 }

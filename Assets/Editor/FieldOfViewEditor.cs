@@ -10,7 +10,7 @@ public class FieldOfViewEditor  : Editor
     private void OnSceneGUI()
     {
         /* Get Field of View transform ... */
-    FieldOfView fov = (FieldOfView) target;
+        FieldOfView fov = (FieldOfView) target;
 
         /* .. Set first drawing colour to white ... */
         Handles.color = Color.white;
