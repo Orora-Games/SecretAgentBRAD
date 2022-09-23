@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
-{
+{    
     public CharacterController controller;
     public float speed = 6f; 
     public float turnSmoothTime = 0.1f;
@@ -17,6 +17,9 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (gameObject.tag == "Untagged") Debug.LogError("Your " + gameObject.name + " object needs to have the correct tag to be killable."); // Make sure to Tag your player-object Player.
+        if (gameObject.layer == 0) Debug.LogError("Your " + gameObject.name + " object needs to have the correct layer to be detectable by the FieldOfView Controller."); // Player-Layer will fix this issue.
+
         startHeight = gameObject.transform.position.y;
 
     }
