@@ -18,6 +18,8 @@ public class WinConditionController : MonoBehaviour
 
 	private void OnTriggerEnter ( Collider other ) {
 		if ( other.transform.tag == "Player" ) {
+			GameObject[] listofIntel = GameObject.FindGameObjectsWithTag("Intel");
+			if (listofIntel.Length > 0) return;
 			SceneManager.LoadScene( nextScene );
 		}
 	}
