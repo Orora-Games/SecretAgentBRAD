@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,6 +8,7 @@ public class DogController : MonoBehaviour
 {
     //Alerted State
     public bool alerted = false;
+    private bool wasAlerted = false;
     public float alertedTimer = 5.0f;
 
     /* Movement turn smoothing*/
@@ -26,6 +28,13 @@ public class DogController : MonoBehaviour
 
     /* Get the FieldOfView game object. */
     private GameObject fieldOfView;
+
+    /* Our patrol waypoints. Source: https://youtu.be/c8Nq19gkNfs */
+    public Transform[] waypoints;
+    private int waypointIndex;
+    public Transform waypointTarget;
+    public float waypointWaitTime = 5.0f;
+    private float defaultWaypointWaitTime;
 
     //Materials
     private Material visionAlertedMaterial;
@@ -57,6 +66,17 @@ public class DogController : MonoBehaviour
         visionUndetectedMaterial = gameObject.GetComponent<FieldOfView>().undetectedMaterial;
         visionDetectedMaterial = gameObject.GetComponent<FieldOfView>().detectedMaterial;
         toBeAlerted = GameObject.FindGameObjectsWithTag("Enemy");
+
+        /* .. Set the default wait timer for waypointWaitTimer ... */
+        defaultWaypointWaitTime = waypointWaitTime;
+
+        /* .. If there are no waypoints, set one ... */
+        if (waypoints.Count() == 0)
+        {
+            waypoints[0] = gameObject.transform;
+        }
+        /* .. Set the first waypoint ... */
+        NextWaypoint();
     }
 
     // Update is called once per frame
@@ -78,21 +98,22 @@ public class DogController : MonoBehaviour
                 exclamation.SetActive(true);
 
                 /* .. alerted-check is used when Enemies are no longer spotting Player  ... */
-                this.alerted = true;
+                alerted = true;
 
                 /* .. When the Enemy spots the Player they are supposed to alert everyone to their location ... */
                 if (!hasAlerted)
                 {
                     /* .. Tell every Enemy where the Player was spotted ... */
-                    this.AlertEveryone(target);
+                    AlertEveryone(target);
                     /* .. set the hasAlerted state, this way the spotting Enemy only alerts once per spot ... */
-                    this.hasAlerted = true;
+                    hasAlerted = true;
                 }
                 /* hadEyesOnTarget is used when Player leaves the Enemy Field of view to trigger the "they just ran away here"-alert */
-                this.hadEyesOnTarget = true;
+                hadEyesOnTarget = true;
+                wasAlerted = true;
 
                 /* Start by becoming angry (change fov to red) ... */
-                this.fieldOfView.GetComponent<Renderer>().material = visionDetectedMaterial;
+                fieldOfView.GetComponent<Renderer>().material = visionDetectedMaterial;
 
                 /* .. Get our target position ... */
                 targetPosition = target.position;
@@ -119,9 +140,9 @@ public class DogController : MonoBehaviour
 
         if (hadEyesOnTarget)
         {
-            this.AlertEveryone(lastTarget);
-            this.hasAlerted = false;
-            this.hadEyesOnTarget = false;
+            AlertEveryone(lastTarget);
+            hasAlerted = false;
+            hadEyesOnTarget = false;
         }
 
         if (alerted && alertedTimer > 0f ) {
@@ -132,7 +153,8 @@ public class DogController : MonoBehaviour
             exclamation.SetActive(true);
 
             /* .. turnTowardNavSteeringTarget is the navigation mesh agent's target ... */
-            var turnTowardNavSteeringTarget = agent.steeringTarget;
+            Vector3 turnTowardNavSteeringTarget = agent.steeringTarget;
+            
             /* .. Calculate a direction by subtracting the transform.position from steeringTarget ... */
             Vector3 direction = (turnTowardNavSteeringTarget - transform.position).normalized;
 
@@ -144,34 +166,59 @@ public class DogController : MonoBehaviour
                 transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5);
             }
         } else {
-            /* beneath this line resets the DogController and VisionLine's materials */
-            this.fieldOfView.GetComponent<Renderer>().material = visionUndetectedMaterial;
+            if (wasAlerted) wasAlertedReset();
 
-			/* .. set alerted to false, as we are no longer alerted ... */
-            this.alerted = false;
+            //Debug.Log(((transform.position - waypointTarget.position).magnitude <= 0.5f) + " // " + (Quaternion.Angle(transform.rotation, waypointTarget.rotation) <= 2));
+            if ((transform.position - waypointTarget.position).magnitude <= 0.5f && Quaternion.Angle(transform.rotation, waypointTarget.rotation) <= 2)
+            {
+                waypointWaitTime -= Time.deltaTime;
+            }
 
-            /* .. No more exclamation point! ... */
-            exclamation.SetActive(false);
+            if (waypointWaitTime < 0f)
+            {
+                /* Get the next wayPointTarget */
+                Transform nextTarget = NextWaypoint();
 
-            /* .. Set the alerted-timer to the default alerted timer .. */
-            alertedTimer = defaultAlertedTimer;
-
-            /* .. Tell AI movement to move to startPosition ... */
-            agent.SetDestination(startPosition);
+                /* .. Tell AI movement to move to the next waypointTarget ... */
+                agent.SetDestination(nextTarget.position);
+                waypointWaitTime = defaultWaypointWaitTime;
+            }
         }
 
         /* Checks that the angle between current and spawnRotation is over 2f, and checks that current and start position is less than 2 meters from each other */
-		if ( Quaternion.Angle( transform.rotation, spawnRotation ) > 2f  && (transform.position - startPosition ).magnitude < 2) {
+		if ( Quaternion.Angle( transform.rotation, waypointTarget.rotation ) > 2f  && (transform.position - waypointTarget.position).magnitude < 2) {
+
             /* .. we're now resetting the rotation ... */
             transform.Rotate(new Vector3(spawnRotation.eulerAngles.x, spawnRotation.eulerAngles.y,spawnRotation.eulerAngles.z) * Time.deltaTime * turnSmoothTime );
 		}
 	}
+    private void wasAlertedReset()
+    {
+        wasAlerted = false;
+        /* .. beneath this line resets the DogController and VisionLine's materials ... */
+        this.fieldOfView.GetComponent<Renderer>().material = visionUndetectedMaterial;
+
+        /* .. set alerted to false, as we are no longer alerted ... */
+        this.alerted = false;
+
+        /* .. No more exclamation point! ... */
+        exclamation.SetActive(false);
+
+        /* .. Set the alerted-timer to the default alerted timer .. */
+        alertedTimer = defaultAlertedTimer;
+
+        /* .. Send Bot back to their previous waypoint .. */
+        agent.SetDestination(waypointTarget.position);
+    }
+
     public void BecomeAlerted (Transform target) {
         /* agent.SetDestination / Navigation Mesh code/setup
          *   Source: How to use Unity NavMesh Pathfinding! (Unity Tutorial) https://www.youtube.com/watch?v=atCOd4o7tG4 - Code Monkey (youtube)    */
 
         /* Activate Alerted state ... */
-        this.alerted = true;
+        alerted = true;
+        /* .. Activeate WasAlerted-state (used for resetting values) ... */
+        wasAlerted = true;
         /* .. Set Exclamation mark to Active ... */
         exclamation.SetActive(true);
         /* .. Tell AI movement to move to target location ... */
@@ -193,5 +240,12 @@ public class DogController : MonoBehaviour
             /* Alerts all other GameObjects with Enemy tag. */
             this.toBeAlerted[i].GetComponent<DogController>().BecomeAlerted(target);
         }
+    }
+    private Transform NextWaypoint ()
+    {
+        waypointIndex = (waypointIndex+1 > waypoints.Length) ? 0: waypointIndex;
+        this.waypointTarget = waypoints[waypointIndex];
+        waypointIndex++;
+        return waypointTarget;
     }
 }
