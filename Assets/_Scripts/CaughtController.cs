@@ -16,14 +16,22 @@ public class CaughtController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-    }
+        /* Get the list of visible targets from FieldOfView component ..*/
+        List<Transform> visibleTargets = GetComponent<FieldOfView>().visibleTargets;
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.transform.tag == "Player")
+        /* .. if this Entity (Enemy) sees Player (target) ... */
+        if (visibleTargets.Count > 0)
         {
-            SceneManager.LoadScene( endSceneToLoad );
+            /* We're trusting the FOV- to know when it sees a player*/
+            SceneManager.LoadScene(endSceneToLoad);
         }
     }
+
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (other.transform.tag == "Player")
+    //    {
+    //        SceneManager.LoadScene( endSceneToLoad );
+    //    }
+    //}
 }
