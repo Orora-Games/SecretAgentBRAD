@@ -18,6 +18,9 @@ public class WinConditionController : MonoBehaviour
 
 	private void OnTriggerEnter ( Collider other ) {
 		if ( other.transform.tag == "Player" ) {
+            /* This check makes sure that Player has picked up all intel needed to allow their exfiltration. */
+            if (GameObject.FindGameObjectsWithTag("Intel").Length > 0) return; 
+
 			SceneManager.LoadScene( nextScene );
 		}
 	}
