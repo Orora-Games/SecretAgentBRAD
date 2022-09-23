@@ -24,8 +24,8 @@ public class CameraController : MonoBehaviour
 			Vector3 targetPosition = target.position;
 
 			transform.position = targetPosition;
-			transform.position -= transform.forward * 5; /* Move the camera forwards to avoid clipping through the level */
-		}
+            transform.position -= transform.forward * 2; /* Move the camera forwards to avoid clipping through the level */ /* Move the camera forwards to avoid clipping through the level */
+        }
 		/* .. Continue by figuring out what camera is next and previous ...*/
 		cameraContainer = transform.parent.gameObject; /* .. this is an inoptimal assumption. */
         int childIndex = 0;
@@ -61,7 +61,7 @@ public class CameraController : MonoBehaviour
 		Vector3 targetPosition = target.position;
 
         transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
-        transform.position -= transform.forward * 5; /* Move the camera forwards to avoid clipping through the level */
+        transform.position -= transform.forward * 2; /* Move the camera forwards to avoid clipping through the level */
     }
 }
 
