@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class DogController : MonoBehaviour
 {
@@ -36,7 +37,8 @@ public class DogController : MonoBehaviour
     private Vector3 lookRotationVector;
     private Quaternion spawnRotation;
 
-	public UnityEngine.AI.NavMeshAgent agent;
+	private NavMeshAgent agent;
+
     private Transform lastTarget;
 
     // These are the objects that need to be alerted when a Player has been detected.
@@ -45,7 +47,7 @@ public class DogController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        agent = GetComponent<NavMeshAgent>();
         defaultAlertedTimer = alertedTimer;
         startPosition = transform.position;
         spawnRotation = transform.rotation;
