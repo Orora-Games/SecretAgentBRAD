@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 185874649}
   - component: {fileID: 185874648}
   m_Layer: 0
-  m_Name: Text (TMP)
+  m_Name: Text_anykey
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -309,7 +309,7 @@ GameObject:
   - component: {fileID: 347420335}
   - component: {fileID: 347420339}
   m_Layer: 0
-  m_Name: Plane
+  m_Name: Backdrop_script_host
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -406,7 +406,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d51d550b7e6448448836fd3b35856a44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anykeyTimer: 3
+  anykeyTimer: 1
+  loadScene: MainScene
 --- !u!1 &455038601
 GameObject:
   m_ObjectHideFlags: 0
@@ -503,7 +504,7 @@ GameObject:
   - component: {fileID: 1380881676}
   - component: {fileID: 1380881675}
   m_Layer: 0
-  m_Name: Anykey / ESC
+  m_Name: text_Anykey_Exit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -674,7 +675,7 @@ GameObject:
   - component: {fileID: 1700418456}
   - component: {fileID: 1700418455}
   m_Layer: 0
-  m_Name: Directional Light
+  m_Name: Lights
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
