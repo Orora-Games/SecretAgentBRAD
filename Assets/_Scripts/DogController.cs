@@ -178,8 +178,13 @@ public class DogController : MonoBehaviour {
 		/* Checks that the angle between current and spawnRotation is over 2f, and checks that current and start position is less than 2 meters from each other */
 		if ( Quaternion.Angle( transform.rotation, waypointTarget.rotation ) > 2f && ( transform.position - waypointTarget.position ).magnitude < 2 ) {
 
-			/* .. we're now resetting the rotation ... */
-			transform.Rotate( new Vector3( spawnRotation.eulerAngles.x, spawnRotation.eulerAngles.y, spawnRotation.eulerAngles.z ) * Time.deltaTime * turnSmoothTime );
+			/* .. to reset the rotation, we start by calculating what direction is the shortest direction to turn.
+			 *    Source: http://answers.unity.com/answers/556639/view.html ... */
+			float rotate_t = Time.deltaTime * turnSmoothTime;
+			float f = transform.eulerAngles.y;
+			if ( f > 180.0f ) f -= 360.0f;
+
+			transform.eulerAngles = new Vector3( spawnRotation.eulerAngles.x, Mathf.Lerp( f, waypointTarget.eulerAngles.y, rotate_t ), spawnRotation.eulerAngles.z );
 		}
 	}
 
