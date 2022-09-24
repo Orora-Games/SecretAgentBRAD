@@ -29,7 +29,9 @@ public class DogController : MonoBehaviour {
 	private GameObject fieldOfView;
 
 	/* Our patrol waypoints. Source: https://youtu.be/c8Nq19gkNfs */
-	public Transform[] waypoints;
+	public Transform waypointContainer;
+	public List<Transform> waypoints;
+
 	private int waypointIndex;
 	public Transform waypointTarget;
 	public float waypointWaitTime = 5.0f;
@@ -68,6 +70,11 @@ public class DogController : MonoBehaviour {
 		/* .. Set the default wait timer for waypointWaitTimer ... */
 		defaultWaypointWaitTime = waypointWaitTime;
 
+		if ( waypointContainer ) {
+			foreach ( Transform child in waypointContainer.transform ) {
+				waypoints.Add( child );
+			}
+		}
 		/* .. If there are no waypoints, set one ... */
 		if ( waypoints.Count() == 0 ) {
 			waypoints[ 0 ] = gameObject.transform;
@@ -239,7 +246,7 @@ public class DogController : MonoBehaviour {
 		}
 	}
 	private Transform NextWaypoint () {
-		waypointIndex = ( waypointIndex + 1 > waypoints.Length ) ? 0 : waypointIndex;
+		waypointIndex = ( waypointIndex + 1 > waypoints.Count() ) ? 0 : waypointIndex;
 		this.waypointTarget = waypoints[ waypointIndex ];
 		waypointIndex++;
 		return waypointTarget;
