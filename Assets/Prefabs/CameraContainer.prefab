@@ -100,6 +100,7 @@ MonoBehaviour:
   target: {fileID: 0}
   smoothTime: 0.3
   cameraContainer: {fileID: 5996753341210856291}
+  movementRotation: 0
 --- !u!1 &5996753341088465607
 GameObject:
   m_ObjectHideFlags: 0
@@ -200,6 +201,7 @@ MonoBehaviour:
   target: {fileID: 0}
   smoothTime: 0.3
   cameraContainer: {fileID: 5996753341210856291}
+  movementRotation: -180
 --- !u!1 &5996753341210856291
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,6 +337,7 @@ MonoBehaviour:
   target: {fileID: 0}
   smoothTime: 0.3
   cameraContainer: {fileID: 5996753341210856291}
+  movementRotation: -270
 --- !u!1 &5996753341682381741
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,3 +438,4 @@ MonoBehaviour:
   target: {fileID: 0}
   smoothTime: 0.3
   cameraContainer: {fileID: 5996753341210856291}
+  movementRotation: -90

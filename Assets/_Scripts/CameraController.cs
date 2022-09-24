@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,11 +5,12 @@ public class CameraController : MonoBehaviour {
 	public Transform target;
 	public float smoothTime = 0.3F;
 	private Vector3 velocity = Vector3.zero;
-
+	
 	/* cameraContainer is how we are getting all the cameras, it's set in the prefab. */
 	public GameObject cameraContainer;
 	private GameObject previous;
 	private GameObject next;
+	public float movementRotation = 0f;
 
 	private void Start () {
 		/* This is here to allow us to check for targetPlayer not existing*/
@@ -44,13 +43,18 @@ public class CameraController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		target = ( !target ) ? GameObject.FindGameObjectWithTag( "Player" ).transform : target;
+		GameObject targetObject = target.gameObject;
 
 		if ( Input.GetKeyDown( KeyCode.E ) ) {
 			next.SetActive( true );
+			/* The next line changes movementRotation on PlayerController */
+			targetObject.GetComponent<PlayerController>().movementRotation = next.GetComponent<CameraController>().movementRotation;
 			gameObject.SetActive( false );
 		}
 		if ( Input.GetKeyDown( KeyCode.Q ) ) {
 			previous.SetActive( true );
+			/* The next line changes movementRotation on PlayerController */
+			targetObject.GetComponent<PlayerController>().movementRotation = previous.GetComponent<CameraController>().movementRotation;
 			gameObject.SetActive( false );
 		}
 
