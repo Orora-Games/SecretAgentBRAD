@@ -62,6 +62,9 @@ public class FieldOfView : MonoBehaviour
         /* .. Find every Player within viewRadius ...*/
         Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
 
+        /* If our OverlapSphere finds no colliders within the area, then get out of this function (none of the code below return will be run); */
+        if ( targetsInViewRadius.Length == 0) return;
+
         /* .. Go through the(se) targets ... */
         for (int i = 0; i < targetsInViewRadius.Length; i++)
         {
@@ -78,9 +81,9 @@ public class FieldOfView : MonoBehaviour
                 /* .. Check if there is an obstacle between target and Enemy ... */
                 if (!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
                 {
-                    /* .. If there is no obstacle, add target to visible targets. */
-                    visibleTargets.Add(target);
-                }
+					/* .. If there is no obstacle, check if this target is already in the list, if not add target to visible targets. */
+					if (!visibleTargets.Contains( target )) visibleTargets.Add(target);
+				}
             }
         }
     }
