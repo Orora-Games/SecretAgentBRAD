@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class WinConditionController : MonoBehaviour
-{
+public class WinConditionController : MonoBehaviour {
+	public bool ignoreIntelState = false;
 	public string nextScene;
 
 	private void Start () {
@@ -18,6 +18,14 @@ public class WinConditionController : MonoBehaviour
 
 	private void OnTriggerEnter ( Collider other ) {
 		if ( other.transform.tag == "Player" ) {
+
+
+			/* Mapmaker knows best. Just load the next scene.*/
+			if ( ignoreIntelState ) {
+				SceneManager.LoadScene( nextScene );
+				return;
+			}
+
 			/* This check makes sure that Player has picked up all intel needed to allow their exfiltration. */
 			if (GameObject.FindGameObjectsWithTag("Intel").Length > 0) return; 
 
