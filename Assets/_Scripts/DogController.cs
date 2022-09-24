@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -31,6 +32,7 @@ public class DogController : MonoBehaviour {
 	/* Our patrol waypoints. Source: https://youtu.be/c8Nq19gkNfs */
 	public Transform waypointContainer;
 	public List<Transform> waypoints;
+	public GameObject waypointPrefab;
 
 	private int waypointIndex;
 	public Transform waypointTarget;
@@ -45,7 +47,7 @@ public class DogController : MonoBehaviour {
 	private Vector3 targetPosition;
 	private Vector3 startPosition;
 	private Vector3 lookRotationVector;
-	private Quaternion spawnRotation;
+	private Quaternion startRotation;
 
 	private NavMeshAgent agent;
 
@@ -59,7 +61,7 @@ public class DogController : MonoBehaviour {
 		agent = GetComponent<NavMeshAgent>();
 		defaultAlertedTimer = alertedTimer;
 		startPosition = transform.position;
-		spawnRotation = transform.rotation;
+		startRotation = transform.rotation;
 		exclamation = gameObject.transform.Find( "Exclamation" ).gameObject;
 		fieldOfView = gameObject.transform.Find( "ViewVisualization" ).gameObject;
 		visionAlertedMaterial = gameObject.GetComponent<FieldOfView>().alertedMaterial;
@@ -77,7 +79,9 @@ public class DogController : MonoBehaviour {
 		}
 		/* .. If there are no waypoints, set one ... */
 		if ( waypoints.Count() == 0 ) {
-			waypoints[ 0 ] = gameObject.transform;
+			GameObject newWaypoint = GameObject.Instantiate( waypointPrefab, startPosition, startRotation);
+
+			waypoints.Add(newWaypoint.transform);
 		}
 		/* .. Set the first waypoint ... */
 		NextWaypoint();
@@ -182,7 +186,7 @@ public class DogController : MonoBehaviour {
 			}
 		}
 
-		/* Checks that the angle between current and spawnRotation is over 2f, and checks that current and start position is less than 2 meters from each other */
+		/* Checks that the angle between current and startRotation is over 2f, and checks that current and start position is less than 2 meters from each other */
 		if ( Quaternion.Angle( transform.rotation, waypointTarget.rotation ) > 2f && ( transform.position - waypointTarget.position ).magnitude < 2 ) {
 
 			/* .. to reset the rotation, we start by calculating what direction is the shortest direction to turn.
@@ -191,7 +195,7 @@ public class DogController : MonoBehaviour {
 			float f = transform.eulerAngles.y;
 			if ( f > 180.0f ) f -= 360.0f;
 
-			transform.eulerAngles = new Vector3( spawnRotation.eulerAngles.x, Mathf.Lerp( f, waypointTarget.eulerAngles.y, rotate_t ), spawnRotation.eulerAngles.z );
+			transform.eulerAngles = new Vector3( startRotation.eulerAngles.x, Mathf.Lerp( f, waypointTarget.eulerAngles.y, rotate_t ), startRotation.eulerAngles.z );
 		}
 	}
 
