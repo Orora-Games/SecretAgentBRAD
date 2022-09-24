@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour {
 	[Header( "Absolute controls" )]
 	public bool testAbsoluteControls = false;
 	public bool trueNorthRotatedControlls = false;
+	[HideInInspector]
 	public float movementRotation = 0;
 	private float startHeight; 
 	private float turnSmoothVelocity;
