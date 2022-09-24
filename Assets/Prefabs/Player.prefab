@@ -706,8 +706,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7278768304432349126}
-  - component: {fileID: 7100444093160463657}
   - component: {fileID: 7100444093160463656}
+  - component: {fileID: 7100444093160463657}
   - component: {fileID: -383780525788715970}
   m_Layer: 3
   m_Name: Player
@@ -732,6 +732,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7100444093160463656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7946796816652019068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 653b7e9a429e3f54c9713d1a3642bb87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 7100444093160463657}
+  speed: 6
+  turnSmoothTime: 400
+  testAbsoluteControls: 0
+  trueNorthRotatedControlls: 0
+  movementRotation: 0
 --- !u!143 &7100444093160463657
 CharacterController:
   m_ObjectHideFlags: 0
@@ -750,21 +768,6 @@ CharacterController:
   m_SkinWidth: 0.01
   m_MinMoveDistance: 0.001
   m_Center: {x: 0.02, y: 0.04, z: 0.024}
---- !u!114 &7100444093160463656
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7946796816652019068}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 653b7e9a429e3f54c9713d1a3642bb87, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  controller: {fileID: 7100444093160463657}
-  speed: 6
-  turnSmoothTime: 400
 --- !u!65 &-383780525788715970
 BoxCollider:
   m_ObjectHideFlags: 0

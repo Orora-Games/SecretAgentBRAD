@@ -8,6 +8,7 @@ public class CameraController : MonoBehaviour {
 	
 	/* cameraContainer is how we are getting all the cameras, it's set in the prefab. */
 	public GameObject cameraContainer;
+	public bool disableNextCamera = false;
 	private GameObject previous;
 	private GameObject next;
 	public float movementRotation = 0f;
@@ -45,6 +46,18 @@ public class CameraController : MonoBehaviour {
 		target = ( !target ) ? GameObject.FindGameObjectWithTag( "Player" ).transform : target;
 		GameObject targetObject = target.gameObject;
 
+		/* Here we smoothly follow our target around. */
+		/* Source: https://docs.unity3d.com/ScriptReference/Vector3.SmoothDamp.html */
+		Vector3 targetPosition = target.position;
+
+		transform.position = Vector3.SmoothDamp( transform.position, targetPosition, ref velocity, smoothTime );
+
+		/* Move the camera forwards to avoid clipping through the level */
+		transform.position -= transform.forward * 5; 
+
+		/* If disableNextCamera is toggled, we do not run the code below this point. */
+		if ( disableNextCamera ) return; 
+
 		if ( Input.GetKeyDown( KeyCode.E ) ) {
 			next.SetActive( true );
 			/* The next line changes movementRotation on PlayerController */
@@ -57,13 +70,7 @@ public class CameraController : MonoBehaviour {
 			targetObject.GetComponent<PlayerController>().movementRotation = previous.GetComponent<CameraController>().movementRotation;
 			gameObject.SetActive( false );
 		}
-
-		/* Here we smoothly follow our target around. */
-		/* Source: https://docs.unity3d.com/ScriptReference/Vector3.SmoothDamp.html */
-		Vector3 targetPosition = target.position;
-
-		transform.position = Vector3.SmoothDamp( transform.position, targetPosition, ref velocity, smoothTime );
-		transform.position -= transform.forward * 5; /* Move the camera forwards to avoid clipping through the level */
+		
 	}
 }
 
