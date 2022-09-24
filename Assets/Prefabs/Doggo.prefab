@@ -261,7 +261,11 @@ MonoBehaviour:
   alerted: 0
   alertedTimer: 5
   turnSmoothTime: 0.5
+  waypointContainer: {fileID: 0}
   waypoints: []
+  waypointPrefab: {fileID: 518316093008067600, guid: 774f19127569d3b46b4dc46ff2bfd55b, type: 3}
+  waypointTarget: {fileID: 0}
+  waypointWaitTime: 5
 --- !u!195 &5507343709003120195
 NavMeshAgent:
   m_ObjectHideFlags: 0
