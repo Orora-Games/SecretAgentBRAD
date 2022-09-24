@@ -46,7 +46,7 @@ public class DogController : MonoBehaviour
     private Vector3 lookRotationVector;
     private Quaternion spawnRotation;
 
-	private NavMeshAgent agent;
+    private NavMeshAgent agent;
 
     private Transform lastTarget;
 
@@ -186,12 +186,12 @@ public class DogController : MonoBehaviour
         }
 
         /* Checks that the angle between current and spawnRotation is over 2f, and checks that current and start position is less than 2 meters from each other */
-		if ( Quaternion.Angle( transform.rotation, waypointTarget.rotation ) > 2f  && (transform.position - waypointTarget.position).magnitude < 2) {
+        if ( Quaternion.Angle( transform.rotation, waypointTarget.rotation ) > 2f  && (transform.position - waypointTarget.position).magnitude < 2) {
 
             /* .. we're now resetting the rotation ... */
             transform.Rotate(new Vector3(spawnRotation.eulerAngles.x, spawnRotation.eulerAngles.y,spawnRotation.eulerAngles.z) * Time.deltaTime * turnSmoothTime );
-		}
-	}
+        }
+    }
     private void wasAlertedReset()
     {
         wasAlerted = false;
@@ -206,6 +206,10 @@ public class DogController : MonoBehaviour
 
         /* .. Set the alerted-timer to the default alerted timer .. */
         alertedTimer = defaultAlertedTimer;
+
+
+        /* .. Set the waypointTimer to the default waypoint timer .. */
+        waypointWaitTime = defaultWaypointWaitTime;
 
         /* .. Send Bot back to their previous waypoint .. */
         agent.SetDestination(waypointTarget.position);
@@ -226,8 +230,8 @@ public class DogController : MonoBehaviour
         /* .. Set the alerted-timer to the default alerted timer .. */
         alertedTimer = defaultAlertedTimer;
         /* .. Trigger the red vision-indicator. */
-		this.fieldOfView.GetComponent<Renderer>().material = visionAlertedMaterial;
-	}
+        this.fieldOfView.GetComponent<Renderer>().material = visionAlertedMaterial;
+    }
   
     void AlertEveryone(Transform target, bool exitTriggered = false)
     { //exitTriggered is used to skip detectingVision-check.
