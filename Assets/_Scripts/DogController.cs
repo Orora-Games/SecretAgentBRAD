@@ -171,8 +171,8 @@ public class DogController : MonoBehaviour {
 				wasAlertedReset();
 			}
 
-			//Debug.Log(((transform.position - waypointTarget.position).magnitude <= 0.5f) + " // " + (Quaternion.Angle(transform.rotation, waypointTarget.rotation) <= 2));
-			if ( ( transform.position - waypointTarget.position ).magnitude <= 0.5f && Quaternion.Angle( transform.rotation, waypointTarget.rotation ) <= 2 ) {
+			/* This angle-check can be less stringent that way we start counting down a little earlier. */
+			if ( Quaternion.Angle( transform.rotation, waypointTarget.rotation ) <= 2f && ( transform.position - waypointTarget.position ).magnitude <= 2f ) {
 				waypointWaitTime -= Time.deltaTime;
 			}
 
@@ -186,16 +186,11 @@ public class DogController : MonoBehaviour {
 			}
 		}
 
-		/* Checks that the angle between current and startRotation is over 2f, and checks that current and start position is less than 2 meters from each other */
-		if ( Quaternion.Angle( transform.rotation, waypointTarget.rotation ) > 2f && ( transform.position - waypointTarget.position ).magnitude < 2 ) {
+		/* Checks that the angle between current and waypointTarget is over 0.5f, and checks that current and waypoint position is less than 2 meters from each other */
+		if ( Quaternion.Angle( transform.rotation, waypointTarget.rotation ) > 0.5f && ( transform.position - waypointTarget.position ).magnitude < 0.5f ) {
 
-			/* .. to reset the rotation, we start by calculating what direction is the shortest direction to turn.
-			 *    Source: http://answers.unity.com/answers/556639/view.html ... */
-			float rotate_t = Time.deltaTime * turnSmoothTime;
-			float f = transform.eulerAngles.y;
-			//if ( f > 180.0f ) f -= 360.0f;
-
-			transform.eulerAngles = new Vector3( waypointTarget.eulerAngles.x, Mathf.Lerp( f, waypointTarget.eulerAngles.y, rotate_t ), waypointTarget.eulerAngles.z );
+			/* .. to reset the rotation, we start by calculating what direction is the shortest direction to turn.*/
+			transform.rotation = Quaternion.Lerp( transform.rotation, waypointTarget.rotation, Time.deltaTime * turnSmoothTime );
 		}
 	}
 
