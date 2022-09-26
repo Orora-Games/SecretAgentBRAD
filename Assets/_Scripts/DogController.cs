@@ -186,16 +186,11 @@ public class DogController : MonoBehaviour {
 			}
 		}
 
-		/* Checks that the angle between current and startRotation is over 2f, and checks that current and start position is less than 2 meters from each other */
+		/* Checks that the angle between current and waypointTarget is over 2f, and checks that current and waypoint position is less than 2 meters from each other */
 		if ( Quaternion.Angle( transform.rotation, waypointTarget.rotation ) > 2f && ( transform.position - waypointTarget.position ).magnitude < 2 ) {
 
-			/* .. to reset the rotation, we start by calculating what direction is the shortest direction to turn.
-			 *    Source: http://answers.unity.com/answers/556639/view.html ... */
-			float rotate_t = Time.deltaTime * turnSmoothTime;
-			float f = transform.eulerAngles.y;
-			if ( f > 180.0f ) f -= 360.0f;
-
-			transform.eulerAngles = new Vector3( startRotation.eulerAngles.x, Mathf.Lerp( f, waypointTarget.eulerAngles.y, rotate_t ), startRotation.eulerAngles.z );
+			/* .. to reset the rotation, we start by calculating what direction is the shortest direction to turn.*/
+			transform.rotation = Quaternion.Lerp( transform.rotation, waypointTarget.rotation, Time.deltaTime * turnSmoothTime );
 		}
 	}
 
