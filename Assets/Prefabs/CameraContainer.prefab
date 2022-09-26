@@ -57,7 +57,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.5
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 60
   orthographic: 1
@@ -100,6 +100,7 @@ MonoBehaviour:
   target: {fileID: 0}
   smoothTime: 0.3
   cameraContainer: {fileID: 5996753341210856291}
+  disableNextCamera: 0
   movementRotation: 0
 --- !u!1 &5996753341088465607
 GameObject:
@@ -158,7 +159,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.5
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 60
   orthographic: 1
@@ -201,6 +202,7 @@ MonoBehaviour:
   target: {fileID: 0}
   smoothTime: 0.3
   cameraContainer: {fileID: 5996753341210856291}
+  disableNextCamera: 0
   movementRotation: -180
 --- !u!1 &5996753341210856291
 GameObject:
@@ -294,7 +296,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.5
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 60
   orthographic: 1
@@ -337,6 +339,7 @@ MonoBehaviour:
   target: {fileID: 0}
   smoothTime: 0.3
   cameraContainer: {fileID: 5996753341210856291}
+  disableNextCamera: 0
   movementRotation: -270
 --- !u!1 &5996753341682381741
 GameObject:
@@ -395,7 +398,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.5
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 60
   orthographic: 1
@@ -438,4 +441,5 @@ MonoBehaviour:
   target: {fileID: 0}
   smoothTime: 0.3
   cameraContainer: {fileID: 5996753341210856291}
+  disableNextCamera: 0
   movementRotation: -90
