@@ -186,8 +186,9 @@ public class DogController : MonoBehaviour {
 			}
 		}
 
-		/* Checks that the angle between current and waypointTarget is over 0.5f, and checks that current and waypoint position is less than 2 meters from each other */
-		if ( Quaternion.Angle( transform.rotation, waypointTarget.rotation ) > 0.5f && ( transform.position - waypointTarget.position ).magnitude < 0.5f ) {
+
+		/* Checks that the angle between current and waypointTarget is over 2f, and checks that current and waypoint position is less than 2 meters from each other */
+		if ( Quaternion.Angle( transform.rotation, waypointTarget.rotation ) > 2f && ( transform.position - waypointTarget.position ).magnitude < 2 ) {
 
 			/* .. to reset the rotation, we start by calculating what direction is the shortest direction to turn.*/
 			transform.rotation = Quaternion.Lerp( transform.rotation, waypointTarget.rotation, Time.deltaTime * turnSmoothTime );
