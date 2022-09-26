@@ -95,12 +95,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e2c67eff31ed4644b9766c395c58472a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   target: {fileID: 0}
   smoothTime: 0.3
   cameraContainer: {fileID: 5996753341210856291}
   movementRotation: 0
+  cameraClippingHack: 5
 --- !u!1 &5996753341088465607
 GameObject:
   m_ObjectHideFlags: 0
@@ -196,12 +197,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e2c67eff31ed4644b9766c395c58472a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   target: {fileID: 0}
   smoothTime: 0.3
   cameraContainer: {fileID: 5996753341210856291}
   movementRotation: -180
+  cameraClippingHack: 5
 --- !u!1 &5996753341210856291
 GameObject:
   m_ObjectHideFlags: 0
@@ -332,12 +334,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e2c67eff31ed4644b9766c395c58472a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   target: {fileID: 0}
   smoothTime: 0.3
   cameraContainer: {fileID: 5996753341210856291}
   movementRotation: -270
+  cameraClippingHack: 5
 --- !u!1 &5996753341682381741
 GameObject:
   m_ObjectHideFlags: 0
@@ -433,9 +436,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e2c67eff31ed4644b9766c395c58472a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   target: {fileID: 0}
   smoothTime: 0.3
   cameraContainer: {fileID: 5996753341210856291}
   movementRotation: -90
+  cameraClippingHack: 5
