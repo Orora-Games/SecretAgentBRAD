@@ -12,6 +12,7 @@ public class CameraController : MonoBehaviour {
 	private GameObject previous;
 	private GameObject next;
 	public float movementRotation = 0f;
+	public int cameraClippingHack = 5;
 
 	private void Start () {
 		/* This is here to allow us to check for targetPlayer not existing*/
@@ -53,7 +54,7 @@ public class CameraController : MonoBehaviour {
 		transform.position = Vector3.SmoothDamp( transform.position, targetPosition, ref velocity, smoothTime );
 
 		/* Move the camera forwards to avoid clipping through the level */
-		transform.position -= transform.forward * 5; 
+		transform.position -= transform.forward * cameraClippingHack; 
 
 		/* If disableNextCamera is toggled, we do not run the code below this point. */
 		if ( disableNextCamera ) return; 
