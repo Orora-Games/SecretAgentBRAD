@@ -193,9 +193,9 @@ public class DogController : MonoBehaviour {
 			 *    Source: http://answers.unity.com/answers/556639/view.html ... */
 			float rotate_t = Time.deltaTime * turnSmoothTime;
 			float f = transform.eulerAngles.y;
-			if ( f > 180.0f ) f -= 360.0f;
+			//if ( f > 180.0f ) f -= 360.0f;
 
-			transform.eulerAngles = new Vector3( startRotation.eulerAngles.x, Mathf.Lerp( f, waypointTarget.eulerAngles.y, rotate_t ), startRotation.eulerAngles.z );
+			transform.eulerAngles = new Vector3( waypointTarget.eulerAngles.x, Mathf.Lerp( f, waypointTarget.eulerAngles.y, rotate_t ), waypointTarget.eulerAngles.z );
 		}
 	}
 
