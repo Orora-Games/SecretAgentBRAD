@@ -1,195 +1,258 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class DogController : MonoBehaviour
-{
-    //Alerted State
-    public bool alerted = false;
-    public float alertedTimer = 5.0f;
+public class DogController : MonoBehaviour {
+	//Alerted State
+	public bool alerted = false;
+	private bool wasAlerted = false;
+	public float alertedTimer = 5.0f;
 
-    /* Movement turn smoothing*/
-    public float turnSmoothTime = 0.5f;
+	/* Movement turn smoothing*/
+	public float turnSmoothTime = 0.5f;
 
-    /* How long will the bots stay alerted? Is set to alertedTimer, used to restore the timer after use. */
-    private float defaultAlertedTimer;
+	/* How long will the bots stay alerted? Is set to alertedTimer, used to restore the timer after use. */
+	private float defaultAlertedTimer;
 
-    /* Used when checking if an entity that has eyes on target has alerted everyone to their position. */
-    private bool hasAlerted;
+	/* Used when checking if an entity that has eyes on target has alerted everyone to their position. */
+	private bool hasAlerted;
 
-    /* Used to alert everyone when Player leaves their eyesOnTarget sight. */
-    private bool hadEyesOnTarget;
+	/* Used to alert everyone when Player leaves their eyesOnTarget sight. */
+	private bool hadEyesOnTarget;
 
-    /* Used to contain the Exclamation object, to enable/disable when alerted. */
-    private GameObject exclamation;
+	/* Used to contain the Exclamation object, to enable/disable when alerted. */
+	private GameObject exclamation;
 
-    /* Get the FieldOfView game object. */
-    private GameObject fieldOfView;
+	/* Get the FieldOfView game object. */
+	private GameObject fieldOfView;
 
-    //Materials
-    private Material visionAlertedMaterial;
-    private Material visionUndetectedMaterial;
-    private Material visionDetectedMaterial;
+	/* Our patrol waypoints. Source: https://youtu.be/c8Nq19gkNfs */
+	public Transform waypointContainer;
+	public List<Transform> waypoints;
+	public GameObject waypointPrefab;
 
-    private Vector3 targetPosition;
-    private Vector3 startPosition;
-    private Vector3 lookRotationVector;
-    private Quaternion spawnRotation;
+	private int waypointIndex;
+	public Transform waypointTarget;
+	public float waypointWaitTime = 5.0f;
+	private float defaultWaypointWaitTime;
 
-	public UnityEngine.AI.NavMeshAgent agent;
-    private Transform lastTarget;
+	//Materials
+	private Material visionAlertedMaterial;
+	private Material visionUndetectedMaterial;
+	private Material visionDetectedMaterial;
 
-    // These are the objects that need to be alerted when a Player has been detected.
-    private GameObject[] toBeAlerted;
+	private Vector3 targetPosition;
+	private Vector3 startPosition;
+	private Vector3 lookRotationVector;
+	private Quaternion startRotation;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-        defaultAlertedTimer = alertedTimer;
-        startPosition = transform.position;
-        spawnRotation = transform.rotation;
-        exclamation = gameObject.transform.Find( "Exclamation" ).gameObject;
-        fieldOfView = gameObject.transform.Find("ViewVisualization").gameObject;
-        visionAlertedMaterial = gameObject.GetComponent<FieldOfView>().alertedMaterial;
-        visionUndetectedMaterial = gameObject.GetComponent<FieldOfView>().undetectedMaterial;
-        visionDetectedMaterial = gameObject.GetComponent<FieldOfView>().detectedMaterial;
-        toBeAlerted = GameObject.FindGameObjectsWithTag("Enemy");
-    }
+	private NavMeshAgent agent;
 
-    // Update is called once per frame
-    void Update()
-    {
-        /* Get the list of visible targets from FieldOfView component ..*/
-        List<Transform> visibleTargets = GetComponent<FieldOfView>().visibleTargets;
+	private Transform lastTarget;
 
-        /* .. if this Entity (Enemy) sees Player (target) ... */
-        if (visibleTargets.Count > 0)
-        {
-            /* .. Set the alerted-timer to the default alerted timer .. */
-            alertedTimer = defaultAlertedTimer;
+	// These are the objects that need to be alerted when a Player has been detected.
+	private GameObject[] toBeAlerted;
 
-            foreach (var target in visibleTargets)
-            {
-                lastTarget = target;
-                /* .. Set Exclamation to Active ... */
-                exclamation.SetActive(true);
+	// Start is called before the first frame update
+	void Start () {
+		agent = GetComponent<NavMeshAgent>();
+		defaultAlertedTimer = alertedTimer;
+		startPosition = transform.position;
+		startRotation = transform.rotation;
+		exclamation = gameObject.transform.Find( "Exclamation" ).gameObject;
+		fieldOfView = gameObject.transform.Find( "ViewVisualization" ).gameObject;
+		visionAlertedMaterial = gameObject.GetComponent<FieldOfView>().alertedMaterial;
+		visionUndetectedMaterial = gameObject.GetComponent<FieldOfView>().undetectedMaterial;
+		visionDetectedMaterial = gameObject.GetComponent<FieldOfView>().detectedMaterial;
+		toBeAlerted = GameObject.FindGameObjectsWithTag( "Enemy" );
 
-                /* .. alerted-check is used when Enemies are no longer spotting Player  ... */
-                this.alerted = true;
+		/* .. Set the default wait timer for waypointWaitTimer ... */
+		defaultWaypointWaitTime = waypointWaitTime;
 
-                /* .. When the Enemy spots the Player they are supposed to alert everyone to their location ... */
-                if (!hasAlerted)
-                {
-                    /* .. Tell every Enemy where the Player was spotted ... */
-                    this.AlertEveryone(target);
-                    /* .. set the hasAlerted state, this way the spotting Enemy only alerts once per spot ... */
-                    this.hasAlerted = true;
-                }
-                /* hadEyesOnTarget is used when Player leaves the Enemy Field of view to trigger the "they just ran away here"-alert */
-                this.hadEyesOnTarget = true;
+		if ( waypointContainer ) {
+			foreach ( Transform child in waypointContainer.transform ) {
+				waypoints.Add( child );
+			}
+		}
+		/* .. If there are no waypoints, set one ... */
+		if ( waypoints.Count() == 0 ) {
+			GameObject newWaypoint = GameObject.Instantiate( waypointPrefab, startPosition, startRotation);
 
-                /* Start by becoming angry (change fov to red) ... */
-                this.fieldOfView.GetComponent<Renderer>().material = visionDetectedMaterial;
+			waypoints.Add(newWaypoint.transform);
+		}
+		/* .. Set the first waypoint ... */
+		NextWaypoint();
+	}
 
-                /* .. Get our target position ... */
-                targetPosition = target.position;
-                /* .. Tell AI movement to move to target location ... */
-                agent.SetDestination(targetPosition);
-                /* .. Find out what direction to look in ... */
-                Vector3 direction = (targetPosition - transform.position).normalized;
-                /* .. Convert that to a Vector ... */
-                lookRotationVector = new Vector3(direction.x, 0, direction.z);
+	// Update is called once per frame
+	void Update () {
+		/* Get the list of visible targets from FieldOfView component ..*/
+		List<Transform> visibleTargets = GetComponent<FieldOfView>().visibleTargets;
 
-                /* .. When the Enemy hasn't changed where he looks, we get a zero vector ... */
-                if (lookRotationVector != Vector3.zero)
-                {
-                    /* TODO: figure out what Quaternion.LookRotation does exactly. */
-                    Quaternion lookRotation = Quaternion.LookRotation(lookRotationVector);
+		/* .. if this Entity (Enemy) sees Player (target) ... */
+		if ( visibleTargets.Count > 0 ) {
+			/* .. Set the alerted-timer to the default alerted timer .. */
+			alertedTimer = defaultAlertedTimer;
 
-                    /* TODO: figure out what Quaternion.Slerp does exactly. */
-                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5);
-                }
-            }
+			foreach ( var target in visibleTargets ) {
+				lastTarget = target;
+				/* .. Set Exclamation to Active ... */
+				exclamation.SetActive( true );
 
-            return;
-        }
+				/* .. alerted-check is used when Enemies are no longer spotting Player  ... */
+				alerted = true;
 
-        if (hadEyesOnTarget)
-        {
-            this.AlertEveryone(lastTarget);
-            this.hasAlerted = false;
-            this.hadEyesOnTarget = false;
-        }
+				/* .. When the Enemy spots the Player they are supposed to alert everyone to their location ... */
+				if ( !hasAlerted ) {
+					/* .. Tell every Enemy where the Player was spotted ... */
+					AlertEveryone( target );
+					/* .. set the hasAlerted state, this way the spotting Enemy only alerts once per spot ... */
+					hasAlerted = true;
+				}
+				/* hadEyesOnTarget is used when Player leaves the Enemy Field of view to trigger the "they just ran away here"-alert */
+				hadEyesOnTarget = true;
+				wasAlerted = true;
 
-        if (alerted && alertedTimer > 0f ) {
-            /* .. countdown till when the bots stop being alerted ... */
-            alertedTimer -= Time.deltaTime;
-            
-            /* .. Set Exclamation mark to Active ... */
-            exclamation.SetActive(true);
+				/* Start by becoming angry (change fov to red) ... */
+				fieldOfView.GetComponent<Renderer>().material = visionDetectedMaterial;
 
-            /* .. turnTowardNavSteeringTarget is the navigation mesh agent's target ... */
-            var turnTowardNavSteeringTarget = agent.steeringTarget;
-            /* .. Calculate a direction by subtracting the transform.position from steeringTarget ... */
-            Vector3 direction = (turnTowardNavSteeringTarget - transform.position).normalized;
+				/* .. Get our target position ... */
+				targetPosition = target.position;
+				/* .. Tell AI movement to move to target location ... */
+				agent.SetDestination( targetPosition );
+				/* .. Find out what direction to look in ... */
+				Vector3 direction = ( targetPosition - transform.position ).normalized;
+				/* .. Convert that to a Vector ... */
+				lookRotationVector = new Vector3( direction.x, 0, direction.z );
 
-            lookRotationVector = new Vector3(direction.x, 0, direction.z);
+				/* .. When the Enemy hasn't changed where he looks, we get a zero vector ... */
+				if ( lookRotationVector != Vector3.zero ) {
+					/* TODO: figure out what Quaternion.LookRotation does exactly. */
+					Quaternion lookRotation = Quaternion.LookRotation( lookRotationVector );
 
-            if (lookRotationVector != Vector3.zero)
-            {
-                Quaternion lookRotation = Quaternion.LookRotation(lookRotationVector);
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5);
-            }
-        } else {
-            /* beneath this line resets the DogController and VisionLine's materials */
-            this.fieldOfView.GetComponent<Renderer>().material = visionUndetectedMaterial;
+					/* TODO: figure out what Quaternion.Slerp does exactly. */
+					transform.rotation = Quaternion.Slerp( transform.rotation, lookRotation, Time.deltaTime * 5 );
+				}
+			}
 
-			/* .. set alerted to false, as we are no longer alerted ... */
-            this.alerted = false;
+			return;
+		}
 
-            /* .. No more exclamation point! ... */
-            exclamation.SetActive(false);
+		if ( hadEyesOnTarget ) {
+			AlertEveryone( lastTarget );
+			hasAlerted = false;
+			hadEyesOnTarget = false;
+		}
 
-            /* .. Set the alerted-timer to the default alerted timer .. */
-            alertedTimer = defaultAlertedTimer;
+		if ( alerted && alertedTimer > 0f ) {
+			/* .. countdown till when the bots stop being alerted ... */
+			alertedTimer -= Time.deltaTime;
 
-            /* .. Tell AI movement to move to startPosition ... */
-            agent.SetDestination(startPosition);
-        }
+			/* .. Set Exclamation mark to Active ... */
+			exclamation.SetActive( true );
 
-        /* Checks that the angle between current and spawnRotation is over 2f, and checks that current and start position is less than 2 meters from each other */
-		if ( Quaternion.Angle( transform.rotation, spawnRotation ) > 2f  && (transform.position - startPosition ).magnitude < 2) {
-            /* .. we're now resetting the rotation ... */
-            transform.Rotate(new Vector3(spawnRotation.eulerAngles.x, spawnRotation.eulerAngles.y,spawnRotation.eulerAngles.z) * Time.deltaTime * turnSmoothTime );
+			/* .. turnTowardNavSteeringTarget is the navigation mesh agent's target ... */
+			Vector3 turnTowardNavSteeringTarget = agent.steeringTarget;
+
+			/* .. Calculate a direction by subtracting the transform.position from steeringTarget ... */
+			Vector3 direction = ( turnTowardNavSteeringTarget - transform.position ).normalized;
+
+			lookRotationVector = new Vector3( direction.x, 0, direction.z );
+
+			if ( lookRotationVector != Vector3.zero ) {
+				Quaternion lookRotation = Quaternion.LookRotation( lookRotationVector );
+				transform.rotation = Quaternion.Slerp( transform.rotation, lookRotation, Time.deltaTime * 5 );
+			}
+		} else {
+			if ( wasAlerted ) {
+				wasAlertedReset();
+			}
+
+			//Debug.Log(((transform.position - waypointTarget.position).magnitude <= 0.5f) + " // " + (Quaternion.Angle(transform.rotation, waypointTarget.rotation) <= 2));
+			if ( ( transform.position - waypointTarget.position ).magnitude <= 0.5f && Quaternion.Angle( transform.rotation, waypointTarget.rotation ) <= 2 ) {
+				waypointWaitTime -= Time.deltaTime;
+			}
+
+			if ( waypointWaitTime < 0f ) {
+				/* Get the next wayPointTarget */
+				Transform nextTarget = NextWaypoint();
+
+				/* .. Tell AI movement to move to the next waypointTarget ... */
+				agent.SetDestination( nextTarget.position );
+				waypointWaitTime = defaultWaypointWaitTime;
+			}
+		}
+
+		/* Checks that the angle between current and startRotation is over 2f, and checks that current and start position is less than 2 meters from each other */
+		if ( Quaternion.Angle( transform.rotation, waypointTarget.rotation ) > 2f && ( transform.position - waypointTarget.position ).magnitude < 2 ) {
+
+			/* .. to reset the rotation, we start by calculating what direction is the shortest direction to turn.
+			 *    Source: http://answers.unity.com/answers/556639/view.html ... */
+			float rotate_t = Time.deltaTime * turnSmoothTime;
+			float f = transform.eulerAngles.y;
+			if ( f > 180.0f ) f -= 360.0f;
+
+			transform.eulerAngles = new Vector3( startRotation.eulerAngles.x, Mathf.Lerp( f, waypointTarget.eulerAngles.y, rotate_t ), startRotation.eulerAngles.z );
 		}
 	}
-    public void BecomeAlerted (Transform target) {
-        /* agent.SetDestination / Navigation Mesh code/setup
-         *   Source: How to use Unity NavMesh Pathfinding! (Unity Tutorial) https://www.youtube.com/watch?v=atCOd4o7tG4 - Code Monkey (youtube)    */
 
-        /* Activate Alerted state ... */
-        this.alerted = true;
-        /* .. Set Exclamation mark to Active ... */
-        exclamation.SetActive(true);
-        /* .. Tell AI movement to move to target location ... */
-        agent.SetDestination(target.position);
-        /* .. Set the alerted-timer to the default alerted timer .. */
-        alertedTimer = defaultAlertedTimer;
-        /* .. Trigger the red vision-indicator. */
+	private void wasAlertedReset () {
+		wasAlerted = false;
+		/* .. beneath this line resets the DogController and VisionLine's materials ... */
+		this.fieldOfView.GetComponent<Renderer>().material = visionUndetectedMaterial;
+
+		/* .. set alerted to false, as we are no longer alerted ... */
+		this.alerted = false;
+
+		/* .. No more exclamation point! ... */
+		exclamation.SetActive( false );
+
+		/* .. Set the alerted-timer to the default alerted timer .. */
+		alertedTimer = defaultAlertedTimer;
+
+
+		/* .. Set the waypointTimer to the default waypoint timer .. */
+		waypointWaitTime = defaultWaypointWaitTime;
+
+		/* .. Send Bot back to their previous waypoint .. */
+		agent.SetDestination( waypointTarget.position );
+	}
+
+	public void BecomeAlerted ( Transform target ) {
+		/* agent.SetDestination / Navigation Mesh code/setup
+		 *   Source: How to use Unity NavMesh Pathfinding! (Unity Tutorial) https://www.youtube.com/watch?v=atCOd4o7tG4 - Code Monkey (youtube)    */
+
+		/* Activate Alerted state ... */
+		alerted = true;
+		/* .. Activeate WasAlerted-state (used for resetting values) ... */
+		wasAlerted = true;
+		/* .. Set Exclamation mark to Active ... */
+		exclamation.SetActive( true );
+		/* .. Tell AI movement to move to target location ... */
+		agent.SetDestination( target.position );
+		/* .. Set the alerted-timer to the default alerted timer .. */
+		alertedTimer = defaultAlertedTimer;
+		/* .. Trigger the red vision-indicator. */
 		this.fieldOfView.GetComponent<Renderer>().material = visionAlertedMaterial;
 	}
-  
-    void AlertEveryone(Transform target, bool exitTriggered = false)
-    { //exitTriggered is used to skip detectingVision-check.
-        for (int i = 0; i < toBeAlerted.Length; i++)
-        {
-            /* Makes sure the detecting vision cone stays red. (detectingVision) */
-            if (!exitTriggered && toBeAlerted[i].gameObject.GetInstanceID() == gameObject.GetInstanceID())
-                continue;
 
-            /* Alerts all other GameObjects with Enemy tag. */
-            this.toBeAlerted[i].GetComponent<DogController>().BecomeAlerted(target);
-        }
-    }
+	void AlertEveryone ( Transform target, bool exitTriggered = false ) { //exitTriggered is used to skip detectingVision-check.
+		for ( int i = 0; i < toBeAlerted.Length; i++ ) {
+			/* Makes sure the detecting vision cone stays red. (detectingVision) */
+			if ( !exitTriggered && toBeAlerted[ i ].gameObject.GetInstanceID() == gameObject.GetInstanceID() )
+				continue;
+
+			/* Alerts all other GameObjects with Enemy tag. */
+			this.toBeAlerted[ i ].GetComponent<DogController>().BecomeAlerted( target );
+		}
+	}
+	private Transform NextWaypoint () {
+		waypointIndex = ( waypointIndex + 1 > waypoints.Count() ) ? 0 : waypointIndex;
+		this.waypointTarget = waypoints[ waypointIndex ];
+		waypointIndex++;
+		return waypointTarget;
+	}
 }
