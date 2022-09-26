@@ -171,8 +171,8 @@ public class DogController : MonoBehaviour {
 				wasAlertedReset();
 			}
 
-			//Debug.Log(((transform.position - waypointTarget.position).magnitude <= 0.5f) + " // " + (Quaternion.Angle(transform.rotation, waypointTarget.rotation) <= 2));
-			if ( ( transform.position - waypointTarget.position ).magnitude <= 0.5f && Quaternion.Angle( transform.rotation, waypointTarget.rotation ) <= 2 ) {
+			/* This angle-check can be less stringent that way we start counting down a little earlier. */
+			if ( Quaternion.Angle( transform.rotation, waypointTarget.rotation ) <= 2f && ( transform.position - waypointTarget.position ).magnitude <= 2f ) {
 				waypointWaitTime -= Time.deltaTime;
 			}
 
@@ -185,6 +185,7 @@ public class DogController : MonoBehaviour {
 				waypointWaitTime = defaultWaypointWaitTime;
 			}
 		}
+
 
 		/* Checks that the angle between current and waypointTarget is over 2f, and checks that current and waypoint position is less than 2 meters from each other */
 		if ( Quaternion.Angle( transform.rotation, waypointTarget.rotation ) > 2f && ( transform.position - waypointTarget.position ).magnitude < 2 ) {
