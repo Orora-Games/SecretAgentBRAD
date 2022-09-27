@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// TODO: Move to LevelManager
 public class RespawnController : MonoBehaviour {
 	public GameObject spawnObject; // This is the object we are spawning.
 

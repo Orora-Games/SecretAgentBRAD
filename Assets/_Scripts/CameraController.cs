@@ -2,76 +2,99 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour {
-	public Transform target;
-	public float smoothTime = 0.3F;
+
+	private class CameraLocation {
+		public float movementRotation = 0f;
+		public Camera camera;
+
+		public void ActivateCamera () {
+			camera.gameObject.SetActive( true );
+		}
+
+		public void DeactivateCamera () {
+			camera.gameObject.SetActive( false );
+		}
+	}
+
+	private PlayerController playerController;
+	private List<CameraLocation> cameraLocations = new List<CameraLocation>();
+	private CameraLocation currentCamera;
+
+	public Transform overrideTarget;
+	public float smoothTime = 0.3f;
 	private Vector3 velocity = Vector3.zero;
 	
 	/* cameraContainer is how we are getting all the cameras, it's set in the prefab. */
-	public GameObject cameraContainer;
-	public bool disableNextCamera = false;
-	private GameObject previous;
-	private GameObject next;
-	public float movementRotation = 0f;
-	public int cameraClippingHack = 5;
+	public bool disableCameraSwap = false;
+
+	private Transform Target {
+		get {
+			if (!playerController ) {
+				playerController = FindObjectOfType<PlayerController>();
+			}
+			if ( !overrideTarget )
+				overrideTarget = null;
+
+			return overrideTarget ?? ( playerController ? playerController.transform : null);
+		}
+	}
 
 	private void Start () {
 		/* This is here to allow us to check for targetPlayer not existing*/
-		GameObject targetPlayer = GameObject.FindGameObjectWithTag( "Player" );
-
-		target = ( !target && targetPlayer ) ? targetPlayer.transform : target;
-		if ( target ) {
+		if ( Target ) {
 			/* Start by setting our camera to the target, wherever they are. */
-			Vector3 targetPosition = target.position;
-
-			transform.position = targetPosition;
-			transform.position -= transform.forward * 5; /* Move the camera forwards to avoid clipping through the level */
+			transform.position = Target.position;
 		}
+
 		/* .. Continue by figuring out what camera is next and previous ...*/
-		cameraContainer = transform.parent.gameObject; /* .. this is an inoptimal assumption. */
-		int childIndex = 0;
-		List<Transform> childTransforms = new List<Transform>();
 
-		foreach ( Transform child in cameraContainer.transform ) {
-			childTransforms.Add( child );
+		foreach ( Camera child in transform.GetComponentsInChildren<Camera>() ) {
+			var newCamera = new CameraLocation {
+				camera = child,
+				movementRotation = child.transform.position.y - 45f
+			};
 
-			if ( child.name == gameObject.name ) {
-				childIndex = child.GetSiblingIndex();
-			}
+			newCamera.DeactivateCamera();
+
+			cameraLocations.Add( newCamera );
 		}
-		previous = ( childIndex - 1 < 0 ) ? childTransforms[ childTransforms.Count - 1 ].gameObject : childTransforms[ childIndex - 1 ].gameObject;
-		next = ( childIndex + 1 > childTransforms.Count - 1 ) ? childTransforms[ 0 ].gameObject : childTransforms[ childIndex + 1 ].gameObject;
+
+		currentCamera = cameraLocations[ 0 ];
+		currentCamera.ActivateCamera();
 	}
 
 	// Update is called once per frame
 	void Update () {
-		target = ( !target ) ? GameObject.FindGameObjectWithTag( "Player" ).transform : target;
-		GameObject targetObject = target.gameObject;
-
 		/* Here we smoothly follow our target around. */
 		/* Source: https://docs.unity3d.com/ScriptReference/Vector3.SmoothDamp.html */
-		Vector3 targetPosition = target.position;
+		if ( !Target )
+			return;
 
-		transform.position = Vector3.SmoothDamp( transform.position, targetPosition, ref velocity, smoothTime );
-
-		/* Move the camera forwards to avoid clipping through the level */
-		transform.position -= transform.forward * cameraClippingHack; 
+		transform.position = Vector3.SmoothDamp( transform.position, Target.position, ref velocity, smoothTime );
 
 		/* If disableNextCamera is toggled, we do not run the code below this point. */
-		if ( disableNextCamera ) return; 
+		if ( disableCameraSwap ) return; 
 
 		if ( Input.GetKeyDown( KeyCode.E ) ) {
-			next.SetActive( true );
-			/* The next line changes movementRotation on PlayerController */
-			targetObject.GetComponent<PlayerController>().movementRotation = next.GetComponent<CameraController>().movementRotation;
-			gameObject.SetActive( false );
+			SwapCamera( false );
 		}
 		if ( Input.GetKeyDown( KeyCode.Q ) ) {
-			previous.SetActive( true );
-			/* The next line changes movementRotation on PlayerController */
-			targetObject.GetComponent<PlayerController>().movementRotation = previous.GetComponent<CameraController>().movementRotation;
-			gameObject.SetActive( false );
+			SwapCamera( true );
 		}
-		
+	}
+
+	private void SwapCamera(bool previous) {
+		int movement = previous ? -1 : 1;
+		int currentCameraIndex = cameraLocations.IndexOf( currentCamera );
+
+		// If it goes minus one, it will go to Count - 1, and if goes to Count, it will go back to Zero
+		int nextIndex = ((currentCameraIndex + movement) + cameraLocations.Count) % cameraLocations.Count;
+
+		currentCamera.DeactivateCamera();
+		currentCamera = cameraLocations[ nextIndex ];
+		currentCamera.ActivateCamera();
+		playerController.movementRotation = currentCamera.movementRotation;
+
 	}
 }
 
