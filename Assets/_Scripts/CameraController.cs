@@ -94,7 +94,6 @@ public class CameraController : MonoBehaviour {
 		currentCamera = cameraLocations[ nextIndex ];
 		currentCamera.ActivateCamera();
 		playerController.movementRotation = currentCamera.movementRotation;
-
 	}
 }
 
