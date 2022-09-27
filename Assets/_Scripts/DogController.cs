@@ -58,7 +58,11 @@ public class DogController : MonoBehaviour {
 
 		toBeAlerted = GameObject.FindGameObjectsWithTag( "Enemy" );
 
-		InitializeWaypoints();
+		/* Initializes waypoint system, and gets next waypoint */
+		Transform nextTarget = InitializeWaypoints();
+
+		/* .. Tell AI movement to move to the next waypointTarget ... */
+		agent.SetDestination( nextTarget.position );
 	}
 
 	// Update is called once per frame
@@ -221,7 +225,7 @@ public class DogController : MonoBehaviour {
 	}
 
 	#region WayPoints
-	private void InitializeWaypoints () {
+	 private Transform InitializeWaypoints ( ) {
 		/* .. Set the default wait timer for waypointWaitTimer ... */
 		defaultWaypointWaitTime = waypointWaitTime;
 
@@ -238,8 +242,8 @@ public class DogController : MonoBehaviour {
 			waypoints.Add( newWayPoint.transform );
 		}
 
-		/* .. Set the first waypoint ... */
-		NextWaypoint();
+		/* .. Set/return the next waypoint ... */
+		return NextWaypoint();
 	}
 
 	private Transform NextWaypoint () {
