@@ -11,6 +11,7 @@ public class FieldOfView : MonoBehaviour {
 	[Range( 0, 360 )]
 	public float viewAngle;
 	public float targetSpottingFrequency = 0.2f;
+	private float targetSpottingTime = 0f;
 
 	public LayerMask targetMask;
 	public LayerMask obstacleMask;
@@ -22,32 +23,26 @@ public class FieldOfView : MonoBehaviour {
 	public MeshFilter viewMeshFilter;
 	private Mesh viewMesh;
 
-	public Material detectedMaterial;
-	public Material undetectedMaterial;
-	public Material alertedMaterial;
-
 	[HideInInspector]
 	public List<Transform> visibleTargets = new List<Transform>();
 
-
-	private void Start () {
+	protected virtual void Start () {
 		viewMesh = new Mesh();
 		viewMesh.name = "View Mesh";
 		viewMeshFilter.mesh = viewMesh;
-		StartCoroutine( "FindTargetsWithDelay", targetSpottingFrequency );
+	}
+
+	private void Update () {
+		targetSpottingTime += Time.deltaTime;
+		if ( targetSpottingTime >= targetSpottingFrequency ) {
+			targetSpottingTime = 0f;
+			FindVisibleTargets();
+		}
 	}
 
 	/* We're using LateUpdate-function to allow movement/rotation to happen before we redraw the fov. */
 	private void LateUpdate () {
 		DrawFieldOfView();
-	}
-
-	IEnumerator FindTargetsWithDelay ( float delay ) {
-		while ( true ) {
-			/* The next line makes this IEnumerator wait for delay seconds before running FindVisibleTargets();*/
-			yield return new WaitForSeconds( delay );
-			FindVisibleTargets();
-		}
 	}
 
 	void FindVisibleTargets () {
@@ -67,7 +62,7 @@ public class FieldOfView : MonoBehaviour {
 			/* .. find out how far away from Enemy the Player(target) is ... */
 			Vector3 dirToTarget = ( target.position - transform.position ).normalized;
 			/* .. Check that the target is within the viewAngle (Pizza-slice Enemy is seeing within) ... */
-			if ( Vector3.Angle( transform.forward, dirToTarget ) < viewAngle / 2 ) {
+			if ( Vector3.Angle( transform.forward, dirToTarget ) < viewAngle / 2f ) {
 				/* .. Find the distance to target ... */
 				float dstToTarget = Vector3.Distance( transform.position, target.position );
 
