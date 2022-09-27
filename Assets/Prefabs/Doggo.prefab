@@ -137,10 +137,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 458600362717544063}
+  - component: {fileID: 458600362717544056}
   - component: {fileID: 458600362717544062}
   - component: {fileID: 458600362717544061}
   - component: {fileID: 458600362717544060}
-  - component: {fileID: 458600362717544056}
   - component: {fileID: 5507343709003120195}
   - component: {fileID: 4929101403293160297}
   m_Layer: 6
@@ -168,6 +168,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &458600362717544056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458600362717479299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e04679f82950d14da3d18b96aeca6d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  alerted: 0
+  alertedTimer: 5
+  turnSmoothTime: 1
+  waypointContainer: {fileID: 0}
+  waypointTarget: {fileID: 0}
+  waypointWaitTime: 5
 --- !u!33 &458600362717544062
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -231,24 +249,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &458600362717544056
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 458600362717479299}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e04679f82950d14da3d18b96aeca6d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  alerted: 0
-  alertedTimer: 5
-  turnSmoothTime: 0.5
-  waypointContainer: {fileID: 0}
-  waypointTarget: {fileID: 0}
-  waypointWaitTime: 5
 --- !u!195 &5507343709003120195
 NavMeshAgent:
   m_ObjectHideFlags: 0
