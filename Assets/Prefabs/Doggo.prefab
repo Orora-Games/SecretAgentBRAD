@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3187350201360862139}
   - component: {fileID: 1384994254156934404}
   - component: {fileID: 6287513860693985867}
-  - component: {fileID: 8902865222065309112}
   - component: {fileID: 4799312532303153674}
   - component: {fileID: 7122859962778815489}
   m_Layer: 6
@@ -87,20 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &8902865222065309112
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 40432366021213497}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!114 &4799312532303153674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,7 +108,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 40432366021213497}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d59748944a96d4b49b0fa6ebfc7106aa, type: 3}
+  m_Script: {fileID: 11500000, guid: 0d58ef9e5ee285d468c23855ef357b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   viewRadius: 2.25
@@ -134,15 +119,15 @@ MonoBehaviour:
     m_Bits: 8
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 896
   edgeResolveIterations: 3
   edgeDistanceThreshold: 0.09
   meshResolution: 0.12
   viewMeshFilter: {fileID: 9094584519712662157}
+  visibleTargets: []
   detectedMaterial: {fileID: 2100000, guid: b2764ce4ab5fa4a4ba412982704e46c5, type: 2}
   undetectedMaterial: {fileID: 2100000, guid: 13e7b2af341c8c2438420b078f0a9d3c, type: 2}
   alertedMaterial: {fileID: 2100000, guid: 413ebc23d79776f46bfe756b5fda389d, type: 2}
-  visibleTargets: []
 --- !u!1 &458600362717479299
 GameObject:
   m_ObjectHideFlags: 0
@@ -261,7 +246,9 @@ MonoBehaviour:
   alerted: 0
   alertedTimer: 5
   turnSmoothTime: 0.5
-  waypoints: []
+  waypointContainer: {fileID: 0}
+  waypointTarget: {fileID: 0}
+  waypointWaitTime: 5
 --- !u!195 &5507343709003120195
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -293,26 +280,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 458600362717479299}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d59748944a96d4b49b0fa6ebfc7106aa, type: 3}
+  m_Script: {fileID: 11500000, guid: 0d58ef9e5ee285d468c23855ef357b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   viewRadius: 8.2
-  viewAngle: 31
+  viewAngle: 31.05
   targetSpottingFrequency: 0.2
   targetMask:
     serializedVersion: 2
     m_Bits: 8
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 896
   edgeResolveIterations: 6
   edgeDistanceThreshold: 2
   meshResolution: 0.1
   viewMeshFilter: {fileID: 4230393693047236905}
+  visibleTargets: []
   detectedMaterial: {fileID: 2100000, guid: b2764ce4ab5fa4a4ba412982704e46c5, type: 2}
   undetectedMaterial: {fileID: 2100000, guid: 13e7b2af341c8c2438420b078f0a9d3c, type: 2}
   alertedMaterial: {fileID: 2100000, guid: 413ebc23d79776f46bfe756b5fda389d, type: 2}
-  visibleTargets: []
 --- !u!1 &458600363010448197
 GameObject:
   m_ObjectHideFlags: 0
