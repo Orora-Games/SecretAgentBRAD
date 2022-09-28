@@ -1,7 +1,6 @@
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
-	public CharacterController controller;
 	public float speed = 6f;
 	public float turnSmoothTime = 0.1f;
 
@@ -10,11 +9,14 @@ public class PlayerController : MonoBehaviour {
 	public bool trueNorthRotatedControlls = false;
 	[HideInInspector]
 	public float movementRotation = 0;
+
 	private float startHeight; 
 	private float turnSmoothVelocity;
+	private CharacterController controller;
 
-	// Start is called before the first frame update
 	void Start () {
+		controller = GetComponent<CharacterController>();
+
 		if ( gameObject.tag == "Untagged" )
 			Debug.LogError( "Your " + gameObject.name + " object needs to have the correct tag to be killable." ); // Make sure to Tag your player-object Player.
 		if ( gameObject.layer == 0 )
@@ -41,7 +43,7 @@ public class PlayerController : MonoBehaviour {
 			Vector3 direction = new Vector3( horizontal, 0f, vertical ).normalized;
 
 			/* This next one is supposed to move Player back to the ground if they manage to bug themselves to a floating position. */
-			if ( Mathf.Abs( transform.position.y - startHeight ) >= 0.001 ) {
+			if ( Mathf.Abs( transform.position.y - startHeight ) >= 0.001f ) {
 				transform.position = new Vector3( transform.position.x, startHeight, transform.position.z );
 			}
 			/* This block makes Player Turn the way they're moving. */
