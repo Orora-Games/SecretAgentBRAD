@@ -4,7 +4,7 @@ using UnityEngine;
 [CustomEditor( typeof( FieldOfView ) )]
 public class FieldOfViewEditor : Editor {
 	/* Source: Sebastian League Youtube channel
-     *    Field of view visualisation (E01) https://www.youtube.com/watch?v=rQG9aUWarwE */
+	 *    Field of view visualisation (E01) https://www.youtube.com/watch?v=rQG9aUWarwE */
 
 	private void OnSceneGUI () {
 		/* Get Field of View transform ... */
