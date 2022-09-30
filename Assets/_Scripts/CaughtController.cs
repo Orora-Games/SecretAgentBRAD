@@ -1,10 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using static GameManager;
 
 public class CaughtController : MonoBehaviour {
-	public string endSceneToLoad;
 	private List<Transform> visibleTargets;
 	private FieldOfView fov;
 
@@ -22,7 +20,8 @@ public class CaughtController : MonoBehaviour {
 		/* .. if this Entity (Enemy) sees Player (target); We're trusting the FieldOfView-component to spot our enemies. ... */
 		if ( fov && fov.visibleTargets.Count > 0 ) {
 			/* We're trusting the FOV- to know when it sees a player*/
-			SceneManager.LoadScene( endSceneToLoad );
+			if (!GameManager.Instance ) return;
+			GameManager.Instance.ChangeGameState( GameState.GameOver );
 		}
 	}
 }
