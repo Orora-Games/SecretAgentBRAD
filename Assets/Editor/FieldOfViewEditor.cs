@@ -1,7 +1,7 @@
-using UnityEditor;
+using UnityEditor;	
 using UnityEngine;
 
-[CustomEditor( typeof( FieldOfView ) )]
+[CustomEditor( typeof( FieldOfView ), true )]
 public class FieldOfViewEditor : Editor {
 	/* Source: Sebastian League Youtube channel
 	 *    Field of view visualisation (E01) https://www.youtube.com/watch?v=rQG9aUWarwE */

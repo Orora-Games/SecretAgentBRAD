@@ -26,28 +26,34 @@ public class GameManager : MonoBehaviour {
 	private string gameOverLevel = "YouLost";
 	private string winLevel = "Finished";
 
+	private float anykeyTimeLimit = 1f;
+	private float anykeyTimer = 0f;
 
 	private void Awake () {
 		_instance = this;
 		levelNames = new List<string> { "Tutorial_Level1_Prototype", "Tutorial_Level2_Prototype", "Level00_A", "Level00_B" };
+		//levelNames = new List<string> { "TestScene" };
 	}
 
 
 	void Start () {
 		DontDestroyOnLoad(this);
-
 		ChangeGameState( GameState.Menu );
 	}
+
 	/// <summary>
-	/// Lets you move on from the Start scene. 
+	///		Lets you move on from the Start scene. 
 	/// </summary>
 	void Update () {
-		
-		if ( (currentLevelName == "Start" || currentLevelName == "Finished" ) && Input.anyKey  ) {
-			string level = levelNames[ currentLevelIndex ];
-			Debug.Log( level + " // " + currentLevelIndex + " // " + levelNames[ 0 ] );
-			ChangeLevel( level );
+		if ( Input.GetKey( KeyCode.Escape ) ) {
+			Application.Quit();
+		} else if ( ( currentLevelName == "Start" || currentLevelName == "Finished" || currentLevelName == "YouLost" ) && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
+				anykeyTimer = 0f;
+				string level = levelNames[ currentLevelIndex ];
+
+				ChangeLevel( level );
 		}
+		anykeyTimer += Time.deltaTime;
 	}
 
 	/// <summary>
@@ -62,7 +68,8 @@ public class GameManager : MonoBehaviour {
 		}
 
 		currentLevelIndex++;
-		if ( currentLevelIndex > levelNames.Count ) {
+
+		if ( currentLevelIndex > levelNames.Count - 1 ) {
 			currentLevelIndex = 0;
 			ChangeGameState( GameState.WinGame );
 			return;
@@ -77,7 +84,9 @@ public class GameManager : MonoBehaviour {
 	/// <param name="level"></param>
 	public void ChangeLevel (string level) {
 		currentLevelName = level;
+		anykeyTimer = 0f;
 
+		Debug.Log(level);
 		/* If the level exists in our list of levels, load it . */
 		if ( levelNames.IndexOf( level ) != -1) {
 			SceneManager.LoadScene( level );
@@ -119,11 +128,11 @@ public class GameManager : MonoBehaviour {
 				break;
 			case GameState.GameOver:
 				//NextLevel( gameOverLevel ?? "YouLost" );
-				NextLevel( gameOverLevel );
+				ChangeLevel( gameOverLevel );
 				break;
 			case GameState.WinGame:
 				//NextLevel( winLevel ?? "Finished");
-				NextLevel( winLevel);
+				ChangeLevel( winLevel);
 				break;
 			default:
 				break;
