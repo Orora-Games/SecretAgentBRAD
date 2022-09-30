@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 707701197553725018}
+  - component: {fileID: 707701197553725021}
+  - component: {fileID: 668400156345482405}
   - component: {fileID: 707701197553725022}
   - component: {fileID: 707701197553725023}
-  - component: {fileID: 707701197553725021}
-  - component: {fileID: 8933004320383041769}
   m_Layer: 6
   m_Name: DeathZone
   m_TagString: Untagged
@@ -36,6 +36,47 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0.201, y: 180, z: 90}
+--- !u!114 &707701197553725021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 707701197553725019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b61ad658abb59941b4e94e393ffe706, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &668400156345482405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 707701197553725019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d58ef9e5ee285d468c23855ef357b66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewRadius: 2.32
+  viewAngle: 360
+  targetSpottingFrequency: 0.2
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 0
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 0
+  edgeResolveIterations: 0
+  edgeDistanceThreshold: 0
+  meshResolution: 0
+  viewMeshFilter: {fileID: 5391439408231475765}
+  visibleTargets: []
+  detectedMaterial: {fileID: 2100000, guid: b2764ce4ab5fa4a4ba412982704e46c5, type: 2}
+  undetectedMaterial: {fileID: 2100000, guid: 13e7b2af341c8c2438420b078f0a9d3c, type: 2}
+  alertedMaterial: {fileID: 2100000, guid: 413ebc23d79776f46bfe756b5fda389d, type: 2}
 --- !u!33 &707701197553725022
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -86,48 +127,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &707701197553725021
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 707701197553725019}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b61ad658abb59941b4e94e393ffe706, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  endSceneToLoad: YouLost
---- !u!114 &8933004320383041769
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 707701197553725019}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d59748944a96d4b49b0fa6ebfc7106aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  viewRadius: 2.32
-  viewAngle: 360
-  targetSpottingFrequency: 0.2
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 8
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 896
-  edgeResolveIterations: 3
-  edgeDistanceThreshold: 3
-  meshResolution: 0.06
-  viewMeshFilter: {fileID: 5391439408231475765}
-  detectedMaterial: {fileID: 2100000, guid: b2764ce4ab5fa4a4ba412982704e46c5, type: 2}
-  undetectedMaterial: {fileID: 2100000, guid: b2764ce4ab5fa4a4ba412982704e46c5, type: 2}
-  alertedMaterial: {fileID: 2100000, guid: b2764ce4ab5fa4a4ba412982704e46c5, type: 2}
-  visibleTargets: []
 --- !u!1 &7773160143622236340
 GameObject:
   m_ObjectHideFlags: 0
