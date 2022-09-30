@@ -260,6 +260,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlueWall-Phase
       objectReference: {fileID: 0}
+    - target: {fileID: 3080704461945775708, guid: b41f7b7e8bf26b346940b1dd78e06980, type: 3}
+      propertyPath: m_TagString
+      value: BlueStructure
+      objectReference: {fileID: 0}
     - target: {fileID: 9048241836732982574, guid: b41f7b7e8bf26b346940b1dd78e06980, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -1671,6 +1675,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 973837653234415738, guid: 9e33f508d423ca042a8adcef4ed98030, type: 3}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 973837653234415738, guid: 9e33f508d423ca042a8adcef4ed98030, type: 3}
+      propertyPath: m_Size.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7240524763861610796, guid: 9e33f508d423ca042a8adcef4ed98030, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -1718,6 +1730,10 @@ PrefabInstance:
     - target: {fileID: 8725956107661563346, guid: 9e33f508d423ca042a8adcef4ed98030, type: 3}
       propertyPath: m_Name
       value: BlueWall-Block 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8725956107661563346, guid: 9e33f508d423ca042a8adcef4ed98030, type: 3}
+      propertyPath: m_TagString
+      value: BlueStructure
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9e33f508d423ca042a8adcef4ed98030, type: 3}
