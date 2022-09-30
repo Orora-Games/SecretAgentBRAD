@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6352045251984566730}
+  - component: {fileID: 2373874749927136863}
   - component: {fileID: 6352045251984566731}
   - component: {fileID: 6352045251984566740}
   - component: {fileID: 6352045251984566741}
-  - component: {fileID: 2373874749927136863}
   m_Layer: 0
   m_Name: Intel
   m_TagString: Intel
@@ -35,6 +35,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2373874749927136863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6352045251984566742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 853e7d7580dc5ce48bce89c3b1bafe3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!33 &6352045251984566731
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -98,15 +110,3 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2373874749927136863
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6352045251984566742}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 853e7d7580dc5ce48bce89c3b1bafe3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
