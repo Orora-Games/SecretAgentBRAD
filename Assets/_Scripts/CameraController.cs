@@ -51,7 +51,7 @@ public class CameraController : MonoBehaviour {
 		foreach ( Camera child in transform.GetComponentsInChildren<Camera>() ) {
 			var newCamera = new CameraLocation {
 				camera = child,
-				movementRotation = child.transform.position.y - 45f
+				movementRotation = child.transform.localRotation.eulerAngles.y + 45f
 			};
 
 			newCamera.DeactivateCamera();
