@@ -13,6 +13,10 @@ public class LevelExitController : MonoBehaviour {
 			Debug.LogError( "The next scene has not been defined. Please define Next Scene on \"" + gameObject.name + " \"");
 			return;
 		}
+
+		if ( GameObject.FindGameObjectsWithTag( "Intel" ).Length == 0 ) {
+			gameObject.transform.Find( "exit_lock" ).gameObject.SetActive( false );
+		}
 	}
 
 	private void OnTriggerEnter ( Collider other ) {
