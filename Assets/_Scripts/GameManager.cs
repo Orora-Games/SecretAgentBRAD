@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour {
 	///		takes string level, which lets you override the level
 	/// </summary>
 	/// <param name="level"></param>
-	public void NextLevel (string level) {
+	public void NextLevel (string level = "") {
 		if (level != "") {
 			ChangeLevel( level );
 			return;
@@ -86,7 +86,6 @@ public class GameManager : MonoBehaviour {
 		currentLevelName = level;
 		anykeyTimer = 0f;
 
-		Debug.Log(level);
 		/* If the level exists in our list of levels, load it . */
 		if ( levelNames.IndexOf( level ) != -1) {
 			SceneManager.LoadScene( level );
@@ -107,7 +106,11 @@ public class GameManager : MonoBehaviour {
 		if ( GameObject.FindGameObjectsWithTag( "Intel" ).Length > 0 && !ignoreIntelState )
 			return;
 
-		NextLevel(level);
+		if ( !ignoreIntelState ) {
+			NextLevel();
+		} else { 
+			NextLevel( level ); 
+		}
 	}
 
 	/// <summary>
@@ -127,12 +130,10 @@ public class GameManager : MonoBehaviour {
 			case GameState.Paused:
 				break;
 			case GameState.GameOver:
-				//NextLevel( gameOverLevel ?? "YouLost" );
 				ChangeLevel( gameOverLevel );
 				break;
 			case GameState.WinGame:
-				//NextLevel( winLevel ?? "Finished");
-				ChangeLevel( winLevel);
+				ChangeLevel( winLevel );
 				break;
 			default:
 				break;

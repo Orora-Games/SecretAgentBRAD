@@ -11,6 +11,7 @@ public class LevelExitController : MonoBehaviour {
 
 	private void OnTriggerEnter ( Collider other ) {
 		if ( other.transform.tag == "Player" ) {
+			if ( !GameManager.Instance ) return;
 			GameManager.Instance.LevelCompleteCheck();
 		}
 	}
