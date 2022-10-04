@@ -7,6 +7,10 @@ public class LevelExitController : MonoBehaviour {
 
 	private void Start () {
 		gameObject.GetComponent<Collider>().isTrigger = true;
+
+		if ( GameObject.FindGameObjectsWithTag( "Intel" ).Length == 0 ) {
+			gameObject.transform.Find( "exit_lock" ).gameObject.SetActive( false );
+		}
 	}
 
 	private void OnTriggerEnter ( Collider other ) {
