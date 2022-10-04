@@ -17,8 +17,7 @@ public class IntelController : MonoBehaviour
 	{
 		if (other.transform.tag == "Player")
 		{
-			if ( GameObject.FindGameObjectsWithTag( "Intel" ).Length-1 == 0) {
-
+			if ( GameObject.FindGameObjectsWithTag( "Intel" ).Length - 1 == 0) {
 				lock_obj.SetActive( false );
 			}
 
@@ -28,8 +27,3 @@ public class IntelController : MonoBehaviour
 
 	}
 }
-
-
-
-
-
