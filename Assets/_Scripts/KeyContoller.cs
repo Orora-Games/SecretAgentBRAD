@@ -13,7 +13,7 @@ public class KeyContoller : MonoBehaviour {
 		}
 
 		if( !DoesTagExist(tagName) ) {
-			Debug.Log("Please create the tag \"" + tagName + "\".");
+			Debug.LogError( "Please create the tag \"" + tagName + "\".");
 			gameObject.SetActive(false);
 			return;
 		}
@@ -21,7 +21,7 @@ public class KeyContoller : MonoBehaviour {
 		sesameTargets = GameObject.FindGameObjectsWithTag(tagName);
 
 		if ( sesameTargets.Length == 0 ) {
-			Debug.Log( "You need to place something for me to disable. Please place something with the tag \"" + tagName + "\"." );
+			Debug.LogError( "You need to place something for me to disable. Please place something with the tag \"" + tagName + "\"." );
 			gameObject.SetActive( false );
 			return;
 		}

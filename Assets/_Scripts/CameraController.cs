@@ -45,9 +45,7 @@ public class CameraController : MonoBehaviour {
 			/* Start by setting our camera to the target, wherever they are. */
 			transform.position = Target.position;
 		}
-
-		/* .. Continue by figuring out what camera is next and previous ...*/
-
+		/* Build our CameraList */
 		foreach ( Camera child in transform.GetComponentsInChildren<Camera>() ) {
 			var newCamera = new CameraLocation {
 				camera = child,
@@ -59,6 +57,7 @@ public class CameraController : MonoBehaviour {
 			cameraLocations.Add( newCamera );
 		}
 
+		/* Set the first camera. */
 		currentCamera = cameraLocations[ 0 ];
 		currentCamera.ActivateCamera();
 	}

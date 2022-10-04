@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3187350201360862139}
-  - component: {fileID: 1384994254156934404}
-  - component: {fileID: 6287513860693985867}
   - component: {fileID: 4799312532303153674}
   - component: {fileID: 7122859962778815489}
+  - component: {fileID: 1384994254156934404}
+  - component: {fileID: 6287513860693985867}
   m_Layer: 6
   m_Name: DeathZone
   m_TagString: Untagged
@@ -36,6 +36,47 @@ Transform:
   m_Father: {fileID: 458600362717544063}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0.201, y: 180, z: 90}
+--- !u!114 &4799312532303153674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 40432366021213497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b61ad658abb59941b4e94e393ffe706, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+--- !u!114 &7122859962778815489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 40432366021213497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d58ef9e5ee285d468c23855ef357b66, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  viewRadius: 2.25
+  viewAngle: 360
+  targetSpottingFrequency: 0.2
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 8
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 896
+  edgeResolveIterations: 3
+  edgeDistanceThreshold: 0.09
+  meshResolution: 0.12
+  viewMeshFilter: {fileID: 9094584519712662157}
+  visibleTargets: []
+  detectedMaterial: {fileID: 2100000, guid: b2764ce4ab5fa4a4ba412982704e46c5, type: 2}
+  undetectedMaterial: {fileID: 2100000, guid: 13e7b2af341c8c2438420b078f0a9d3c, type: 2}
+  alertedMaterial: {fileID: 2100000, guid: 413ebc23d79776f46bfe756b5fda389d, type: 2}
 --- !u!33 &1384994254156934404
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -86,48 +127,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &4799312532303153674
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 40432366021213497}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b61ad658abb59941b4e94e393ffe706, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  endSceneToLoad: YouLost
---- !u!114 &7122859962778815489
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 40432366021213497}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d58ef9e5ee285d468c23855ef357b66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  viewRadius: 2.25
-  viewAngle: 360
-  targetSpottingFrequency: 0.2
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 8
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 896
-  edgeResolveIterations: 3
-  edgeDistanceThreshold: 0.09
-  meshResolution: 0.12
-  viewMeshFilter: {fileID: 9094584519712662157}
-  visibleTargets: []
-  detectedMaterial: {fileID: 2100000, guid: b2764ce4ab5fa4a4ba412982704e46c5, type: 2}
-  undetectedMaterial: {fileID: 2100000, guid: 13e7b2af341c8c2438420b078f0a9d3c, type: 2}
-  alertedMaterial: {fileID: 2100000, guid: 413ebc23d79776f46bfe756b5fda389d, type: 2}
 --- !u!1 &458600362717479299
 GameObject:
   m_ObjectHideFlags: 0
@@ -137,12 +136,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 458600362717544063}
+  - component: {fileID: 458600362717544056}
+  - component: {fileID: 4929101403293160297}
   - component: {fileID: 458600362717544062}
   - component: {fileID: 458600362717544061}
   - component: {fileID: 458600362717544060}
-  - component: {fileID: 458600362717544056}
   - component: {fileID: 5507343709003120195}
-  - component: {fileID: 4929101403293160297}
   m_Layer: 6
   m_Name: Doggo
   m_TagString: Enemy
@@ -168,6 +167,53 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &458600362717544056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458600362717479299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e04679f82950d14da3d18b96aeca6d2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  alerted: 0
+  alertedTimer: 5
+  turnSmoothTime: 1.2
+  waypointContainer: {fileID: 0}
+  waypointTarget: {fileID: 0}
+  waypointWaitTime: 3.5
+--- !u!114 &4929101403293160297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458600362717479299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d58ef9e5ee285d468c23855ef357b66, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  viewRadius: 8.2
+  viewAngle: 55
+  targetSpottingFrequency: 0.2
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 8
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 896
+  edgeResolveIterations: 6
+  edgeDistanceThreshold: 2
+  meshResolution: 0.1
+  viewMeshFilter: {fileID: 4230393693047236905}
+  visibleTargets: []
+  detectedMaterial: {fileID: 2100000, guid: b2764ce4ab5fa4a4ba412982704e46c5, type: 2}
+  undetectedMaterial: {fileID: 2100000, guid: 13e7b2af341c8c2438420b078f0a9d3c, type: 2}
+  alertedMaterial: {fileID: 2100000, guid: 413ebc23d79776f46bfe756b5fda389d, type: 2}
 --- !u!33 &458600362717544062
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -231,24 +277,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &458600362717544056
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 458600362717479299}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e04679f82950d14da3d18b96aeca6d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  alerted: 0
-  alertedTimer: 5
-  turnSmoothTime: 0.5
-  waypointContainer: {fileID: 0}
-  waypointTarget: {fileID: 0}
-  waypointWaitTime: 5
 --- !u!195 &5507343709003120195
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -259,7 +287,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 4
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -271,35 +299,6 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &4929101403293160297
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 458600362717479299}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d58ef9e5ee285d468c23855ef357b66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  viewRadius: 8.2
-  viewAngle: 31.05
-  targetSpottingFrequency: 0.2
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 8
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 896
-  edgeResolveIterations: 6
-  edgeDistanceThreshold: 2
-  meshResolution: 0.1
-  viewMeshFilter: {fileID: 4230393693047236905}
-  visibleTargets: []
-  detectedMaterial: {fileID: 2100000, guid: b2764ce4ab5fa4a4ba412982704e46c5, type: 2}
-  undetectedMaterial: {fileID: 2100000, guid: 13e7b2af341c8c2438420b078f0a9d3c, type: 2}
-  alertedMaterial: {fileID: 2100000, guid: 413ebc23d79776f46bfe756b5fda389d, type: 2}
 --- !u!1 &458600363010448197
 GameObject:
   m_ObjectHideFlags: 0
