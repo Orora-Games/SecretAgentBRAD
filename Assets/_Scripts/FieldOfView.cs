@@ -23,7 +23,7 @@ public class FieldOfView : MonoBehaviour {
 	public MeshFilter viewMeshFilter;
 	private Mesh viewMesh;
 
-	[HideInInspector]
+	//[HideInInspector]
 	public List<Transform> visibleTargets = new List<Transform>();
 
 	protected virtual void Start () {
