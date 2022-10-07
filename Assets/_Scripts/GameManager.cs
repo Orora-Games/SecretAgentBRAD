@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public List<string> levelNames = new List<string> { "Tutorial_Level1_Prototype", "Tutorial_Level2_Prototype", "Level00_A", "Level00_B" };
+	public List<string> levelNames = new List<string> { "Tutorial_Level1_Prototype", "Tutorial_Level2_Prototype", "Level00", "Level01", "Level03" };
 	private int currentLevelIndex = 0;
 	private string currentLevelName = "Start";
 
