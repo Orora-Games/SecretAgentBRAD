@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour {
 	//Load Scene
 	public void Play() {
-		SceneManager.LoadScene( SceneManager.GetActiveScene().buildIndex + 1 );
+		GameManager.Instance.NextLevel(  );
 	}
 	//Quit Game
 	public void Quit() {

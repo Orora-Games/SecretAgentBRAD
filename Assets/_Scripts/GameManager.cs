@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour {
 	void Update () {
 		if ( Input.GetKey( KeyCode.Escape ) ) {
 			Application.Quit();
-		} else if ( ( currentLevelName == "Start" || currentLevelName == "Finished" || currentLevelName == "YouLost" ) && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
+		} else if ( ( currentLevelName == "Finished" || currentLevelName == "YouLost" ) && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
 				anykeyTimer = 0f;
 				string level = levelNames[ currentLevelIndex ];
 
