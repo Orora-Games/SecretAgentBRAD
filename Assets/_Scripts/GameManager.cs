@@ -23,9 +23,12 @@ public class GameManager : MonoBehaviour {
 	public GameState state;
 	public static event Action<GameState> OnGameStateChange;
 
-	private string gameOverLevel = "YouLost";
-	private string winLevel = "Finished";
+	/* Set static levels here. */
+	public string gameOverLevel = "YouLost";
+	public string winLevel = "Finished";
+	public string menuScene = "Start";
 
+	private int currentLevelIntelCount;
 	private float anykeyTimeLimit = 1f;
 	private float anykeyTimer = 0f;
 
@@ -78,7 +81,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	/// <summary>
-	///		Changes the level based on the string level, if the string is found in the level-list, currentLevelIndex is updated, and 
+	/// Changes the level based on the string level, if the string is found in the level-list, currentLevelIndex is updated, and 
 	/// </summary>
 	/// <param name="level"></param>
 	public void ChangeLevel (string level) {
@@ -88,11 +91,15 @@ public class GameManager : MonoBehaviour {
 		/* If the level exists in our list of levels, load it . */
 		if ( levelNames.IndexOf( level ) != -1) {
 			SceneManager.LoadScene( level );
+			currentLevelIntelCount = GameObject.FindGameObjectsWithTag( "Intel" ).Length;
+			UnlockObject();
 			return;
 		}
 
 		SceneManager.LoadScene( level );
+
 	}
+
 
 	/// <summary>
 	///		Checks that you have picked up all the intel, accepts bool ignoreIntelState which makes winConditionCheck go to the nextLevel
@@ -102,7 +109,7 @@ public class GameManager : MonoBehaviour {
 		/* TODO: Move to Level Manager */
 
 		/* This check makes sure that Player has picked up all intel needed to allow their exfiltration. */
-		if ( GameObject.FindGameObjectsWithTag( "Intel" ).Length > 0 && !ignoreIntelState )
+		if ( currentLevelIntelCount > 0 && !ignoreIntelState )
 			return;
 
 		if ( !ignoreIntelState ) {
@@ -113,6 +120,39 @@ public class GameManager : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Reduces the IntelCount, runs ExitLockCheck, then Destroys intelObject.
+	/// </summary>
+	/// <param name="intelObject"></param>
+	public void PickedUpIntel (GameObject intelObject ) {
+		currentLevelIntelCount -= 1;
+		UnlockObject();
+		
+		/* TODO: Move to Level Manager */
+		Destroy(intelObject);
+	}
+
+	/// <summary>
+	/// Default behaviour: Check if all intel is picked up, by "currentLevelIntelCount", searches for tags named "ExfilZone", disables all "exit_lock"-named objects.
+	/// </summary>
+	/// <param name="parentTag">string tagName of parent containing exit_lock-object</param>
+	/// <param name="exitCheck">bool enable intel-check?</param>
+	public void UnlockObject (string parentTag = "ExfilZone", bool exitCheck = true ) {
+		if ( exitCheck &&  currentLevelIntelCount > 0 ) return; /* TODO: Move to Level Manager */
+
+		/* Allow for more than one exit Zone. */
+		GameObject[] lockObjectParents = GameObject.FindGameObjectsWithTag( parentTag );
+
+		for ( int i = 0; i < lockObjectParents.Length; i++ ) {
+			if ( exitCheck ) {
+				lockObjectParents[ i ].transform.Find( "exit_lock" ).gameObject.SetActive( false );
+			} else {
+				lockObjectParents[ i ].gameObject.SetActive( false );
+			}
+		}
+		//GameObject lockObject = GameObject.Find( "ExfilZone" ).transform.Find( "exit_lock" ).gameObject;
+		//
+	}
+	/// <summary>
 	/// Changes game state to whichever gamestate you wish.
 	/// </summary>
 	/// <param name="newState">eq GameState.Menu</param>
@@ -122,7 +162,7 @@ public class GameManager : MonoBehaviour {
 
 		switch ( newState ) {
 			case GameState.Menu:
-
+				ChangeLevel( menuScene );
 				break;
 			case GameState.Playing:
 				break;
