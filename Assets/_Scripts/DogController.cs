@@ -62,7 +62,9 @@ public class DogController : MonoBehaviour {
 		Transform nextTarget = InitializeWaypoints();
 
 		/* .. Tell AI movement to move to the next waypointTarget ... */
-		agent.SetDestination( nextTarget.position );
+		if (agent ) { 
+			agent.SetDestination( nextTarget.position );
+		}
 	}
 
 	// Update is called once per frame
@@ -99,8 +101,10 @@ public class DogController : MonoBehaviour {
 
 				/* .. Get our target position ... */
 				targetPosition = target.position;
-				/* .. Tell AI movement to move to target location ... */
-				agent.SetDestination( targetPosition );
+				/* .. Tell AI movement to move to the next waypointTarget ... */
+				if ( agent ) {
+					agent.SetDestination( targetPosition );
+				}
 				/* .. Find out what direction to look in ... */
 				Vector3 direction = ( targetPosition - transform.position ).normalized;
 				/* .. Convert that to a Vector ... */
@@ -133,12 +137,14 @@ public class DogController : MonoBehaviour {
 			exclamation.SetActive( true );
 
 			/* .. turnTowardNavSteeringTarget is the navigation mesh agent's target ... */
-			Vector3 turnTowardNavSteeringTarget = agent.steeringTarget;
+			if ( agent ) {
+				Vector3 turnTowardNavSteeringTarget = agent.steeringTarget;
+			
+				/* .. Calculate a direction by subtracting the transform.position from steeringTarget ... */
+				Vector3 direction = ( turnTowardNavSteeringTarget - transform.position ).normalized;
+				lookRotationVector = new Vector3( direction.x, 0, direction.z );
+			}
 
-			/* .. Calculate a direction by subtracting the transform.position from steeringTarget ... */
-			Vector3 direction = ( turnTowardNavSteeringTarget - transform.position ).normalized;
-
-			lookRotationVector = new Vector3( direction.x, 0, direction.z );
 
 			if ( lookRotationVector != Vector3.zero ) {
 				Quaternion lookRotation = Quaternion.LookRotation( lookRotationVector );
@@ -159,7 +165,9 @@ public class DogController : MonoBehaviour {
 				Transform nextTarget = NextWaypoint();
 
 				/* .. Tell AI movement to move to the next waypointTarget ... */
-				agent.SetDestination( nextTarget.position );
+				if ( agent ) {
+					agent.SetDestination( nextTarget.position );
+				}
 				waypointWaitTime = defaultWaypointWaitTime;
 			}
 		}
@@ -192,7 +200,9 @@ public class DogController : MonoBehaviour {
 		waypointWaitTime = defaultWaypointWaitTime;
 
 		/* .. Send Bot back to their previous waypoint .. */
-		agent.SetDestination( waypointTarget.position );
+		if ( agent ) {
+			agent.SetDestination( waypointTarget.position );
+		}
 	}
 
 	public void BecomeAlerted ( Transform target ) {
@@ -206,7 +216,9 @@ public class DogController : MonoBehaviour {
 		/* .. Set Exclamation mark to Active ... */
 		exclamation.SetActive( true );
 		/* .. Tell AI movement to move to target location ... */
-		agent.SetDestination( target.position );
+		if ( agent ) {
+			agent.SetDestination( target.position );
+		}
 		/* .. Set the alerted-timer to the default alerted timer .. */
 		currentAlertTime = 0;
 		/* .. Trigger the red vision-indicator. */
