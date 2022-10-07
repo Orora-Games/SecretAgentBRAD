@@ -1,8 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameManager : MonoBehaviour {
 	/* Game Manager tutorial
@@ -16,21 +16,27 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public List<string> levelNames = new List<string> { "Tutorial_Level1_Prototype", "Tutorial_Level2_Prototype", "Level00", "Level01", "Level03" };
+	public List<string> levelNames = new List<string> { "Tut01", "Tut02", "Level00", "Level01", "Level03" };
 	private int currentLevelIndex = 0;
 	private string currentLevelName = "Start";
 
 	public GameState state;
 	public static event Action<GameState> OnGameStateChange;
 
+	private int currentLevelIntelCount;
+	private int currentLevelIntelTotal;
+	private float anykeyTimeLimit = 1f;
+	private float anykeyTimer = 0f;
+
 	/* Set static levels here. */
+	[Header("Scene Selection")] 
 	public string gameOverLevel = "YouLost";
 	public string winLevel = "Finished";
 	public string menuScene = "Start";
 
-	private int currentLevelIntelCount;
-	private float anykeyTimeLimit = 1f;
-	private float anykeyTimer = 0f;
+	[Header( "Prefab Settings" )]
+	public Canvas MissionListCanvas;
+	public TMP_Text MissionListText;
 
 	private void Awake () {
 		_instance = this;
@@ -49,7 +55,7 @@ public class GameManager : MonoBehaviour {
 	void Update () {
 		if ( Input.GetKey( KeyCode.Escape ) ) {
 			Application.Quit();
-		} else if ( ( currentLevelName == "Start" || currentLevelName == "Finished" || currentLevelName == "YouLost" ) && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
+		} else if ( ( currentLevelName == "Finished" || currentLevelName == "YouLost" ) && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
 				anykeyTimer = 0f;
 				string level = levelNames[ currentLevelIndex ];
 
@@ -85,19 +91,33 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	/// <param name="level"></param>
 	public void ChangeLevel (string level) {
+		if ( level != "" ) {
+			Debug.LogError("ChangeLevel requires a level in the form of string \"level\".");
+			return;
+		}
+
 		currentLevelName = level;
 		anykeyTimer = 0f;
 
 		/* If the level exists in our list of levels, load it . */
 		if ( levelNames.IndexOf( level ) != -1) {
 			SceneManager.LoadScene( level );
-			currentLevelIntelCount = GameObject.FindGameObjectsWithTag( "Intel" ).Length;
+			SetIntelState();
+			MissionList();
 			UnlockObject();
 			return;
 		}
 
 		SceneManager.LoadScene( level );
+		MissionList(false);
 
+	}
+	/// <summary>
+	/// Sets int currentLevelIntelCount and int currentLevelIntelTotal;
+	/// </summary>
+	private void SetIntelState () {
+		currentLevelIntelCount = GameObject.FindGameObjectsWithTag( "Intel" ).Length;
+		currentLevelIntelTotal = currentLevelIntelCount;
 	}
 
 
@@ -152,6 +172,7 @@ public class GameManager : MonoBehaviour {
 		//GameObject lockObject = GameObject.Find( "ExfilZone" ).transform.Find( "exit_lock" ).gameObject;
 		//
 	}
+
 	/// <summary>
 	/// Changes game state to whichever gamestate you wish.
 	/// </summary>
@@ -178,6 +199,21 @@ public class GameManager : MonoBehaviour {
 				break;
 		}
 		OnGameStateChange?.Invoke( state );
+	}
+
+	/// <summary>
+	/// Enables (by default) and generates mission list. bool activateMissionList 
+	/// </summary>
+	/// <param name="activateMissionList"></param>
+	public void MissionList (bool activateMissionList = true) {
+		if (!activateMissionList ) {
+			MissionListCanvas.gameObject.SetActive( false );
+			MissionListText.text = "";
+			return;
+		}
+
+		MissionListCanvas.gameObject.SetActive(true);
+		MissionListText.text = "- Find all Intel-folders (" + currentLevelIntelCount + " / " + currentLevelIntelTotal + ")";
 	}
 
 	public enum GameState {
