@@ -5,5 +5,4 @@ public class LevelSelector : MonoBehaviour {
 	public void OpenScene () {
 		GameManager.Instance.ChangeLevel(level);
 	}
-
 }
