@@ -278,7 +278,6 @@ public class GameManager : MonoBehaviour {
 	private void SetIntelState () {
 		currentLevelIntelTotal = GameObject.FindGameObjectsWithTag( "Intel" ).Length;
 		Scene newScene = SceneManager.GetActiveScene();
-		Debug.Log( "Scene: " + newScene.name + ", Intel found on scene: " + currentLevelIntelTotal );
 		currentLevelIntelCount = currentLevelIntelTotal;
 	}
 
