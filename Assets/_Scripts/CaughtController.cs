@@ -19,7 +19,7 @@ public class CaughtController : MonoBehaviour {
 
 		/* .. if this Entity (Enemy) sees Player (target); We're trusting the FieldOfView-component to spot our enemies. ... */
 		if ( fov && fov.visibleTargets.Count > 0 ) {
-			/* We're trusting the FOV- to know when it sees a player*/
+			/* We're trusting the FOV- to know when it sees a player */
 			if (!GameManager.Instance ) return;
 			GameManager.Instance.ChangeGameState( GameState.GameOver );
 		}
