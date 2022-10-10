@@ -124,9 +124,9 @@ public class DogController : MonoBehaviour {
 		}
 
 		if ( hadEyesOnTarget ) {
-			AlertEveryone( lastTarget );
-			hasAlerted = false;
+			AlertEveryone( lastTarget, true );
 			hadEyesOnTarget = false;
+			hasAlerted = false;
 		}
 
 		if ( alerted && currentAlertTime < alertedTimer) {
