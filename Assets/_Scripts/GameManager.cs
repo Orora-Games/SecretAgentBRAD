@@ -1,8 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameManager : MonoBehaviour {
 	/* Game Manager tutorial
@@ -16,43 +16,75 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public List<string> levelNames = new List<string> { "Tutorial_Level1_Prototype", "Tutorial_Level2_Prototype", "Level00", "Level01", "Level03" };
+	public List<string> levelNames = new List<string> { "Level01", "Level02", "Level03", "Level04" };
 	private int currentLevelIndex = 0;
-	private string currentLevelName = "Start";
+	private string currentLevelName;
 
 	public GameState state;
 	public static event Action<GameState> OnGameStateChange;
 
-	private string gameOverLevel = "YouLost";
-	private string winLevel = "Finished";
-
+	private int currentLevelIntelCount;
+	private int currentLevelIntelTotal;
 	private float anykeyTimeLimit = 1f;
 	private float anykeyTimer = 0f;
 
+	/* Set static levels here. */
+	[Header("Scene Selection")] 
+	public string gameOverLevel = "YouLost";
+	public string winLevel = "Finished";
+	public string menuScene = "Main Menu";
+
+	[Header( "Prefab Settings" )]
+	public Canvas MissionListCanvas;
+	public TMP_Text MissionListText;
+	public GameObject escScreen, finishScreen, helpScreen;
+
+	private GameObject currentIntelObject;
+
+	private void OnEnable () {
+		SceneManager.sceneLoaded += SceneChangeActions;
+	}
+
 	private void Awake () {
-		_instance = this;
-		//levelNames = new List<string> { "TestScene" };
+		DontDestroyOnLoad( this );
+
+		if ( _instance == null ) {
+			_instance = this;
+		} else {
+			Destroy( this.gameObject );
+		}
 	}
 
 
 	void Start () {
-		DontDestroyOnLoad(this);
-		ChangeGameState( GameState.Menu );
+		currentLevelIndex = 0;
 	}
 
 	/// <summary>
 	///		Lets you move on from the Start scene. 
 	/// </summary>
 	void Update () {
-		if ( Input.GetKey( KeyCode.Escape ) ) {
-			Application.Quit();
+		if ( Input.GetKeyDown( KeyCode.Escape ) ) {
+			if ( escScreen.activeSelf == true ) {
+				ChangeGameState(GameState.Playing );
+			} else {
+				ChangeGameState( GameState.EscScreen );
+			}
+			
 		} else if ( ( currentLevelName == "Finished" || currentLevelName == "YouLost" ) && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
-				anykeyTimer = 0f;
-				string level = levelNames[ currentLevelIndex ];
+			anykeyTimer = 0f;
+			string level = levelNames[ currentLevelIndex ];
 
-				ChangeLevel( level );
-		}
+			ChangeLevel( level );
+		} /* Still used to get out of YouLost scene. */
 		anykeyTimer += Time.deltaTime;
+	}
+
+	/// <summary>
+	/// Restarts last loaded level.
+	/// </summary>
+	public void RestartLevel () {
+		ChangeLevel( levelNames[ currentLevelIndex ] );
 	}
 
 	/// <summary>
@@ -60,13 +92,15 @@ public class GameManager : MonoBehaviour {
 	///		takes string level, which lets you override the level
 	/// </summary>
 	/// <param name="level"></param>
-	public void NextLevel (string level = "") {
+	public void NextLevel ( string level = "", bool skipLevelIncrease = false) {
 		if (level != "") {
 			ChangeLevel( level );
 			return;
 		}
 
-		currentLevelIndex++;
+		if (!skipLevelIncrease ) { 
+			currentLevelIndex++;
+		}
 
 		if ( currentLevelIndex > levelNames.Count - 1 ) {
 			currentLevelIndex = 0;
@@ -78,20 +112,29 @@ public class GameManager : MonoBehaviour {
 	}
 
 	/// <summary>
-	///		Changes the level based on the string level, if the string is found in the level-list, currentLevelIndex is updated, and 
+	/// Changes the level based on the string level, if the string is found in the level-list, currentLevelIndex is updated, and 
 	/// </summary>
 	/// <param name="level"></param>
 	public void ChangeLevel (string level) {
+		if ( level == "" ) {
+			Debug.LogError("ChangeLevel requires a level in the form of string \"level\".");
+			return;
+		}
+
 		currentLevelName = level;
 		anykeyTimer = 0f;
 
 		/* If the level exists in our list of levels, load it . */
 		if ( levelNames.IndexOf( level ) != -1) {
-			SceneManager.LoadScene( level );
+			currentLevelIndex = levelNames.IndexOf( currentLevelName );
+
+			SceneManager.LoadScene( level);
+			/* Functions needed for missions to work, can be found in SceneChangeActions() */
+
 			return;
 		}
-
 		SceneManager.LoadScene( level );
+		//MissionList(false);
 	}
 
 	/// <summary>
@@ -102,13 +145,75 @@ public class GameManager : MonoBehaviour {
 		/* TODO: Move to Level Manager */
 
 		/* This check makes sure that Player has picked up all intel needed to allow their exfiltration. */
-		if ( GameObject.FindGameObjectsWithTag( "Intel" ).Length > 0 && !ignoreIntelState )
+		if ( currentLevelIntelCount > 0 && !ignoreIntelState )
 			return;
 
 		if ( !ignoreIntelState ) {
 			NextLevel();
 		} else { 
 			NextLevel( level ); 
+		}
+	}
+
+	/// <summary>
+	/// Reduces the IntelCount, runs ExitLockCheck, then Destroys intelObject.
+	/// </summary>
+	/// <param name="intelObject"></param>
+	public void PickedUpIntel (GameObject intelObject ) {
+		currentIntelObject = intelObject;
+		currentLevelIntelCount -= 1;
+		UnlockObject();
+		MissionList();
+
+		/* TODO: Move to Level Manager */
+		Destroy(intelObject);
+	}
+
+	/// <summary>
+	/// Default behaviour: Check if all intel is picked up, by "currentLevelIntelCount", searches for tags named "ExfilZone", disables all "exit_lock"-named objects.
+	/// </summary>
+	/// <param name="parentTag">string tagName of parent containing exit_lock-object</param>
+	/// <param name="exitCheck">bool enable intel-check?</param>
+	public void UnlockObject (string parentTag = "ExfilZone", bool exitCheck = true ) {
+		if ( exitCheck &&  currentLevelIntelCount > 0 ) return; /* TODO: Move to Level Manager */
+
+		/* Allow for more than one exit Zone. */
+		GameObject[] lockObjectParents = GameObject.FindGameObjectsWithTag( parentTag );
+
+		for ( int i = 0; i < lockObjectParents.Length; i++ ) {
+			if ( exitCheck ) {
+				lockObjectParents[ i ].transform.Find( "exit_lock" ).gameObject.SetActive( false );
+			} else {
+				lockObjectParents[ i ].gameObject.SetActive( false );
+			}
+		}
+	}
+	
+	/// <summary>
+	/// Handles button-functionality in menu navigation.
+	/// </summary>
+	/// <param name="buttonType"></param>
+	public void MenuButtonBehaviour ( string buttonType ) {
+		switch ( buttonType ) {
+			case "MainMenu":
+				/* Deactivate escScreen, we don't want to see it when we enter a new level. */
+				escScreen.SetActive( false );
+				ChangeGameState( GameState.MainMenu );
+				break;
+			case "RestartLevel":
+				RestartLevel();
+				break;
+			case "NextLevel":
+				NextLevel();
+				break;
+			case "HelpScreen":
+				break;
+			case "ReturnToGame":
+				ChangeGameState( GameState.Playing );
+				break;
+			default:
+				Debug.Log("You are trying to access a button type that is not yet defined: \"" + buttonType + "\".");
+				break;
 		}
 	}
 
@@ -121,10 +226,18 @@ public class GameManager : MonoBehaviour {
 		state = newState;
 
 		switch ( newState ) {
-			case GameState.Menu:
-
+			case GameState.MainMenu:
+				if ( SceneManager.GetActiveScene().name == menuScene ) { 
+					break;
+				}
+				/* Reset currentLevelIndex */
+				currentLevelIndex = 0;
+				ChangeLevel( menuScene );
 				break;
 			case GameState.Playing:
+				escScreen.SetActive( false );
+				helpScreen.SetActive( false );
+				finishScreen.SetActive( false );
 				break;
 			case GameState.Paused:
 				break;
@@ -134,17 +247,62 @@ public class GameManager : MonoBehaviour {
 			case GameState.WinGame:
 				ChangeLevel( winLevel );
 				break;
+			case GameState.EscScreen:
+				escScreen.SetActive( true );
+				break;
 			default:
 				break;
 		}
 		OnGameStateChange?.Invoke( state );
 	}
+	private void SceneChangeActions (Scene scene, LoadSceneMode mode ) {
+		//SceneManager.SetActiveScene( NewScene );
+		if ( levelNames.IndexOf( scene.name ) != -1 ) {
+			SetIntelState();
+			MissionList();
+			UnlockObject();
+		} else {
+			MissionList(false);
+		}
+		
+	}
+
+	/// <summary>
+	/// Sets int currentLevelIntelCount and int currentLevelIntelTotal;
+	/// </summary>
+	private void SetIntelState () {
+		currentLevelIntelTotal = GameObject.FindGameObjectsWithTag( "Intel" ).Length;
+		Scene newScene = SceneManager.GetActiveScene();
+		currentLevelIntelCount = currentLevelIntelTotal;
+	}
+
+	/// <summary>
+	/// Enables (by default) and generates mission list. bool activateMissionList 
+	/// </summary>
+	/// <param name="activateMissionList"></param>
+	public void MissionList (bool activateMissionList = true) {
+		if (!activateMissionList ) {
+			MissionListCanvas.gameObject.SetActive( false );
+			MissionListText.text = "";
+			return;
+		}
+
+		MissionListCanvas.gameObject.SetActive(true);
+
+		if ( currentLevelIntelCount == 0) {
+			MissionListText.SetText( "<s>- Find all Intel-folders (" + currentLevelIntelTotal + " / " + currentLevelIntelTotal + ")</s>" );
+			//MissionListText.text = ;
+		} else {
+			MissionListText.text = "- Find all Intel-folders (" + (currentLevelIntelTotal-currentLevelIntelCount) + " / " + currentLevelIntelTotal + ")";
+		}
+	}
 
 	public enum GameState {
-		Menu,
+		MainMenu,
 		Playing,
 		Paused,
 		GameOver,
-		WinGame
+		WinGame,
+		EscScreen
 	}
 }
