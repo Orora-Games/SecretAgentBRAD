@@ -57,6 +57,7 @@ public class GameManager : MonoBehaviour {
 
 
 	void Start () {
+		currentLevelName = SceneManager.GetActiveScene().name;	
 		currentLevelIndex = 0;
 	}
 
@@ -64,7 +65,7 @@ public class GameManager : MonoBehaviour {
 	///		Lets you move on from the Start scene. 
 	/// </summary>
 	void Update () {
-		if ( Input.GetKeyDown( KeyCode.Escape ) && SceneManager.GetActiveScene().name != menuScene ) {
+		if ( Input.GetKeyDown( KeyCode.Escape ) && currentLevelName != menuScene ) {
 			if ( escScreen.activeSelf == true ) {
 				ChangeGameState(GameState.Playing );
 			} else {
