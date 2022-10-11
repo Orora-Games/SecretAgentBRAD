@@ -1,10 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour {
+
+	private void Start () {
+		if ( Application.platform == RuntimePlatform.WebGLPlayer ) {
+			GameObject.Find( "quitButton" ).gameObject.SetActive( false );
+		}
+	}
 	//Load Scene
 	public void Play() {
 		GameManager.Instance.NextLevel( "", true );
