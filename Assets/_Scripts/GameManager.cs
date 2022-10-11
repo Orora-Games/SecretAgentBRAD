@@ -64,7 +64,7 @@ public class GameManager : MonoBehaviour {
 	///		Lets you move on from the Start scene. 
 	/// </summary>
 	void Update () {
-		if ( Input.GetKeyDown( KeyCode.Escape ) ) {
+		if ( Input.GetKeyDown( KeyCode.Escape ) && SceneManager.GetActiveScene().name != menuScene ) {
 			if ( escScreen.activeSelf == true ) {
 				ChangeGameState(GameState.Playing );
 			} else {
