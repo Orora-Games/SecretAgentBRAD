@@ -57,9 +57,7 @@ public class GameManager : MonoBehaviour {
 
 
 	void Start () {
-		MissionListText.richText = true;
 		currentLevelIndex = 0;
-		ChangeGameState( GameState.MainMenu );
 	}
 
 	/// <summary>
@@ -198,6 +196,8 @@ public class GameManager : MonoBehaviour {
 	public void MenuButtonBehaviour ( string buttonType ) {
 		switch ( buttonType ) {
 			case "MainMenu":
+				/* Deactivate escScreen, we don't want to see it when we enter a new level. */
+				escScreen.SetActive( false );
 				ChangeGameState( GameState.MainMenu );
 				break;
 			case "RestartLevel":
@@ -227,14 +227,9 @@ public class GameManager : MonoBehaviour {
 
 		switch ( newState ) {
 			case GameState.MainMenu:
-				if (Application.platform == RuntimePlatform.WebGLPlayer) {
-					GameObject.Find( "quitButton" ).gameObject.SetActive(false);
-				}
 				if ( SceneManager.GetActiveScene().name == menuScene ) { 
 					break;
 				}
-				/* Deactivate escScreen, we don't want to see it when we return to our level. */
-				escScreen.SetActive( false );
 				/* Reset currentLevelIndex */
 				currentLevelIndex = 0;
 				ChangeLevel( menuScene );
