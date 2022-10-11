@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public List<string> levelNames = new List<string> { "Level01", "Level02", "Level03", "Level04" };
+	public List<string> levelNames = new List<string> { "Level01", "Level02", "Level03", "Level04", "Level05" };
 	private int currentLevelIndex = 0;
 	private string currentLevelName;
 
@@ -66,12 +66,11 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	void Update () {
 		if ( Input.GetKeyDown( KeyCode.Escape ) && currentLevelName != menuScene ) {
-			if ( escScreen.activeSelf == true ) {
-				ChangeGameState(GameState.Playing );
-			} else {
-				ChangeGameState( GameState.EscScreen );
-			}
-			
+				if ( escScreen.activeSelf == true ) {
+					ChangeGameState(GameState.Playing );
+				} else {
+					ChangeGameState( GameState.EscScreen );
+				}
 		} else if ( ( currentLevelName == "Finished" || currentLevelName == "YouLost" ) && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
 			anykeyTimer = 0f;
 			string level = levelNames[ currentLevelIndex ];
