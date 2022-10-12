@@ -785,6 +785,26 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: GameManager, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 1255546786377946799, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6896595438689142940, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6896595438689142940, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6896595438689142940, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 706.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 6896595438689142940, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 1097.6
+      objectReference: {fileID: 0}
     - target: {fileID: 7131491366890350955, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -3503,7 +3523,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1067394476
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5073,11 +5093,11 @@ PrefabInstance:
       objectReference: {fileID: 1345628539}
     - target: {fileID: 346175899125265826, guid: 12130958de9a82e449efe4d3d728d7c6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 346175899125265826, guid: 12130958de9a82e449efe4d3d728d7c6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 346175899125265826, guid: 12130958de9a82e449efe4d3d728d7c6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
@@ -5534,7 +5554,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1944230059
 RectTransform:
   m_ObjectHideFlags: 0

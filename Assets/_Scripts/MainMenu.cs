@@ -9,6 +9,7 @@ public class MainMenu : MonoBehaviour {
 	}
 	//Load Scene
 	public void Play() {
+		if ( !GameManager.Instance ) { return; }
 		GameManager.Instance.NextLevel( "", true );
 	}
 	//Quit Game
