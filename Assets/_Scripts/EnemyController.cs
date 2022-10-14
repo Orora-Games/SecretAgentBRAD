@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.GraphicsBuffer;
 
 //[RequireComponent( typeof( NavMeshAgent ) )]
-public class DogController : MonoBehaviour {
+public class EnemyController : MonoBehaviour {
 	//Alerted State
 	public bool alerted = false;
 	private bool wasAlerted = false;
@@ -48,6 +49,8 @@ public class DogController : MonoBehaviour {
 	// These are the objects that need to be alerted when a Player has been detected.
 	private GameObject[] toBeAlerted;
 
+	public LayerMask viewVisualizationMask;
+
 	// Start is called before the first frame update
 	void Start () {
 		agent = GetComponent<NavMeshAgent>();
@@ -58,6 +61,20 @@ public class DogController : MonoBehaviour {
 		fieldOfView = GetComponent<ColoredFieldOfView>();
 
 		toBeAlerted = GameObject.FindGameObjectsWithTag( "Enemy" );
+
+		Transform viewVisualization = gameObject.transform.Find( "ViewVisualization" );
+		/* Find floor, so we can use floor.transform.position.y to find the floor height, then set ViewVisualization to floorHeight+some 
+		 *	Example: https://docs.unity3d.com/ScriptReference/RaycastHit-distance.html */
+		RaycastHit hit;
+		Ray downRay = new Ray( transform.position, -Vector3.up );
+		
+		if ( Physics.Raycast( downRay, out hit, Mathf.Infinity, viewVisualizationMask ) ) {
+			viewVisualization.position = new Vector3( viewVisualization.position.x, hit.transform.position.y + 0.1f, viewVisualization.position.z);
+
+			
+		}
+		//float viewVisualizationHeight = 
+		// transform.position
 
 		/* Initializes waypoint system, and gets next waypoint */
 		Transform nextTarget = InitializeWaypoints();
@@ -184,7 +201,7 @@ public class DogController : MonoBehaviour {
 
 	private void wasAlertedReset () {
 		wasAlerted = false;
-		/* .. beneath this line resets the DogController and VisionLine's materials ... */
+		/* .. beneath this line resets the EnemyController and VisionLine's materials ... */
 		fieldOfView.ChangeColorState( ColoredFieldOfView.FieldOfViewStates.Undetected );
 
 		/* .. set alerted to false, as we are no longer alerted ... */
@@ -200,9 +217,11 @@ public class DogController : MonoBehaviour {
 		/* .. Set the waypointTimer to the default waypoint timer .. */
 		waypointWaitTime = defaultWaypointWaitTime;
 
-		/* .. Send Bot back to their previous waypoint .. */
+		
+		/* .. Check if we have an navmesh agent, if not don't try to move the enemy... */
 		if ( agent ) {
-			agent.SetDestination( waypointTarget.position );
+			/* .. Send Bot back to their previous waypoint .. */
+			agent.SetDestination( waypointTarget.position);
 		}
 	}
 
@@ -216,8 +235,10 @@ public class DogController : MonoBehaviour {
 		wasAlerted = true;
 		/* .. Set Exclamation mark to Active ... */
 		exclamation.SetActive( true );
+		
+		/* .. Check if we have an navmesh agent, if not don't try to move the enemy. */
+		if ( agent ) { 
 		/* .. Tell AI movement to move to target location ... */
-		if ( agent ) {
 			agent.SetDestination( target.position );
 		}
 		/* .. Set the alerted-timer to the default alerted timer .. */
@@ -233,7 +254,7 @@ public class DogController : MonoBehaviour {
 				continue;
 
 			/* Alerts all other GameObjects with Enemy tag. */
-			this.toBeAlerted[ i ].GetComponent<DogController>().BecomeAlerted( target );
+			this.toBeAlerted[ i ].GetComponent<EnemyController>().BecomeAlerted( target );
 		}
 	}
 
