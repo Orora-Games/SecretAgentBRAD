@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TeleporterBehaviour : MonoBehaviour {
-	TeleportController teleportController;
+	[HideInInspector]
+	private TeleportController teleportController;
+	[HideInInspector]
+	public bool disableTeleport;
+
 	// Start is called before the first frame update
 	void Start () {
 		teleportController = gameObject.transform.parent.GetComponent<TeleportController>();
@@ -12,9 +16,14 @@ public class TeleporterBehaviour : MonoBehaviour {
 
 	private void OnTriggerEnter ( Collider other ) {
 		if ( teleportController != null ) {
-			if ( other.transform.tag == "Player" ) {
+			if ( other.transform.tag == "Player" && !disableTeleport) {
 				teleportController.Teleport( transform, other.gameObject );
 			}
+		}
+	}
+	private void OnTriggerExit ( Collider other ) {
+		if ( other.transform.tag == "Player" && disableTeleport ) {
+			disableTeleport = false;
 		}
 	}
 }
