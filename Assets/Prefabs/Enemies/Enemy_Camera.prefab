@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7413976249438285966}
   - component: {fileID: 3085719174015942444}
   - component: {fileID: 6090333768631846332}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 3153053303645612509}
   - component: {fileID: 8678620566658804749}
   - component: {fileID: 3771694994642100747}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: Top part
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -206,7 +206,7 @@ GameObject:
   - component: {fileID: 7074340915984518942}
   - component: {fileID: 9216618467875146421}
   - component: {fileID: 4214109874357048052}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: ViewVisualization
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -221,7 +221,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1373920011394706305}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -5.52, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -290,7 +290,7 @@ GameObject:
   - component: {fileID: 3304774331021213039}
   - component: {fileID: 7851903383884660695}
   - component: {fileID: 964461463635132945}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: Dot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -405,9 +405,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7369866836581864970}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 55.356194, y: 1.5964708, z: 13.216566}
-  m_LocalScale: {x: 0.28, y: 0.28, z: 0.67}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.51, y: 0.51, z: 0.51}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5035981666744986750}
   - {fileID: 3298357672617362546}
@@ -463,6 +463,9 @@ MonoBehaviour:
   waypointContainer: {fileID: 0}
   waypointTarget: {fileID: 0}
   waypointWaitTime: 5
+  viewVisualizationMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!33 &3146826228152667160
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -538,7 +541,7 @@ GameObject:
   - component: {fileID: 5156998371550048535}
   - component: {fileID: 8216265006376969266}
   - component: {fileID: 6111972638813520278}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -633,7 +636,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3826047449201638920}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: Exclamation
   m_TagString: Untagged
   m_Icon: {fileID: 0}

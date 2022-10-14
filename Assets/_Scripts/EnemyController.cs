@@ -50,6 +50,8 @@ public class EnemyController : MonoBehaviour {
 	private GameObject[] toBeAlerted;
 
 	public LayerMask viewVisualizationMask;
+	[HideInInspector]
+	public Vector3 visualizationDetectionHeight;
 
 	// Start is called before the first frame update
 	void Start () {
@@ -66,11 +68,12 @@ public class EnemyController : MonoBehaviour {
 		/* Find floor, so we can use floor.transform.position.y to find the floor height, then set ViewVisualization to floorHeight+some 
 		 *	Example: https://docs.unity3d.com/ScriptReference/RaycastHit-distance.html */
 		RaycastHit hit;
-		Ray downRay = new Ray( transform.position, -Vector3.up );
-		
-		if ( Physics.Raycast( downRay, out hit, Mathf.Infinity, viewVisualizationMask ) ) {
-			viewVisualization.position = new Vector3( viewVisualization.position.x, hit.transform.position.y + 0.1f, viewVisualization.position.z);
+		if ( Physics.Raycast( transform.position, Vector3.down, out hit, Mathf.Infinity ) ) {
 
+			if ( hit.transform.name == "Floor") {
+				visualizationDetectionHeight = new Vector3( viewVisualization.position.x, ( transform.position.y - hit.distance + 0.05f ), viewVisualization.position.z );
+				viewVisualization.position = visualizationDetectionHeight;
+			}
 			
 		}
 		//float viewVisualizationHeight = 
