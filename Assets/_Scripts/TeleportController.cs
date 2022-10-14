@@ -17,7 +17,7 @@ public class TeleportController : MonoBehaviour {
 
 	#region Teleports
 	/// <summary>
-	/// Will porvide the next teleportTarget
+	/// Will provide the next teleportTarget
 	/// </summary>
 	/// <param name="currentLocation"></param>
 	/// <returns></returns>
@@ -31,17 +31,24 @@ public class TeleportController : MonoBehaviour {
 		return teleportTarget;
 	}
 	/// <summary>
-	/// Takes currentLocation (transform object of teleport zone), and "PlayerObject"
+	/// Takes currentLocation (transform object of teleport zone), and "PlayerObject", moves the player there while making sure they're not interrupting the teleportation
 	/// </summary>
 	/// <param name="currentLocation"></param>
 	/// <param name="playerObject"></param>
 	public void Teleport(Transform currentLocation, GameObject playerObject ) {
-		Transform nextLocation = NextLoaction(currentLocation);
+		Transform nextLocation = NextLoaction( currentLocation );
+		TeleporterBehaviour tpBehaviour = nextLocation.GetComponent<TeleporterBehaviour>();
+		CharacterController charController = playerObject.GetComponent<CharacterController>();
 
-		//Play animation (Dim Down camera)
-		playerObject.transform.position = nextLocation.position;
+		tpBehaviour.disableTeleport = true;
+
+		//Play animation (Dim Down camera or something)
+		charController.enabled = false;
+		float playerHeight = playerObject.transform.position.y; // We're getting the player height here, because nextLocation is not the height we want our player at.
+		playerObject.transform.position = new Vector3( nextLocation.position.x, playerHeight, nextLocation.position.z );
+		charController.enabled = true;
+
 		cameraContainer.transform.position = nextLocation.position;
-
 	}
 	#endregion
 }
