@@ -58,6 +58,9 @@ MonoBehaviour:
   waypointContainer: {fileID: 0}
   waypointTarget: {fileID: 0}
   waypointWaitTime: 3.5
+  viewVisualizationMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &4929101403293160297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,7 +184,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 458600363010448198}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: Exclamation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -217,7 +220,7 @@ GameObject:
   - component: {fileID: 458600363073464924}
   - component: {fileID: 458600363073464931}
   - component: {fileID: 458600363073464930}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: Top part
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -315,7 +318,7 @@ GameObject:
   - component: {fileID: 458600363896182947}
   - component: {fileID: 458600363896182946}
   - component: {fileID: 458600363896182945}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: Dot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -412,7 +415,7 @@ GameObject:
   - component: {fileID: 6355557578757803291}
   - component: {fileID: 7678266308635150692}
   - component: {fileID: 771062513912387421}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: ViewVisualization
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -495,7 +498,7 @@ GameObject:
   - component: {fileID: 4115112454412330379}
   - component: {fileID: 4230393693047236905}
   - component: {fileID: 1994669174421156277}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: ViewVisualization
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -510,7 +513,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3823795830642021498}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.09, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -578,7 +581,7 @@ GameObject:
   - component: {fileID: 5483265398515596487}
   - component: {fileID: 6175304366925921043}
   - component: {fileID: 9068084595645237052}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: DeathZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
