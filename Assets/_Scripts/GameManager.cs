@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
-using static GameManager;
 
 public class GameManager : MonoBehaviour {
 	/* Game Manager tutorial
@@ -38,11 +37,9 @@ public class GameManager : MonoBehaviour {
 	[Header( "Prefab Settings" )]
 	public Canvas MissionListCanvas;
 	public TMP_Text MissionListText;
-	public GameObject escScreen, nextLevelScreen, helpScreen;
+	public GameObject escScreen, finishScreen, helpScreen;
 
 	private GameObject currentIntelObject;
-
-	private GameState currentGameState;
 
 	private void OnEnable () {
 		SceneManager.sceneLoaded += SceneChangeActions;
@@ -90,39 +87,12 @@ public class GameManager : MonoBehaviour {
 		ChangeLevel( levelNames[ currentLevelIndex ] );
 	}
 
-	public void NextLevelScreen (string mode = "") {
-		nextLevelScreen.SetActive( true );
-		if ( mode == "" ) { return; }
-		ChangeGameState( GameState.Paused );
-		//if (GetGameState() != GameState.Paused ) { return;  }
-
-
-		switch ( mode ) {
-			case "NextLevel":
-				NextLevel();
-				break;
-			case "RestartLevel":
-				RestartLevel();
-				break;
-			case "MainMenu":
-				ChangeGameState( GameState.MainMenu );
-				break;
-			case "LevelSelect":
-				ChangeGameState( GameState.LevelSelect );
-				break;
-			default:
-				break;
-		}
-	}
-
 	/// <summary>
 	/// Moves you on to the next level, or the Finished-level if you managed to finish all the levels. 
 	///		takes string level, which lets you override the level
 	/// </summary>
 	/// <param name="level"></param>
 	public void NextLevel ( string level = "", bool skipLevelIncrease = false) {
-		ChangeGameState( GameState.Playing );
-		
 		if (level != "") {
 			ChangeLevel( level );
 			return;
@@ -160,9 +130,9 @@ public class GameManager : MonoBehaviour {
 
 			SceneManager.LoadScene( level);
 			/* Functions needed for missions to work, can be found in SceneChangeActions() */
+
 			return;
 		}
-
 		SceneManager.LoadScene( level );
 		//MissionList(false);
 	}
@@ -179,8 +149,8 @@ public class GameManager : MonoBehaviour {
 			return;
 
 		if ( !ignoreIntelState ) {
-			NextLevelScreen();
-		} else {
+			NextLevel();
+		} else { 
 			NextLevel( level ); 
 		}
 	}
@@ -233,6 +203,9 @@ public class GameManager : MonoBehaviour {
 			case "RestartLevel":
 				RestartLevel();
 				break;
+			case "NextLevel":
+				NextLevel();
+				break;
 			case "HelpScreen":
 				break;
 			case "ReturnToGame":
@@ -243,20 +216,14 @@ public class GameManager : MonoBehaviour {
 				break;
 		}
 	}
-	/// <summary>
-	/// Returns the current game-state in a string format.
-	/// </summary>
-	/// <returns></returns>
-	public GameState GetGameState () {
-		return currentGameState;
-	}
+
 	/// <summary>
 	/// Changes game state to whichever gamestate you wish.
 	/// </summary>
 	/// <param name="newState">eq GameState.Menu</param>
 	/// <param name="data">string data</param>
 	public void ChangeGameState ( GameState newState, string data = "") {
-		currentGameState = newState;
+		state = newState;
 
 		switch ( newState ) {
 			case GameState.MainMenu:
@@ -270,17 +237,9 @@ public class GameManager : MonoBehaviour {
 			case GameState.Playing:
 				escScreen.SetActive( false );
 				helpScreen.SetActive( false );
-				nextLevelScreen.SetActive( false );
+				finishScreen.SetActive( false );
 				break;
 			case GameState.Paused:
-				break;
-			case GameState.LevelSelect:
-				/* Deactivate levelSelectScreen, we don't want to see it when we enter a new level. */
-				nextLevelScreen.SetActive( false );
-				
-				/* Reset currentLevelIndex */
-				currentLevelIndex = 0;
-				ChangeLevel( menuScene );
 				break;
 			case GameState.GameOver:
 				ChangeLevel( gameOverLevel );
@@ -294,13 +253,10 @@ public class GameManager : MonoBehaviour {
 			default:
 				break;
 		}
-		OnGameStateChange?.Invoke( currentGameState );
+		OnGameStateChange?.Invoke( state );
 	}
 	private void SceneChangeActions (Scene scene, LoadSceneMode mode ) {
 		//SceneManager.SetActiveScene( NewScene );
-
-		nextLevelScreen.SetActive( false );
-
 		if ( levelNames.IndexOf( scene.name ) != -1 ) {
 			SetIntelState();
 			MissionList();
@@ -345,7 +301,6 @@ public class GameManager : MonoBehaviour {
 		MainMenu,
 		Playing,
 		Paused,
-		LevelSelect,
 		GameOver,
 		WinGame,
 		EscScreen
