@@ -21,6 +21,8 @@ public class CaughtController : MonoBehaviour {
 		if ( fov && fov.visibleTargets.Count > 0 ) {
 			/* We're trusting the FOV- to know when it sees a player */
 			if (!GameManager.Instance ) return;
+			if (GameManager.Instance.GetGameState() != GameState.Playing) return;
+			
 			GameManager.Instance.ChangeGameState( GameState.GameOver );
 		}
 	}
