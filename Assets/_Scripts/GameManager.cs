@@ -227,7 +227,6 @@ public class GameManager : MonoBehaviour {
 		switch ( buttonType ) {
 			case "MainMenu":
 				/* Deactivate escScreen, we don't want to see it when we enter a new level. */
-				escScreen.SetActive( false );
 				ChangeGameState( GameState.MainMenu );
 				break;
 			case "RestartLevel":
@@ -299,8 +298,6 @@ public class GameManager : MonoBehaviour {
 	private void SceneChangeActions (Scene scene, LoadSceneMode mode ) {
 		//SceneManager.SetActiveScene( NewScene );
 
-		nextLevelScreen.SetActive( false );
-
 		if ( levelNames.IndexOf( scene.name ) != -1 ) {
 			SetIntelState();
 			MissionList();
@@ -308,7 +305,10 @@ public class GameManager : MonoBehaviour {
 		} else {
 			MissionList(false);
 		}
-		
+		nextLevelScreen.SetActive( false );
+		escScreen.SetActive( false );
+
+
 	}
 
 	/// <summary>
