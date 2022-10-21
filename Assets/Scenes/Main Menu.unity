@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4824,6 +4824,26 @@ PrefabInstance:
 
 '
       objectReference: {fileID: 0}
+    - target: {fileID: 346175899125265826, guid: 12130958de9a82e449efe4d3d728d7c6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 346175899125265826, guid: 12130958de9a82e449efe4d3d728d7c6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1345628539}
+    - target: {fileID: 346175899125265826, guid: 12130958de9a82e449efe4d3d728d7c6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ChangeLevel
+      objectReference: {fileID: 0}
+    - target: {fileID: 346175899125265826, guid: 12130958de9a82e449efe4d3d728d7c6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 346175899125265826, guid: 12130958de9a82e449efe4d3d728d7c6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Tut02
+      objectReference: {fileID: 0}
     - target: {fileID: 346175899125265827, guid: 12130958de9a82e449efe4d3d728d7c6, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -4920,7 +4940,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelSelector (1)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 346175899125265831, guid: 12130958de9a82e449efe4d3d728d7c6, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 12130958de9a82e449efe4d3d728d7c6, type: 3}
 --- !u!224 &1695300011 stripped
 RectTransform:
@@ -6706,6 +6727,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2078138200}
     m_Modifications:
+    - target: {fileID: 346175899125265826, guid: 12130958de9a82e449efe4d3d728d7c6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 346175899125265826, guid: 12130958de9a82e449efe4d3d728d7c6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1345628539}
+    - target: {fileID: 346175899125265826, guid: 12130958de9a82e449efe4d3d728d7c6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ChangeLevel
+      objectReference: {fileID: 0}
+    - target: {fileID: 346175899125265826, guid: 12130958de9a82e449efe4d3d728d7c6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 346175899125265826, guid: 12130958de9a82e449efe4d3d728d7c6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Tut01
+      objectReference: {fileID: 0}
     - target: {fileID: 346175899125265827, guid: 12130958de9a82e449efe4d3d728d7c6, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -6802,5 +6843,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelSelector
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 346175899125265831, guid: 12130958de9a82e449efe4d3d728d7c6, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 12130958de9a82e449efe4d3d728d7c6, type: 3}
