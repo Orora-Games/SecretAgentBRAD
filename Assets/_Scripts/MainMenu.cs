@@ -1,4 +1,5 @@
 using UnityEngine;
+using static GameManager;
 
 public class MainMenu : MonoBehaviour {
 	public GameObject mainMenu, levelSelectMenu, optionsMenu;
