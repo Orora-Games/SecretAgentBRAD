@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 8190208599140289206}
   - component: {fileID: 1178325135312996650}
   - component: {fileID: 973837653234415738}
-  - component: {fileID: 6717097820597476803}
-  m_Layer: 0
-  m_Name: BlueWall-Block
+  - component: {fileID: 2062852151314904494}
+  m_Layer: 8
+  m_Name: BlueDoor
   m_TagString: BlueStructure
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -98,7 +98,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.99999994, y: 0.99999994, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!208 &6717097820597476803
+--- !u!208 &2062852151314904494
 NavMeshObstacle:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
