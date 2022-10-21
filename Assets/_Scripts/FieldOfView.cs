@@ -25,6 +25,7 @@ public class FieldOfView : MonoBehaviour {
 
 	[HideInInspector]
 	public List<Transform> visibleTargets = new List<Transform>();
+	private Vector3 visualizationDetectionHeight;
 
 	protected virtual void Start () {
 		viewMesh = new Mesh();
@@ -38,6 +39,12 @@ public class FieldOfView : MonoBehaviour {
 			targetSpottingTime = 0f;
 			FindVisibleTargets();
 		}
+		if ( visualizationDetectionHeight == Vector3.zero) {
+			EnemyController enemyController = gameObject.transform.GetComponent<EnemyController>();
+			if ( enemyController != null) {
+				visualizationDetectionHeight = enemyController.visualizationDetectionHeight;
+			}
+		}
 	}
 
 	/* We're using LateUpdate-function to allow movement/rotation to happen before we redraw the fov. */
@@ -48,8 +55,10 @@ public class FieldOfView : MonoBehaviour {
 	void FindVisibleTargets () {
 		/* Make sure our visibleTargets list doesn't clog up with duplicates ...*/
 		visibleTargets.Clear();
+
+		Vector3 visualizationDetectionPosition = (visualizationDetectionHeight != null ) ? new Vector3( transform.position.x, visualizationDetectionHeight.y, transform.position.z ): transform.position;
 		/* .. Find every Player within viewRadius ...*/
-		Collider[] targetsInViewRadius = Physics.OverlapSphere( transform.position, viewRadius, targetMask );
+		Collider[] targetsInViewRadius = Physics.OverlapSphere( new Vector3(transform.position.x, visualizationDetectionHeight.y, transform.position.z), viewRadius, targetMask );
 
 		/* If our OverlapSphere finds no colliders within the area, then get out of this function (none of the code below return will be run); */
 		if ( targetsInViewRadius.Length == 0 )
@@ -60,14 +69,14 @@ public class FieldOfView : MonoBehaviour {
 			/* .. Get the targets transform ... */
 			Transform target = targetsInViewRadius[ i ].transform;
 			/* .. find out how far away from Enemy the Player(target) is ... */
-			Vector3 dirToTarget = ( target.position - transform.position ).normalized;
+			Vector3 dirToTarget = ( target.position - visualizationDetectionPosition ).normalized;
 			/* .. Check that the target is within the viewAngle (Pizza-slice Enemy is seeing within) ... */
 			if ( Vector3.Angle( transform.forward, dirToTarget ) < viewAngle / 2f ) {
 				/* .. Find the distance to target ... */
-				float dstToTarget = Vector3.Distance( transform.position, target.position );
+				float dstToTarget = Vector3.Distance( visualizationDetectionPosition, target.position );
 
 				/* .. Check if there is an obstacle between target and Enemy ... */
-				if ( !Physics.Raycast( transform.position, dirToTarget, dstToTarget, obstacleMask ) ) {
+				if ( !Physics.Raycast( visualizationDetectionPosition, dirToTarget, dstToTarget, obstacleMask ) ) {
 					/* .. If there is no obstacle, check if this target is already in the list, if not add target to visible targets. */
 					if ( !visibleTargets.Contains( target ) )
 						visibleTargets.Add( target );
@@ -179,6 +188,7 @@ public class FieldOfView : MonoBehaviour {
 	}
 
 	ViewCastInfo ViewCast ( float globalAngle ) {
+
 		Vector3 dir = DirFromAngle( globalAngle, true );
 		RaycastHit hit;
 
