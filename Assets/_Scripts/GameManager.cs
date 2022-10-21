@@ -95,7 +95,6 @@ public class GameManager : MonoBehaviour {
 	/// <param name="additive"></param>
 	/// <returns></returns>
 	private string getTutorialOrRegularLevel (int additive = 0) {
-		Debug.Log(currentLevelName);
 		int tutorialLevelIndex = ( tutorialLevels.IndexOf( currentLevelName ) != -1) ? tutorialLevels.IndexOf( currentLevelName ) + additive : tutorialLevels.IndexOf( SceneManager.GetActiveScene().name ) + additive;
 		return ( tutorialLevelIndex != -1 ) ? ( tutorialLevelIndex >= tutorialLevels.Count ) ? levelNames[ currentLevelIndex + additive ] : tutorialLevels[ tutorialLevelIndex ] : levelNames[ currentLevelIndex + additive ];
 	}
@@ -110,8 +109,6 @@ public class GameManager : MonoBehaviour {
 		nextLevelScreen.SetActive( true );
 
 		if ( mode == "" ) { return; }
-
-
 
 		switch ( mode ) {
 			case "NextLevel":
