@@ -121,7 +121,8 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	/// <param name="level"></param>
 	public void NextLevel ( string level = "", bool skipLevelIncrease = false) {
-
+		ChangeGameState( GameState.Playing );
+		
 		if (level != "") {
 			ChangeLevel( level );
 			return;
