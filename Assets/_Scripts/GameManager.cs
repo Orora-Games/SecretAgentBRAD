@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public List<string> levelNames = new List<string> { "Level01", "Level02", "Level03", "Level04", "Level05", "Level06", "Level07" };
+	public List<string> tutorialLevels = new List<string> { "Tut01", "Tut02"};
 	private int currentLevelIndex = 0;
 	private string currentLevelName;
 
@@ -76,9 +77,7 @@ public class GameManager : MonoBehaviour {
 				}
 		} else if ( ( currentLevelName == "Finished" || currentLevelName == "YouLost" ) && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
 			anykeyTimer = 0f;
-			string level = levelNames[ currentLevelIndex ];
-
-			ChangeLevel( level );
+			RestartLevel();
 		} /* Still used to get out of YouLost scene. */
 		anykeyTimer += Time.deltaTime;
 	}
@@ -87,19 +86,36 @@ public class GameManager : MonoBehaviour {
 	/// Restarts last loaded level.
 	/// </summary>
 	public void RestartLevel () {
-		ChangeLevel( levelNames[ currentLevelIndex ] );
+		string data = getTutorialOrRegularLevel();
+		ChangeLevel( data );
 	}
-
+	/// <summary>
+	/// Will return level name if known in tutorials OR in levelNames
+	/// </summary>
+	/// <param name="additive"></param>
+	/// <returns></returns>
+	private string getTutorialOrRegularLevel (int additive = 0) {
+		Debug.Log(currentLevelName);
+		int tutorialLevelIndex = ( tutorialLevels.IndexOf( currentLevelName ) != -1) ? tutorialLevels.IndexOf( currentLevelName ) + additive : tutorialLevels.IndexOf( SceneManager.GetActiveScene().name ) + additive;
+		return ( tutorialLevelIndex != -1 ) ? ( tutorialLevelIndex >= tutorialLevels.Count ) ? levelNames[ currentLevelIndex + additive ] : tutorialLevels[ tutorialLevelIndex ] : levelNames[ currentLevelIndex + additive ];
+	}
+	/// <summary>
+	/// Pulls up the next-level-screen. Allowing the player their time to chose to move on to the next level, restart, go to the main menu, or a level select.
+	/// </summary>
+	/// <param name="mode"></param>
 	public void NextLevelScreen (string mode = "") {
-		nextLevelScreen.SetActive( true );
-		if ( mode == "" ) { return; }
+		string data = getTutorialOrRegularLevel(1);
+		//* Make sure ChangeGameState/nextLevelScreen/if mode return is in that order. *//
 		ChangeGameState( GameState.Paused );
-		//if (GetGameState() != GameState.Paused ) { return;  }
+		nextLevelScreen.SetActive( true );
+
+		if ( mode == "" ) { return; }
+
 
 
 		switch ( mode ) {
 			case "NextLevel":
-				NextLevel();
+				NextLevel(data);
 				break;
 			case "RestartLevel":
 				RestartLevel();
@@ -274,8 +290,6 @@ public class GameManager : MonoBehaviour {
 			case GameState.Paused:
 				break;
 			case GameState.LevelSelect:
-				/* Deactivate levelSelectScreen, we don't want to see it when we enter a new level. */
-				nextLevelScreen.SetActive( false );
 				
 				/* Reset currentLevelIndex */
 				currentLevelIndex = 0;
@@ -296,9 +310,12 @@ public class GameManager : MonoBehaviour {
 		OnGameStateChange?.Invoke( currentGameState );
 	}
 	private void SceneChangeActions (Scene scene, LoadSceneMode mode ) {
-		//SceneManager.SetActiveScene( NewScene );
+		GameState gs = GetGameState();
+		if (gs == GameState.MainMenu || gs == GameState.LevelSelect) {
+			ChangeGameState( GameState.Playing );
+		}
 
-		if ( levelNames.IndexOf( scene.name ) != -1 ) {
+		if ( levelNames.IndexOf( scene.name ) != -1  || tutorialLevels.IndexOf( scene.name ) != -1 ) {
 			SetIntelState();
 			MissionList();
 			UnlockObject();
@@ -307,8 +324,6 @@ public class GameManager : MonoBehaviour {
 		}
 		nextLevelScreen.SetActive( false );
 		escScreen.SetActive( false );
-
-
 	}
 
 	/// <summary>
