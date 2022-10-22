@@ -310,6 +310,11 @@ public class GameManager : MonoBehaviour {
 		}
 		OnGameStateChange?.Invoke( currentGameState );
 	}
+	/// <summary>
+	/// SceneChangeActions is run after a scene is loaded. Any script functionality that needs to be run after a scene is loaded goes here.
+	/// </summary>
+	/// <param name="scene"></param>
+	/// <param name="mode"></param>
 	private void SceneChangeActions (Scene scene, LoadSceneMode mode ) {
 		GameState gs = GetGameState();
 
@@ -358,7 +363,9 @@ public class GameManager : MonoBehaviour {
 			MissionListText.text = "- Find all Intel-folders (" + (currentLevelIntelTotal-currentLevelIntelCount) + " / " + currentLevelIntelTotal + ")";
 		}
 	}
-
+	/// <summary>
+	/// These are our gamestates.
+	/// </summary>
 	public enum GameState {
 		MainMenu,
 		Playing,
