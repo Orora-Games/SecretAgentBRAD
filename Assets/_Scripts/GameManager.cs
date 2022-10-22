@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public List<string> levelNames = new List<string> { "Level01", "Level02", "Level03", "Level04", "Level05", "Level06", "Level07" };
+	public List<string> tutorialLevels = new List<string> { "Tut01", "Tut02"};
 	private int currentLevelIndex = 0;
 	private string currentLevelName;
 
@@ -74,11 +75,9 @@ public class GameManager : MonoBehaviour {
 				} else {
 					ChangeGameState( GameState.EscScreen );
 				}
-		} else if ( ( currentLevelName == "Finished" || currentLevelName == "YouLost" ) && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
+		} else if ( ( currentLevelName == "Finished" || GetGameState() == GameState.GameOver ) && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
 			anykeyTimer = 0f;
-			string level = levelNames[ currentLevelIndex ];
-
-			ChangeLevel( level );
+			RestartLevel();
 		} /* Still used to get out of YouLost scene. */
 		anykeyTimer += Time.deltaTime;
 	}
@@ -87,19 +86,38 @@ public class GameManager : MonoBehaviour {
 	/// Restarts last loaded level.
 	/// </summary>
 	public void RestartLevel () {
-		ChangeLevel( levelNames[ currentLevelIndex ] );
+		string data = getTutorialOrRegularLevel();
+		ChangeLevel( data );
 	}
-
+	/// <summary>
+	/// Will return level name if known in tutorials OR in levelNames
+	/// </summary>
+	/// <param name="additive"></param>
+	/// <returns></returns>
+	private string getTutorialOrRegularLevel (int additive = 0) {
+		int tutorialLevelIndex = -1;
+		if ( tutorialLevels.IndexOf( currentLevelName ) != -1 ) {
+			tutorialLevelIndex = tutorialLevels.IndexOf( currentLevelName ) + additive;
+		} else if ( tutorialLevels.IndexOf( SceneManager.GetActiveScene().name ) != -1) {
+			tutorialLevelIndex = tutorialLevels.IndexOf( SceneManager.GetActiveScene().name ) + additive;
+		}
+		return ( tutorialLevelIndex != -1 ) ? ( tutorialLevelIndex >= tutorialLevels.Count ) ? levelNames[ currentLevelIndex + additive ] : tutorialLevels[ tutorialLevelIndex ] : levelNames[ currentLevelIndex + additive ];
+	}
+	/// <summary>
+	/// Pulls up the next-level-screen. Allowing the player their time to chose to move on to the next level, restart, go to the main menu, or a level select.
+	/// </summary>
+	/// <param name="mode"></param>
 	public void NextLevelScreen (string mode = "") {
-		nextLevelScreen.SetActive( true );
-		if ( mode == "" ) { return; }
+		string data = getTutorialOrRegularLevel(1);
+		//* Make sure ChangeGameState/nextLevelScreen/if mode return is in that order. *//
 		ChangeGameState( GameState.Paused );
-		//if (GetGameState() != GameState.Paused ) { return;  }
+		nextLevelScreen.SetActive( true );
 
+		if ( mode == "" ) { return; }
 
 		switch ( mode ) {
 			case "NextLevel":
-				NextLevel();
+				NextLevel(data);
 				break;
 			case "RestartLevel":
 				RestartLevel();
@@ -121,7 +139,6 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	/// <param name="level"></param>
 	public void NextLevel ( string level = "", bool skipLevelIncrease = false) {
-		ChangeGameState( GameState.Playing );
 		
 		if (level != "") {
 			ChangeLevel( level );
@@ -151,7 +168,7 @@ public class GameManager : MonoBehaviour {
 			return;
 		}
 
-		currentLevelName = level;
+		currentLevelName = ( level != gameOverLevel) ? level: currentLevelName;
 		anykeyTimer = 0f;
 
 		/* If the level exists in our list of levels, load it . */
@@ -227,7 +244,6 @@ public class GameManager : MonoBehaviour {
 		switch ( buttonType ) {
 			case "MainMenu":
 				/* Deactivate escScreen, we don't want to see it when we enter a new level. */
-				escScreen.SetActive( false );
 				ChangeGameState( GameState.MainMenu );
 				break;
 			case "RestartLevel":
@@ -275,8 +291,6 @@ public class GameManager : MonoBehaviour {
 			case GameState.Paused:
 				break;
 			case GameState.LevelSelect:
-				/* Deactivate levelSelectScreen, we don't want to see it when we enter a new level. */
-				nextLevelScreen.SetActive( false );
 				
 				/* Reset currentLevelIndex */
 				currentLevelIndex = 0;
@@ -296,19 +310,28 @@ public class GameManager : MonoBehaviour {
 		}
 		OnGameStateChange?.Invoke( currentGameState );
 	}
+	/// <summary>
+	/// SceneChangeActions is run after a scene is loaded. Any script functionality that needs to be run after a scene is loaded goes here.
+	/// </summary>
+	/// <param name="scene"></param>
+	/// <param name="mode"></param>
 	private void SceneChangeActions (Scene scene, LoadSceneMode mode ) {
-		//SceneManager.SetActiveScene( NewScene );
+		GameState gs = GetGameState();
 
-		nextLevelScreen.SetActive( false );
+		if (gs == GameState.LevelSelect ) {
+			ChangeGameState( GameState.Playing );
+		}
 
-		if ( levelNames.IndexOf( scene.name ) != -1 ) {
+		if ( levelNames.IndexOf( scene.name ) != -1  || tutorialLevels.IndexOf( scene.name ) != -1 ) {
 			SetIntelState();
 			MissionList();
 			UnlockObject();
+			ChangeGameState( GameState.Playing );
 		} else {
 			MissionList(false);
 		}
-		
+		nextLevelScreen.SetActive( false );
+		escScreen.SetActive( false );
 	}
 
 	/// <summary>
@@ -340,7 +363,9 @@ public class GameManager : MonoBehaviour {
 			MissionListText.text = "- Find all Intel-folders (" + (currentLevelIntelTotal-currentLevelIntelCount) + " / " + currentLevelIntelTotal + ")";
 		}
 	}
-
+	/// <summary>
+	/// These are our gamestates.
+	/// </summary>
 	public enum GameState {
 		MainMenu,
 		Playing,

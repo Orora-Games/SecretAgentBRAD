@@ -144,7 +144,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 346175899125265827}
-  - component: {fileID: 346175899125265831}
+  - component: {fileID: 7170844765673047314}
   - component: {fileID: 346175899125265824}
   - component: {fileID: 346175899125265825}
   - component: {fileID: 346175899125265826}
@@ -176,7 +176,7 @@ RectTransform:
   m_AnchoredPosition: {x: -200, y: 0}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &346175899125265831
+--- !u!114 &7170844765673047314
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -271,7 +271,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 346175899125265831}
+      - m_Target: {fileID: 7170844765673047314}
         m_TargetAssemblyTypeName: LevelSelector, Assembly-CSharp
         m_MethodName: OpenScene
         m_Mode: 1
