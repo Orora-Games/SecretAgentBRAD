@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour {
 
 	/* Set static levels here. */
 	[Header("Scene Selection")] 
-	public string gameOverLevel = "YouLost";
+	public GameObject gameOverscreen;
 	public string winLevel = "Finished";
 	public string menuScene = "Main Menu";
 
@@ -47,8 +47,11 @@ public class GameManager : MonoBehaviour {
 	private List<GameObject> checkpointIntelState = new List<GameObject>();
 	private List<GameObject> allIntelObjects = new List<GameObject>();
 	private GameObject currentCheckpoint;
+	private string lastLevel;
 
 	private GameState currentGameState;
+
+	private bool debugMessages = false;
 
 	private void OnEnable () {
 		SceneManager.sceneLoaded += SceneChangeActions;
@@ -173,7 +176,8 @@ public class GameManager : MonoBehaviour {
 			return;
 		}
 
-		currentLevelName = ( level != gameOverLevel) ? level: currentLevelName;
+		lastLevel = currentLevelName;
+		currentLevelName = level;
 		anykeyTimer = 0f;
 
 		/* If the level exists in our list of levels, load it . */
@@ -293,6 +297,7 @@ public class GameManager : MonoBehaviour {
 				escScreen.SetActive( false );
 				helpScreen.SetActive( false );
 				nextLevelScreen.SetActive( false );
+				gameOverscreen.SetActive( false );
 				break;
 			case GameState.Paused:
 				break;
@@ -303,7 +308,7 @@ public class GameManager : MonoBehaviour {
 				ChangeLevel( menuScene );
 				break;
 			case GameState.GameOver:
-				ChangeLevel( gameOverLevel );
+				gameOverscreen.SetActive(true);
 				break;
 			case GameState.WinGame:
 				ChangeLevel( winLevel );
@@ -340,13 +345,18 @@ public class GameManager : MonoBehaviour {
 	private void InitializeLevel(string name) {
 		if ( levelNames.IndexOf( name ) != -1 || tutorialLevels.IndexOf( name ) != -1 ) {
 			currentIntelLevelObjects = new List<GameObject>();
-			checkpointIntelState = new List<GameObject>();
 			allIntelObjects = new List<GameObject>();
 			currentCheckpoint = null;
+			if ( lastLevel != currentLevelName) {
+				checkpointIntelState = new List<GameObject>();
+				
+				SetIntelState( true );
+				MissionList();
+				UnlockExit();
+			} else {
+				ReturnToCheckpoint();
+			}
 
-			SetIntelState(true);
-			MissionList();
-			UnlockExit();
 			ChangeGameState( GameState.Playing );
 		} else {
 			MissionList( false );
@@ -362,10 +372,11 @@ public class GameManager : MonoBehaviour {
 	/// Should return the player to the checkpoint, as well as re-seat the intel-state 
 	/// </summary>
 	public void ReturnToCheckpoint () {
-		if (checkpointIntelState.Count == 0 || !currentCheckpoint ) { Debug.LogError("You have no checkpoint to return to."); return; }
-		if ( allIntelObjects.Count == 0) { Debug.LogError("allIntelObjects not set, this variable is required for ReturnToCheckPoint."); return; }
+		if (checkpointIntelState.Count == 0 || !currentCheckpoint ) { if ( debugMessages ) { Debug.LogError( "You have no checkpoint to return to." ); } return; }
+		if ( allIntelObjects.Count == 0) { if ( debugMessages ) { Debug.LogError( "allIntelObjects not set, this variable is required for ReturnToCheckPoint." ); } return; }
 
 		foreach ( var item in allIntelObjects ) {
+			Debug.Log();
 			if ( checkpointIntelState.IndexOf( item ) == -1) {
 				item.SetActive(false);
 			}
@@ -387,6 +398,7 @@ public class GameManager : MonoBehaviour {
 		characterController.enabled = true;
 
 		characterController.transform.position = currentCheckpoint.transform.position;
+		currentCheckpoint.transform.GetComponent<Renderer>().material.color = Color.green;
 
 	}
 
