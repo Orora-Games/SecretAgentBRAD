@@ -1145,7 +1145,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &9000377985111718232
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3652,6 +3652,9 @@ MonoBehaviour:
   - Level01
   - Level02
   - Level03
+  tutorialLevels:
+  - Tut01
+  - Tut02
   state: 0
   gameOverLevel: YouLost
   winLevel: Finished
