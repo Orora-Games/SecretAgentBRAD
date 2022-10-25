@@ -4097,11 +4097,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelNames:
-  - Tut01
-  - Tut02
   - Level01
   - Level02
   - Level03
+  - Level04
+  - Level05
+  - Level06
+  - Level07
   tutorialLevels:
   - Tut01
   - Tut02
@@ -4114,12 +4116,6 @@ MonoBehaviour:
   escScreen: {fileID: 7131491366890350955}
   nextLevelScreen: {fileID: 5681326400280092011}
   helpScreen: {fileID: 1940328860494029062}
-  intelMask:
-    serializedVersion: 2
-    m_Bits: 512
-  checkPointMask:
-    serializedVersion: 2
-    m_Bits: 1024
 --- !u!1 &9069645859028573940
 GameObject:
   m_ObjectHideFlags: 0
