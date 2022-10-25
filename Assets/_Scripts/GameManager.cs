@@ -42,6 +42,11 @@ public class GameManager : MonoBehaviour {
 	public GameObject escScreen, nextLevelScreen, helpScreen;
 
 	private GameObject currentIntelObject;
+	private List<GameObject> intelState;
+	private List<GameObject> currentIntelLevelObjects = new List<GameObject>();
+	private List<GameObject> checkpointIntelState = new List<GameObject>();
+	private List<GameObject> allIntelObjects = new List<GameObject>();
+	private GameObject currentCheckpoint;
 
 	private GameState currentGameState;
 
@@ -209,11 +214,12 @@ public class GameManager : MonoBehaviour {
 	public void PickedUpIntel (GameObject intelObject ) {
 		currentIntelObject = intelObject;
 		currentLevelIntelCount -= 1;
-		UnlockObject();
+		UnlockExit();
 		MissionList();
 
 		/* TODO: Move to Level Manager */
-		Destroy(intelObject);
+		intelObject.SetActive(false);
+		SetIntelState();
 	}
 
 	/// <summary>
@@ -221,7 +227,7 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	/// <param name="parentTag">string tagName of parent containing exit_lock-object</param>
 	/// <param name="exitCheck">bool enable intel-check?</param>
-	public void UnlockObject (string parentTag = "ExfilZone", bool exitCheck = true ) {
+	public void UnlockExit (string parentTag = "ExfilZone", bool exitCheck = true ) {
 		if ( exitCheck &&  currentLevelIntelCount > 0 ) return; /* TODO: Move to Level Manager */
 
 		/* Allow for more than one exit Zone. */
@@ -322,23 +328,78 @@ public class GameManager : MonoBehaviour {
 			ChangeGameState( GameState.Playing );
 		}
 
-		if ( levelNames.IndexOf( scene.name ) != -1  || tutorialLevels.IndexOf( scene.name ) != -1 ) {
-			SetIntelState();
-			MissionList();
-			UnlockObject();
-			ChangeGameState( GameState.Playing );
-		} else {
-			MissionList(false);
-		}
+		InitializeLevel(scene.name);
+		ReturnToCheckpoint();
 		nextLevelScreen.SetActive( false );
 		escScreen.SetActive( false );
 	}
+	/// <summary>
+	/// Initializes level states.
+	/// </summary>
+	/// <param name="name"></param>
+	private void InitializeLevel(string name) {
+		if ( levelNames.IndexOf( name ) != -1 || tutorialLevels.IndexOf( name ) != -1 ) {
+			currentIntelLevelObjects = new List<GameObject>();
+			checkpointIntelState = new List<GameObject>();
+			allIntelObjects = new List<GameObject>();
+			currentCheckpoint = null;
+
+			SetIntelState(true);
+			MissionList();
+			UnlockExit();
+			ChangeGameState( GameState.Playing );
+		} else {
+			MissionList( false );
+		}
+	}
+
+	public void Checkpoint (GameObject checkpoint) {
+		checkpointIntelState = currentIntelLevelObjects;
+		currentCheckpoint = checkpoint;
+		checkpoint.transform.GetComponent<Renderer>().material.color = Color.green;
+	}
+	/// <summary>
+	/// Should return the player to the checkpoint, as well as re-seat the intel-state 
+	/// </summary>
+	public void ReturnToCheckpoint () {
+		if (checkpointIntelState.Count == 0 || !currentCheckpoint ) { Debug.LogError("You have no checkpoint to return to."); return; }
+		if ( allIntelObjects.Count == 0) { Debug.LogError("allIntelObjects not set, this variable is required for ReturnToCheckPoint."); return; }
+
+		foreach ( var item in allIntelObjects ) {
+			if ( checkpointIntelState.IndexOf( item ) == -1) {
+				item.SetActive(false);
+			}
+		}
+
+		SetIntelState();
+		MissionList();
+		UnlockExit();
+
+		GameObject player = GameObject.FindGameObjectWithTag("Player");
+		if ( player != null ) { Debug.LogError("Player not found, aborting teleport.");  return; }
+		CharacterController characterController = player.GetComponent<CharacterController>();
+
+
+		//Play animation (Dim Down camera or something)
+		characterController.enabled = false;
+		float playerHeight = player.transform.position.y; // We're getting the player height here, because nextLocation is not the height we want our player at.
+		player.transform.position = new Vector3( currentCheckpoint.transform.position.x, playerHeight, currentCheckpoint.transform.position.z );
+		characterController.enabled = true;
+
+		characterController.transform.position = currentCheckpoint.transform.position;
+
+	}
 
 	/// <summary>
-	/// Sets int currentLevelIntelCount and int currentLevelIntelTotal;
+	/// Initializes, and updates our intel-state related variables/objects. 
 	/// </summary>
-	private void SetIntelState () {
-		currentLevelIntelTotal = GameObject.FindGameObjectsWithTag( "Intel" ).Length;
+	/// <param name="setIntelObjects"></param>
+	private void SetIntelState (bool setIntelObjects = false) {
+		if ( allIntelObjects.Count == 0 || setIntelObjects) {
+			allIntelObjects = new List<GameObject> ( GameObject.FindGameObjectsWithTag( "Intel" )); 
+		}
+		currentIntelLevelObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag( "Intel" ));
+		currentLevelIntelTotal = currentIntelLevelObjects.Count;
 		Scene newScene = SceneManager.GetActiveScene();
 		currentLevelIntelCount = currentLevelIntelTotal;
 	}
