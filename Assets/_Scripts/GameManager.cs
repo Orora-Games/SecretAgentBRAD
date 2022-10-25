@@ -95,8 +95,14 @@ public class GameManager : MonoBehaviour {
 	/// <summary>
 	/// Restarts last loaded level.
 	/// </summary>
-	public void RestartLevel () {
+	public void RestartLevel (bool resetCheckpoint = false) {
 		string data = getTutorialOrRegularLevel();
+		if (resetCheckpoint == true) {
+			currentCheckpoint = -1;
+			checkpointIntelState = new List<int>();
+
+			UpdateIntelState( true );
+		}
 		ChangeLevel( data );
 	}
 	/// <summary>
@@ -130,7 +136,7 @@ public class GameManager : MonoBehaviour {
 				NextLevel(data);
 				break;
 			case "RestartLevel":
-				RestartLevel();
+				RestartLevel(true);
 				break;
 			case "MainMenu":
 				ChangeGameState( GameState.MainMenu );
@@ -258,7 +264,7 @@ public class GameManager : MonoBehaviour {
 				ChangeGameState( GameState.MainMenu );
 				break;
 			case "RestartLevel":
-				RestartLevel();
+				RestartLevel(true);
 				break;
 			case "HelpScreen":
 				break;
@@ -404,6 +410,8 @@ public class GameManager : MonoBehaviour {
 		// IF the respawn zone exists, 
 		GameObject respawn = GameObject.FindGameObjectWithTag("RespawnZone");
 		GameObject player = GameObject.FindGameObjectWithTag( "Player" );
+		allCheckpoints[ currentCheckpoint ].transform.GetComponent<CheckpointBehaviour>().enableCheckpoint = false;
+
 		if ( respawn == null && player != null) {
 			CharacterController characterController = player.transform.GetComponent<CharacterController>();
 
