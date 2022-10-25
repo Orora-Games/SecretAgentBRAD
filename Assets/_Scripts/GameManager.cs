@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using static GameManager;
+using static UnityEditor.Progress;
 
 public class GameManager : MonoBehaviour {
 	/* Game Manager tutorial
@@ -44,9 +45,10 @@ public class GameManager : MonoBehaviour {
 	private GameObject currentIntelObject;
 	private List<GameObject> intelState;
 	private List<GameObject> currentIntelLevelObjects = new List<GameObject>();
-	private List<GameObject> checkpointIntelState = new List<GameObject>();
 	private List<GameObject> allIntelObjects = new List<GameObject>();
-	private GameObject currentCheckpoint;
+	private List<int> checkpointIntelState = new List<int>();
+	private List<GameObject> allCheckpoints = new List<GameObject>();
+	private int currentCheckpoint;
 	private string lastLevel;
 
 	private GameState currentGameState;
@@ -69,7 +71,7 @@ public class GameManager : MonoBehaviour {
 
 
 	void Start () {
-		currentLevelName = SceneManager.GetActiveScene().name;	
+		currentLevelName = SceneManager.GetActiveScene().name;
 		currentLevelIndex = 0;
 	}
 
@@ -184,7 +186,7 @@ public class GameManager : MonoBehaviour {
 		if ( levelNames.IndexOf( level ) != -1) {
 			currentLevelIndex = levelNames.IndexOf( currentLevelName );
 
-			SceneManager.LoadScene( level);
+			SceneManager.LoadScene( level );
 			/* Functions needed for missions to work, can be found in SceneChangeActions() */
 			return;
 		}
@@ -217,13 +219,12 @@ public class GameManager : MonoBehaviour {
 	/// <param name="intelObject"></param>
 	public void PickedUpIntel (GameObject intelObject ) {
 		currentIntelObject = intelObject;
-		currentLevelIntelCount -= 1;
-		UnlockExit();
-		MissionList();
 
 		/* TODO: Move to Level Manager */
-		intelObject.SetActive(false);
-		SetIntelState();
+		intelObject.SetActive( false );
+
+		MissionList();
+		UnlockExit();
 	}
 
 	/// <summary>
@@ -273,6 +274,8 @@ public class GameManager : MonoBehaviour {
 	/// Returns the current game-state in a string format.
 	/// </summary>
 	/// <returns></returns>
+	/// 
+	#region GameState
 	public GameState GetGameState () {
 		return currentGameState;
 	}
@@ -321,6 +324,9 @@ public class GameManager : MonoBehaviour {
 		}
 		OnGameStateChange?.Invoke( currentGameState );
 	}
+	#endregion
+
+
 	/// <summary>
 	/// SceneChangeActions is run after a scene is loaded. Any script functionality that needs to be run after a scene is loaded goes here.
 	/// </summary>
@@ -334,10 +340,10 @@ public class GameManager : MonoBehaviour {
 		}
 
 		InitializeLevel(scene.name);
-		ReturnToCheckpoint();
 		nextLevelScreen.SetActive( false );
 		escScreen.SetActive( false );
 	}
+
 	/// <summary>
 	/// Initializes level states.
 	/// </summary>
@@ -346,14 +352,19 @@ public class GameManager : MonoBehaviour {
 		if ( levelNames.IndexOf( name ) != -1 || tutorialLevels.IndexOf( name ) != -1 ) {
 			currentIntelLevelObjects = new List<GameObject>();
 			allIntelObjects = new List<GameObject>();
-			currentCheckpoint = null;
+
+			allCheckpoints = new List<GameObject>( GameObject.FindGameObjectsWithTag( "Checkpoint" ) );
+
 			if ( lastLevel != currentLevelName) {
-				checkpointIntelState = new List<GameObject>();
+				currentCheckpoint = -1;
+				checkpointIntelState = new List<int>();
 				
-				SetIntelState( true );
+				UpdateIntelState( true );
 				MissionList();
 				UnlockExit();
 			} else {
+
+				UpdateIntelState( true );
 				ReturnToCheckpoint();
 			}
 
@@ -364,56 +375,65 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void Checkpoint (GameObject checkpoint) {
-		checkpointIntelState = currentIntelLevelObjects;
-		currentCheckpoint = checkpoint;
+		checkpointIntelState = new List<int>();
+
+		for ( int i = 0; i < currentIntelLevelObjects.Count; i++ ) {
+			checkpointIntelState.Add(i);
+		}
+
+		currentCheckpoint = allCheckpoints.IndexOf(checkpoint);
+
 		checkpoint.transform.GetComponent<Renderer>().material.color = Color.green;
 	}
 	/// <summary>
 	/// Should return the player to the checkpoint, as well as re-seat the intel-state 
 	/// </summary>
 	public void ReturnToCheckpoint () {
-		if (checkpointIntelState.Count == 0 || !currentCheckpoint ) { if ( debugMessages ) { Debug.LogError( "You have no checkpoint to return to." ); } return; }
+		if (checkpointIntelState.Count == 0 || currentCheckpoint == -1 ) { if ( debugMessages ) { Debug.LogError( "You have no checkpoint to return to." ); } return; }
 		if ( allIntelObjects.Count == 0) { if ( debugMessages ) { Debug.LogError( "allIntelObjects not set, this variable is required for ReturnToCheckPoint." ); } return; }
 
-		foreach ( var item in allIntelObjects ) {
-			Debug.Log();
-			if ( checkpointIntelState.IndexOf( item ) == -1) {
-				item.SetActive(false);
-			}
+		// Go through all the intel-objects, and disable intel-objects we do _NOT_ find in checkpointIntelState
+		for ( int i = 0; i < allIntelObjects.Count; i++ ) {
+			allIntelObjects[i].SetActive(( checkpointIntelState.IndexOf( i ) == -1) );
 		}
 
-		SetIntelState();
+		//Update missions list and unlock if that is required.
 		MissionList();
 		UnlockExit();
 
-		GameObject player = GameObject.FindGameObjectWithTag("Player");
-		if ( player != null ) { Debug.LogError("Player not found, aborting teleport.");  return; }
-		CharacterController characterController = player.GetComponent<CharacterController>();
+		// IF the respawn zone exists, 
+		GameObject respawn = GameObject.FindGameObjectWithTag("RespawnZone");
+		GameObject player = GameObject.FindGameObjectWithTag( "Player" );
+		if ( respawn == null && player != null) {
+			CharacterController characterController = player.transform.GetComponent<CharacterController>();
 
+			//Play animation (Dim Down camera or something)
+			characterController.enabled = false;
+			float playerHeight = player.transform.position.y; // We're getting the player height here, because nextLocation is not the height we want our player at.
+			player.transform.position = new Vector3( allCheckpoints[ currentCheckpoint ].transform.position.x, playerHeight, allCheckpoints[ currentCheckpoint ].transform.position.z );
+			characterController.enabled = true;
 
-		//Play animation (Dim Down camera or something)
-		characterController.enabled = false;
-		float playerHeight = player.transform.position.y; // We're getting the player height here, because nextLocation is not the height we want our player at.
-		player.transform.position = new Vector3( currentCheckpoint.transform.position.x, playerHeight, currentCheckpoint.transform.position.z );
-		characterController.enabled = true;
+			characterController.transform.position = allCheckpoints[ currentCheckpoint ].transform.position;
+		} else {
+			respawn.transform.position = new Vector3( allCheckpoints[ currentCheckpoint ].transform.position.x, respawn.transform.position.y, allCheckpoints[ currentCheckpoint ].transform.position.z );
+		}
 
-		characterController.transform.position = currentCheckpoint.transform.position;
-		currentCheckpoint.transform.GetComponent<Renderer>().material.color = Color.green;
-
+		allCheckpoints[ currentCheckpoint ].transform.GetComponent<Renderer>().material.color = Color.green;
 	}
 
 	/// <summary>
 	/// Initializes, and updates our intel-state related variables/objects. 
 	/// </summary>
 	/// <param name="setIntelObjects"></param>
-	private void SetIntelState (bool setIntelObjects = false) {
+	private void UpdateIntelState (bool setIntelObjects = false) {
 		if ( allIntelObjects.Count == 0 || setIntelObjects) {
 			allIntelObjects = new List<GameObject> ( GameObject.FindGameObjectsWithTag( "Intel" )); 
 		}
+
 		currentIntelLevelObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag( "Intel" ));
-		currentLevelIntelTotal = currentIntelLevelObjects.Count;
-		Scene newScene = SceneManager.GetActiveScene();
-		currentLevelIntelCount = currentLevelIntelTotal;
+		
+		currentLevelIntelTotal = allIntelObjects.Count;
+		currentLevelIntelCount = currentIntelLevelObjects.Count;
 	}
 
 	/// <summary>
@@ -426,6 +446,7 @@ public class GameManager : MonoBehaviour {
 			MissionListText.text = "";
 			return;
 		}
+		UpdateIntelState();
 
 		MissionListCanvas.gameObject.SetActive(true);
 
