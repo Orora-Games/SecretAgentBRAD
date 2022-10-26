@@ -395,7 +395,7 @@ public class GameManager : MonoBehaviour {
 	/// Should return the player to the checkpoint, as well as re-seat the intel-state 
 	/// </summary>
 	public void ReturnToCheckpoint () {
-		if (checkpointIntelState.Count == 0 || currentCheckpoint == -1 ) { if ( debugMessages ) { Debug.LogError( "You have no checkpoint to return to." ); } return; }
+		if (currentCheckpoint == -1 ) { if ( debugMessages ) { Debug.LogError( "You have no checkpoint to return to." ); } return; }
 		if ( allIntelObjects.Count == 0) { if ( debugMessages ) { Debug.LogError( "allIntelObjects not set, this variable is required for ReturnToCheckPoint." ); } return; }
 
 		// Go through all the intel-objects, and disable intel-objects we do _NOT_ find in checkpointIntelState
