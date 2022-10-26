@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour {
 	public GameState state;
 	public static event Action<GameState> OnGameStateChange;
 
-	private int currentLevelIntelCount;
+	private int currentPickedUpIntelCount;
 	private int currentLevelIntelTotal;
 	private float anykeyTimeLimit = 1f;
 	private float anykeyTimer = 0f;
@@ -43,11 +43,10 @@ public class GameManager : MonoBehaviour {
 
 	private GameObject currentIntelObject;
 	private List<GameObject> intelState;
-	private List<GameObject> currentIntelLevelObjects = new List<GameObject>();
 	private List<GameObject> allIntelObjects = new List<GameObject>();
 	private List<int> checkpointIntelState = new List<int>();
 	private List<GameObject> allCheckpoints = new List<GameObject>();
-	private int currentCheckpoint;
+	private int currentCheckpoint = -1;
 	private string lastLevel;
 
 	private GameState currentGameState;
@@ -98,9 +97,9 @@ public class GameManager : MonoBehaviour {
 		string data = getTutorialOrRegularLevel();
 		if (resetCheckpoint == true) {
 			currentCheckpoint = -1;
-			checkpointIntelState = new List<int>();
 
 			UpdateIntelState( true );
+			MissionList();
 		}
 		ChangeLevel( data );
 	}
@@ -208,7 +207,7 @@ public class GameManager : MonoBehaviour {
 		/* TODO: Move to Level Manager */
 
 		/* This check makes sure that Player has picked up all intel needed to allow their exfiltration. */
-		if ( currentLevelIntelCount > 0 && !ignoreIntelState )
+		if ( currentPickedUpIntelCount > 0 && !ignoreIntelState )
 			return;
 
 		if ( !ignoreIntelState ) {
@@ -239,7 +238,7 @@ public class GameManager : MonoBehaviour {
 	/// <param name="parentTag">string tagName of parent containing exit_lock-object</param>
 	/// <param name="exitCheck">bool enable intel-check?</param>
 	public void UnlockExit (string parentTag = "ExfilZone", bool exitCheck = true ) {
-		if ( exitCheck &&  currentLevelIntelCount > 0 ) return; /* TODO: Move to Level Manager */
+		if ( exitCheck &&  currentPickedUpIntelCount > 0 ) return; /* TODO: Move to Level Manager */
 
 		/* Allow for more than one exit Zone. */
 		GameObject[] lockObjectParents = GameObject.FindGameObjectsWithTag( parentTag );
@@ -356,7 +355,6 @@ public class GameManager : MonoBehaviour {
 	/// <param name="name"></param>
 	private void InitializeLevel(string name) {
 		if ( levelNames.IndexOf( name ) != -1 || tutorialLevels.IndexOf( name ) != -1 ) {
-			currentIntelLevelObjects = new List<GameObject>();
 			allIntelObjects = new List<GameObject>();
 
 			allCheckpoints = new List<GameObject>( GameObject.FindGameObjectsWithTag( "Checkpoint" ) );
@@ -369,7 +367,6 @@ public class GameManager : MonoBehaviour {
 				MissionList();
 				UnlockExit();
 			} else {
-
 				UpdateIntelState( true );
 				ReturnToCheckpoint();
 			}
@@ -389,7 +386,15 @@ public class GameManager : MonoBehaviour {
 	/// Should return the player to the checkpoint, as well as re-seat the intel-state 
 	/// </summary>
 	public void ReturnToCheckpoint () {
-		if (currentCheckpoint == -1 ) { if ( debugMessages ) { Debug.LogError( "You have no checkpoint to return to." ); } return; }
+		if (currentCheckpoint == -1 ) {
+			checkpointIntelState = new List<int>();
+			MissionList();
+
+			if ( debugMessages ) { 
+				Debug.LogError( "You have no checkpoint to return to." ); 
+			} 
+			return; 
+		}
 		if ( allIntelObjects.Count == 0) { if ( debugMessages ) { Debug.LogError( "allIntelObjects not set, this variable is required for ReturnToCheckPoint." ); } return; }
 
 		// Go through all the intel-objects, and disable intel-objects we do _NOT_ find in checkpointIntelState
@@ -429,13 +434,13 @@ public class GameManager : MonoBehaviour {
 	/// <param name="setIntelObjects"></param>
 	private void UpdateIntelState (bool setIntelObjects = false) {
 		if ( allIntelObjects.Count == 0 || setIntelObjects) {
+			currentPickedUpIntelCount = 0;
+			checkpointIntelState = new List<int>();
 			allIntelObjects = new List<GameObject> ( GameObject.FindGameObjectsWithTag( "Intel" )); 
+			currentLevelIntelTotal = allIntelObjects.Count;
 		}
-
-		currentIntelLevelObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag( "Intel" ));
 		
-		currentLevelIntelTotal = allIntelObjects.Count;
-		currentLevelIntelCount = currentIntelLevelObjects.Count;
+		currentPickedUpIntelCount = checkpointIntelState.Count;
 	}
 
 	/// <summary>
@@ -448,15 +453,15 @@ public class GameManager : MonoBehaviour {
 			MissionListText.text = "";
 			return;
 		}
+
 		UpdateIntelState();
 
 		MissionListCanvas.gameObject.SetActive(true);
-
-		if ( currentLevelIntelCount == 0) {
+		if ( currentPickedUpIntelCount == currentLevelIntelTotal ) {
 			MissionListText.SetText( "<s>- Find all Intel-folders (" + currentLevelIntelTotal + " / " + currentLevelIntelTotal + ")</s>" );
 			//MissionListText.text = ;
 		} else {
-			MissionListText.text = "- Find all Intel-folders (" + (currentLevelIntelTotal-currentLevelIntelCount) + " / " + currentLevelIntelTotal + ")";
+			MissionListText.text = "- Find all Intel-folders (" + currentPickedUpIntelCount + " / " + currentLevelIntelTotal + ")";
 		}
 	}
 	/// <summary>
