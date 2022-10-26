@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using static GameManager;
-using static UnityEditor.Progress;
 
 public class GameManager : MonoBehaviour {
 	/* Game Manager tutorial
