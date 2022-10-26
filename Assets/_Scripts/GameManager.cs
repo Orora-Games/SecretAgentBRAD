@@ -225,6 +225,7 @@ public class GameManager : MonoBehaviour {
 	/// <param name="intelObject"></param>
 	public void PickedUpIntel (GameObject intelObject ) {
 		currentIntelObject = intelObject;
+		checkpointIntelState.Add( allIntelObjects.IndexOf( intelObject ) );
 
 		/* TODO: Move to Level Manager */
 		intelObject.SetActive( false );
@@ -381,12 +382,6 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void Checkpoint (GameObject checkpoint) {
-		checkpointIntelState = new List<int>();
-
-		for ( int i = 0; i < currentIntelLevelObjects.Count; i++ ) {
-			checkpointIntelState.Add(i);
-		}
-
 		currentCheckpoint = allCheckpoints.IndexOf(checkpoint);
 
 		checkpoint.transform.GetComponent<Renderer>().material.color = Color.green;
