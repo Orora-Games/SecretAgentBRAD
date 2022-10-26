@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using static GameManager;
+using static UnityEditor.Progress;
 
 public class GameManager : MonoBehaviour {
 	/* Game Manager tutorial
@@ -32,7 +33,7 @@ public class GameManager : MonoBehaviour {
 
 	/* Set static levels here. */
 	[Header("Scene Selection")] 
-	public string gameOverLevel = "YouLost";
+	public GameObject gameOverscreen;
 	public string winLevel = "Finished";
 	public string menuScene = "Main Menu";
 
@@ -42,8 +43,17 @@ public class GameManager : MonoBehaviour {
 	public GameObject escScreen, nextLevelScreen, helpScreen;
 
 	private GameObject currentIntelObject;
+	private List<GameObject> intelState;
+	private List<GameObject> currentIntelLevelObjects = new List<GameObject>();
+	private List<GameObject> allIntelObjects = new List<GameObject>();
+	private List<int> checkpointIntelState = new List<int>();
+	private List<GameObject> allCheckpoints = new List<GameObject>();
+	private int currentCheckpoint;
+	private string lastLevel;
 
 	private GameState currentGameState;
+
+	private bool debugMessages = false;
 
 	private void OnEnable () {
 		SceneManager.sceneLoaded += SceneChangeActions;
@@ -61,7 +71,7 @@ public class GameManager : MonoBehaviour {
 
 
 	void Start () {
-		currentLevelName = SceneManager.GetActiveScene().name;	
+		currentLevelName = SceneManager.GetActiveScene().name;
 		currentLevelIndex = 0;
 	}
 
@@ -85,8 +95,14 @@ public class GameManager : MonoBehaviour {
 	/// <summary>
 	/// Restarts last loaded level.
 	/// </summary>
-	public void RestartLevel () {
+	public void RestartLevel (bool resetCheckpoint = false) {
 		string data = getTutorialOrRegularLevel();
+		if (resetCheckpoint == true) {
+			currentCheckpoint = -1;
+			checkpointIntelState = new List<int>();
+
+			UpdateIntelState( true );
+		}
 		ChangeLevel( data );
 	}
 	/// <summary>
@@ -120,7 +136,7 @@ public class GameManager : MonoBehaviour {
 				NextLevel(data);
 				break;
 			case "RestartLevel":
-				RestartLevel();
+				RestartLevel(true);
 				break;
 			case "MainMenu":
 				ChangeGameState( GameState.MainMenu );
@@ -168,14 +184,15 @@ public class GameManager : MonoBehaviour {
 			return;
 		}
 
-		currentLevelName = ( level != gameOverLevel) ? level: currentLevelName;
+		lastLevel = currentLevelName;
+		currentLevelName = level;
 		anykeyTimer = 0f;
 
 		/* If the level exists in our list of levels, load it . */
 		if ( levelNames.IndexOf( level ) != -1) {
 			currentLevelIndex = levelNames.IndexOf( currentLevelName );
 
-			SceneManager.LoadScene( level);
+			SceneManager.LoadScene( level );
 			/* Functions needed for missions to work, can be found in SceneChangeActions() */
 			return;
 		}
@@ -208,12 +225,13 @@ public class GameManager : MonoBehaviour {
 	/// <param name="intelObject"></param>
 	public void PickedUpIntel (GameObject intelObject ) {
 		currentIntelObject = intelObject;
-		currentLevelIntelCount -= 1;
-		UnlockObject();
-		MissionList();
+		checkpointIntelState.Add( allIntelObjects.IndexOf( intelObject ) );
 
 		/* TODO: Move to Level Manager */
-		Destroy(intelObject);
+		intelObject.SetActive( false );
+
+		MissionList();
+		UnlockExit();
 	}
 
 	/// <summary>
@@ -221,7 +239,7 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	/// <param name="parentTag">string tagName of parent containing exit_lock-object</param>
 	/// <param name="exitCheck">bool enable intel-check?</param>
-	public void UnlockObject (string parentTag = "ExfilZone", bool exitCheck = true ) {
+	public void UnlockExit (string parentTag = "ExfilZone", bool exitCheck = true ) {
 		if ( exitCheck &&  currentLevelIntelCount > 0 ) return; /* TODO: Move to Level Manager */
 
 		/* Allow for more than one exit Zone. */
@@ -247,7 +265,7 @@ public class GameManager : MonoBehaviour {
 				ChangeGameState( GameState.MainMenu );
 				break;
 			case "RestartLevel":
-				RestartLevel();
+				RestartLevel(true);
 				break;
 			case "HelpScreen":
 				break;
@@ -263,6 +281,8 @@ public class GameManager : MonoBehaviour {
 	/// Returns the current game-state in a string format.
 	/// </summary>
 	/// <returns></returns>
+	/// 
+	#region GameState
 	public GameState GetGameState () {
 		return currentGameState;
 	}
@@ -287,6 +307,7 @@ public class GameManager : MonoBehaviour {
 				escScreen.SetActive( false );
 				helpScreen.SetActive( false );
 				nextLevelScreen.SetActive( false );
+				gameOverscreen.SetActive( false );
 				break;
 			case GameState.Paused:
 				break;
@@ -297,7 +318,7 @@ public class GameManager : MonoBehaviour {
 				ChangeLevel( menuScene );
 				break;
 			case GameState.GameOver:
-				ChangeLevel( gameOverLevel );
+				gameOverscreen.SetActive(true);
 				break;
 			case GameState.WinGame:
 				ChangeLevel( winLevel );
@@ -310,6 +331,9 @@ public class GameManager : MonoBehaviour {
 		}
 		OnGameStateChange?.Invoke( currentGameState );
 	}
+	#endregion
+
+
 	/// <summary>
 	/// SceneChangeActions is run after a scene is loaded. Any script functionality that needs to be run after a scene is loaded goes here.
 	/// </summary>
@@ -322,25 +346,97 @@ public class GameManager : MonoBehaviour {
 			ChangeGameState( GameState.Playing );
 		}
 
-		if ( levelNames.IndexOf( scene.name ) != -1  || tutorialLevels.IndexOf( scene.name ) != -1 ) {
-			SetIntelState();
-			MissionList();
-			UnlockObject();
-			ChangeGameState( GameState.Playing );
-		} else {
-			MissionList(false);
-		}
+		InitializeLevel(scene.name);
 		nextLevelScreen.SetActive( false );
 		escScreen.SetActive( false );
 	}
 
 	/// <summary>
-	/// Sets int currentLevelIntelCount and int currentLevelIntelTotal;
+	/// Initializes level states.
 	/// </summary>
-	private void SetIntelState () {
-		currentLevelIntelTotal = GameObject.FindGameObjectsWithTag( "Intel" ).Length;
-		Scene newScene = SceneManager.GetActiveScene();
-		currentLevelIntelCount = currentLevelIntelTotal;
+	/// <param name="name"></param>
+	private void InitializeLevel(string name) {
+		if ( levelNames.IndexOf( name ) != -1 || tutorialLevels.IndexOf( name ) != -1 ) {
+			currentIntelLevelObjects = new List<GameObject>();
+			allIntelObjects = new List<GameObject>();
+
+			allCheckpoints = new List<GameObject>( GameObject.FindGameObjectsWithTag( "Checkpoint" ) );
+
+			if ( lastLevel != currentLevelName) {
+				currentCheckpoint = -1;
+				checkpointIntelState = new List<int>();
+				
+				UpdateIntelState( true );
+				MissionList();
+				UnlockExit();
+			} else {
+
+				UpdateIntelState( true );
+				ReturnToCheckpoint();
+			}
+
+			ChangeGameState( GameState.Playing );
+		} else {
+			MissionList( false );
+		}
+	}
+
+	public void Checkpoint (GameObject checkpoint) {
+		currentCheckpoint = allCheckpoints.IndexOf(checkpoint);
+
+		checkpoint.transform.GetComponent<Renderer>().material.color = Color.green;
+	}
+	/// <summary>
+	/// Should return the player to the checkpoint, as well as re-seat the intel-state 
+	/// </summary>
+	public void ReturnToCheckpoint () {
+		if (currentCheckpoint == -1 ) { if ( debugMessages ) { Debug.LogError( "You have no checkpoint to return to." ); } return; }
+		if ( allIntelObjects.Count == 0) { if ( debugMessages ) { Debug.LogError( "allIntelObjects not set, this variable is required for ReturnToCheckPoint." ); } return; }
+
+		// Go through all the intel-objects, and disable intel-objects we do _NOT_ find in checkpointIntelState
+		for ( int i = 0; i < allIntelObjects.Count; i++ ) {
+			allIntelObjects[i].SetActive(( checkpointIntelState.IndexOf( i ) == -1) );
+		}
+
+		//Update missions list and unlock if that is required.
+		MissionList();
+		UnlockExit();
+
+		// IF the respawn zone exists, 
+		GameObject respawn = GameObject.FindGameObjectWithTag("RespawnZone");
+		GameObject player = GameObject.FindGameObjectWithTag( "Player" );
+		allCheckpoints[ currentCheckpoint ].transform.GetComponent<CheckpointBehaviour>().enableCheckpoint = false;
+
+		if ( respawn == null && player != null) {
+			CharacterController characterController = player.transform.GetComponent<CharacterController>();
+
+			//Play animation (Dim Down camera or something)
+			characterController.enabled = false;
+			float playerHeight = player.transform.position.y; // We're getting the player height here, because nextLocation is not the height we want our player at.
+			player.transform.position = new Vector3( allCheckpoints[ currentCheckpoint ].transform.position.x, playerHeight, allCheckpoints[ currentCheckpoint ].transform.position.z );
+			characterController.enabled = true;
+
+			characterController.transform.position = allCheckpoints[ currentCheckpoint ].transform.position;
+		} else {
+			respawn.transform.position = new Vector3( allCheckpoints[ currentCheckpoint ].transform.position.x, respawn.transform.position.y, allCheckpoints[ currentCheckpoint ].transform.position.z );
+		}
+
+		allCheckpoints[ currentCheckpoint ].transform.GetComponent<Renderer>().material.color = Color.green;
+	}
+
+	/// <summary>
+	/// Initializes, and updates our intel-state related variables/objects. 
+	/// </summary>
+	/// <param name="setIntelObjects"></param>
+	private void UpdateIntelState (bool setIntelObjects = false) {
+		if ( allIntelObjects.Count == 0 || setIntelObjects) {
+			allIntelObjects = new List<GameObject> ( GameObject.FindGameObjectsWithTag( "Intel" )); 
+		}
+
+		currentIntelLevelObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag( "Intel" ));
+		
+		currentLevelIntelTotal = allIntelObjects.Count;
+		currentLevelIntelCount = currentIntelLevelObjects.Count;
 	}
 
 	/// <summary>
@@ -353,6 +449,7 @@ public class GameManager : MonoBehaviour {
 			MissionListText.text = "";
 			return;
 		}
+		UpdateIntelState();
 
 		MissionListCanvas.gameObject.SetActive(true);
 

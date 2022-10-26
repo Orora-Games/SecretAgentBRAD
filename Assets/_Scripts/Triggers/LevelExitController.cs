@@ -8,7 +8,7 @@ public class LevelExitController : MonoBehaviour {
 		gameObject.GetComponent<Collider>().isTrigger = true;
 
 		if ( !GameManager.Instance ) return;
-		GameManager.Instance.UnlockObject();
+		GameManager.Instance.UnlockExit();
 	}
 
 	private void OnTriggerEnter ( Collider other ) {
