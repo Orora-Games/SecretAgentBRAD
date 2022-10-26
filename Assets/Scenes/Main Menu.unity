@@ -874,6 +874,10 @@ PrefabInstance:
       value: Main Menu
       objectReference: {fileID: 0}
     - target: {fileID: 9042971403352410254, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: gameOverscreen
+      value: 
+      objectReference: {fileID: 1368031797}
+    - target: {fileID: 9042971403352410254, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: levelNames.Array.size
       value: 7
       objectReference: {fileID: 0}
@@ -903,6 +907,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9042971403352410254, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: levelNames.Array.data[6]
+      value: Level07
+      objectReference: {fileID: 0}
+    - target: {fileID: 9042971403352410254, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: levelNames.Array.data[7]
       value: Level07
       objectReference: {fileID: 0}
     - target: {fileID: 9042971403352410255, guid: 93521bc085951174892902b7da3b4138, type: 3}
@@ -4573,6 +4581,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 106511dd70a5c6b40b379ec66e84cc17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1368031797 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1432770555677834064, guid: 93521bc085951174892902b7da3b4138, type: 3}
+  m_PrefabInstance: {fileID: 167836474}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1560007951
 GameObject:
   m_ObjectHideFlags: 0
