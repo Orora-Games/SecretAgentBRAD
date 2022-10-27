@@ -71,10 +71,15 @@ public class EnemyController : MonoBehaviour {
 		if ( Physics.Raycast( transform.position, Vector3.down, out hit, Mathf.Infinity ) ) {
 
 			if ( hit.transform.name == "Floor") {
-				visualizationDetectionHeight = new Vector3( viewVisualization.position.x, ( transform.position.y - hit.distance + 0.05f ), viewVisualization.position.z );
+				float visualizationHeight = 0f;
+				if ( hit.point.y < 0f) {
+					visualizationHeight =  transform.position.y + hit.distance - 0.05f;
+				} else {
+					visualizationHeight =  transform.position.y - hit.distance + 0.05f;
+				}
+				visualizationDetectionHeight = new Vector3( viewVisualization.position.x, visualizationHeight, viewVisualization.position.z );
 				viewVisualization.position = visualizationDetectionHeight;
 			}
-			
 		}
 		//float viewVisualizationHeight = 
 		// transform.position
