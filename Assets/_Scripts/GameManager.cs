@@ -106,13 +106,25 @@ public class GameManager : MonoBehaviour {
 	/// <returns></returns>
 	private string getTutorialOrRegularLevel (int additive = 0) {
 		int tutorialLevelIndex = -1;
+		string levelName = "";
+
 		if ( tutorialLevels.IndexOf( currentLevelName ) != -1 ) {
 			tutorialLevelIndex = tutorialLevels.IndexOf( currentLevelName ) + additive;
 		} else if ( tutorialLevels.IndexOf( SceneManager.GetActiveScene().name ) != -1) {
 			tutorialLevelIndex = tutorialLevels.IndexOf( SceneManager.GetActiveScene().name ) + additive;
 		}
-		return ( tutorialLevelIndex != -1 ) ? ( tutorialLevelIndex >= tutorialLevels.Count ) ? levelNames[ currentLevelIndex + additive ] : tutorialLevels[ tutorialLevelIndex ] : levelNames[ currentLevelIndex + additive ];
+		if ( tutorialLevelIndex != -1 ) {
+			if ( tutorialLevelIndex < tutorialLevels.Count ) {
+				levelName = levelNames[ currentLevelIndex + additive ];
+			} else {
+				levelName = tutorialLevels[ tutorialLevelIndex ];
+			}
+		} else {
+			levelName = levelNames[ (currentLevelIndex + additive < levelNames.Count) ? currentLevelIndex + additive: currentLevelIndex];
+		}
+		return levelName; //( tutorialLevelIndex != -1 ) ?  : ;
 	}
+
 	/// <summary>
 	/// Pulls up the next-level-screen. Allowing the player their time to chose to move on to the next level, restart, go to the main menu, or a level select.
 	/// </summary>
