@@ -285,7 +285,7 @@ public class GameManager : MonoBehaviour {
 		int intelIndex = allIntelObjects.IndexOf( intelObject );
 		if ( intelIndex == -1 ) { Debug.Log( "allIntelObjects is missing this key. Please verify." ); return; }
 
-		if ( checkpointKeyState.IndexOf( intelIndex ) == -1 ) {
+		if ( checkpointIntelState.IndexOf( intelIndex ) == -1 ) {
 			checkpointIntelState.Add( intelIndex );
 		}
 
