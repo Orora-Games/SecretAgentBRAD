@@ -29,17 +29,20 @@ public class GameManager : MonoBehaviour {
 	private int currentLevelIntelTotal;
 	private float anykeyTimeLimit = 1f;
 	private float anykeyTimer = 0f;
+	private float disguiseTimeLimit = 5f;
+	private float disguiseTimer = 0f;
 
 	/* Set static levels here. */
 	[Header("Scene Selection")] 
-	public GameObject gameOverscreen;
-	public GameObject winGameScreen;
 	public string menuScene = "Main Menu";
 
 	[Header( "Prefab Settings" )]
 	public Canvas MissionListCanvas;
 	public TMP_Text MissionListText;
 	public GameObject escScreen, nextLevelScreen, helpScreen;
+	public GameObject gameOverscreen;
+	public GameObject winGameScreen;
+	public GameObject disguisedOverlay;
 
 	private GameObject currentIntelObject;
 	private List<GameObject> intelState;
@@ -50,10 +53,12 @@ public class GameManager : MonoBehaviour {
 	private List<GameObject> allKeyObjects = new List<GameObject>();
 	private int currentCheckpoint = -1;
 	private string lastLevel;
+	public TMP_Text disguiseTimerText;
 
 	private GameState currentGameState;
 
 	private bool debugMessages = false;
+	private PlayerController playerController;
 
 	private void OnEnable () {
 		SceneManager.sceneLoaded += SceneChangeActions;
@@ -96,8 +101,36 @@ public class GameManager : MonoBehaviour {
 		if ( GetGameState() == GameState.GameOver  || GetGameState() == GameState.WinGame ) {
 			anykeyTimer += Time.deltaTime;
 		}
+		if ( GetGameState() == GameState.Playing  && Input.GetKey( KeyCode.R ) ) {
+			disguiseTimer += Time.deltaTime;
+			disguiseTimerText.text = "Hold for " + (disguiseTimeLimit - disguiseTimer).ToString( "F2" ) + " seconds to disable.";
+
+			if ( disguiseTimer > disguiseTimeLimit ) {
+				disguiseTimer = 0f;
+				disguiseTimerText.text = "";
+				DisguisePlayer( playerController, false);
+			}
+		} else if ( disguiseTimer != 0f ) {
+			disguiseTimer = 0f;
+			disguiseTimerText.text = "";
+		}
 	}
 
+	/// <summary>
+	/// Activates/Deactivates the disguise-overlay
+	/// </summary>
+	/// <param name="player"></param>
+	/// <param name="disguised"></param>
+	public void DisguisePlayer ( PlayerController player, bool disguised) {
+		playerController = player;
+
+		if ( disguised ) {
+			disguisedOverlay.SetActive( true );
+		} else {
+			playerController.Disguised( false );
+			disguisedOverlay.SetActive( false );
+		}
+	}
 
 	/// <summary>
 	/// Will return level name if known in tutorials OR in levelNames
@@ -256,6 +289,8 @@ public class GameManager : MonoBehaviour {
 		int keyIndex = allKeyObjects.IndexOf( keyObject );
 		if (keyIndex == -1) { Debug.Log("allKeyObjects is missing this key. Please verify.");  return; }
 
+		DisguisePlayer( playerController, false );
+
 		if ( checkpointKeyState.IndexOf(keyIndex) == -1) {
 			checkpointKeyState.Add( keyIndex );
 		}
@@ -284,6 +319,8 @@ public class GameManager : MonoBehaviour {
 		currentIntelObject = intelObject;
 		int intelIndex = allIntelObjects.IndexOf( intelObject );
 		if ( intelIndex == -1 ) { Debug.Log( "allIntelObjects is missing this key. Please verify." ); return; }
+
+		DisguisePlayer( playerController, false );
 
 		if ( checkpointIntelState.IndexOf( intelIndex ) == -1 ) {
 			checkpointIntelState.Add( intelIndex );
@@ -340,7 +377,7 @@ public class GameManager : MonoBehaviour {
 				break;
 		}
 	}
-
+	#region Checkpoints 
 	public void Checkpoint (GameObject checkpoint) {
 		currentCheckpoint = allCheckpoints.IndexOf(checkpoint);
 
@@ -417,6 +454,7 @@ public class GameManager : MonoBehaviour {
 
 		allCheckpoints[ currentCheckpoint ].transform.GetComponent<Renderer>().material.color = Color.green;
 	}
+	#endregion
 
 	/// <summary>
 	/// Initializes, and updates our intel-state related variables/objects. 
@@ -454,6 +492,7 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+	#region New Sceene Activity
 	/// <summary>
 	/// SceneChangeActions is run after a scene is loaded. Any script functionality that needs to be run after a scene is loaded goes here.
 	/// </summary>
@@ -500,7 +539,7 @@ public class GameManager : MonoBehaviour {
 			MissionList( false );
 		}
 	}
-
+	#endregion
 
 	#region GameState
 	/// <summary>
