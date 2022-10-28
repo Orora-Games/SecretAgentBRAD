@@ -46,6 +46,8 @@ public class GameManager : MonoBehaviour {
 	private List<GameObject> allIntelObjects = new List<GameObject>();
 	private List<int> checkpointIntelState = new List<int>();
 	private List<GameObject> allCheckpoints = new List<GameObject>();
+	private List<int> checkpointKeyState = new List<int>();
+	private List<GameObject> allKeyObjects = new List<GameObject>();
 	private int currentCheckpoint = -1;
 	private string lastLevel;
 
@@ -90,19 +92,7 @@ public class GameManager : MonoBehaviour {
 		anykeyTimer += Time.deltaTime;
 	}
 
-	/// <summary>
-	/// Restarts last loaded level.
-	/// </summary>
-	public void RestartLevel (bool resetCheckpoint = false) {
-		string data = getTutorialOrRegularLevel();
-		if (resetCheckpoint == true) {
-			currentCheckpoint = -1;
 
-			UpdateIntelState( true );
-			MissionList();
-		}
-		ChangeLevel( data );
-	}
 	/// <summary>
 	/// Will return level name if known in tutorials OR in levelNames
 	/// </summary>
@@ -147,6 +137,7 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+	#region Level changing stuff (NextLevel/ChangeLevel/RestartLevel)
 	/// <summary>
 	/// Moves you on to the next level, or the Finished-level if you managed to finish all the levels. 
 	///		takes string level, which lets you override the level
@@ -200,6 +191,21 @@ public class GameManager : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Restarts last loaded level.
+	/// </summary>
+	public void RestartLevel ( bool resetCheckpoint = false ) {
+		string data = getTutorialOrRegularLevel();
+		if ( resetCheckpoint == true ) {
+			currentCheckpoint = -1;
+
+			UpdateIntelState( true );
+			checkpointKeyState = new List<int>(); //Resetting Checkpoint Key State
+			MissionList();
+		}
+		ChangeLevel( data );
+	}
+
+	/// <summary>
 	///		Checks that you have picked up all the intel, accepts bool ignoreIntelState which makes winConditionCheck go to the nextLevel
 	/// </summary>
 	/// <param name="ignoreIntelState"></param>
@@ -217,6 +223,33 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+	#endregion
+
+	#region Gathering Stuff (Intel/Keys)
+	/// <summary>
+	/// Picks up key, disables all structures associated with key, updates checkpointKeyState
+	/// </summary>
+	/// <param name="keyObject"></param>
+	public void PickedUpKey ( GameObject keyObject ) {
+		string tagName = keyObject.GetComponent<KeyController>().tagName;
+		checkpointKeyState.Add( allKeyObjects.IndexOf( keyObject ) );
+
+		GameObject[] sesameTargets = GameObject.FindGameObjectsWithTag( tagName );
+
+		if ( sesameTargets.Length == 0 ) {
+			Debug.LogError( "You need to place something for me to disable. Please place something with the tag \"" + tagName + "\"." );
+			gameObject.SetActive( false );
+			return;
+		}
+
+		for ( int i = 0; i < sesameTargets.Length; i++ ) {
+			sesameTargets[ i ].SetActive( false );
+		}
+
+		/* TODO: Move to Level Manager */
+		keyObject.SetActive( false );
+	}
+
 	/// <summary>
 	/// Reduces the IntelCount, runs ExitLockCheck, then Destroys intelObject.
 	/// </summary>
@@ -231,6 +264,7 @@ public class GameManager : MonoBehaviour {
 		MissionList();
 		UnlockExit();
 	}
+	#endregion
 
 	/// <summary>
 	/// Default behaviour: Check if all intel is picked up, by "currentLevelIntelCount", searches for tags named "ExfilZone", disables all "exit_lock"-named objects.
@@ -275,15 +309,16 @@ public class GameManager : MonoBehaviour {
 				break;
 		}
 	}
+	#region GameState
 	/// <summary>
 	/// Returns the current game-state in a string format.
 	/// </summary>
 	/// <returns></returns>
 	/// 
-	#region GameState
 	public GameState GetGameState () {
 		return currentGameState;
 	}
+
 	/// <summary>
 	/// Changes game state to whichever gamestate you wish.
 	/// </summary>
@@ -358,11 +393,13 @@ public class GameManager : MonoBehaviour {
 			allIntelObjects = new List<GameObject>();
 
 			allCheckpoints = new List<GameObject>( GameObject.FindGameObjectsWithTag( "Checkpoint" ) );
+			allKeyObjects = new List<GameObject>( GameObject.FindGameObjectsWithTag( "Key" ) );
 
 			if ( lastLevel != currentLevelName) {
 				currentCheckpoint = -1;
 				checkpointIntelState = new List<int>();
-				
+				checkpointKeyState = new List<int>();
+
 				UpdateIntelState( true );
 				MissionList();
 				UnlockExit();
@@ -388,6 +425,7 @@ public class GameManager : MonoBehaviour {
 	public void ReturnToCheckpoint () {
 		if (currentCheckpoint == -1 ) {
 			checkpointIntelState = new List<int>();
+			checkpointKeyState = new List<int>();
 			MissionList();
 
 			if ( debugMessages ) { 
@@ -396,10 +434,17 @@ public class GameManager : MonoBehaviour {
 			return; 
 		}
 		if ( allIntelObjects.Count == 0) { if ( debugMessages ) { Debug.LogError( "allIntelObjects not set, this variable is required for ReturnToCheckPoint." ); } return; }
+		if ( allKeyObjects.Count == 0) { if ( debugMessages ) { Debug.LogError( "allKeys not set, this variable is required for ReturnToCheckPoint." ); } return; }
 
 		// Go through all the intel-objects, and disable intel-objects we do _NOT_ find in checkpointIntelState
 		for ( int i = 0; i < allIntelObjects.Count; i++ ) {
 			allIntelObjects[i].SetActive(( checkpointIntelState.IndexOf( i ) == -1) );
+		}
+
+		for ( int i = 0; i < allKeyObjects.Count; i++ ) {
+			if ( ( checkpointKeyState.IndexOf( i ) != -1 ) ) {
+				PickedUpKey( allKeyObjects[checkpointKeyState[i]]);
+			}
 		}
 
 		//Update missions list and unlock if that is required.
