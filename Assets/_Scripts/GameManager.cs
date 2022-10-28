@@ -195,13 +195,16 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	public void RestartLevel ( bool resetCheckpoint = false ) {
 		string data = getTutorialOrRegularLevel();
+		
 		if ( resetCheckpoint == true ) {
 			currentCheckpoint = -1;
+			checkpointIntelState = new List<int>();//Resetting Checkpoint Intel State
+			checkpointKeyState = new List<int>(); //Resetting Checkpoint Key State
 
 			UpdateIntelState( true );
-			checkpointKeyState = new List<int>(); //Resetting Checkpoint Key State
 			MissionList();
 		}
+
 		ChangeLevel( data );
 	}
 
@@ -232,7 +235,12 @@ public class GameManager : MonoBehaviour {
 	/// <param name="keyObject"></param>
 	public void PickedUpKey ( GameObject keyObject ) {
 		string tagName = keyObject.GetComponent<KeyController>().tagName;
-		checkpointKeyState.Add( allKeyObjects.IndexOf( keyObject ) );
+		int keyIndex = allKeyObjects.IndexOf( keyObject );
+		if (keyIndex == -1) { Debug.Log("allKeyObjects is missing this key. Please verify.");  return; }
+
+		if ( checkpointKeyState.IndexOf(keyIndex) == -1) {
+			checkpointKeyState.Add( keyIndex );
+		}
 
 		GameObject[] sesameTargets = GameObject.FindGameObjectsWithTag( tagName );
 
@@ -254,9 +262,14 @@ public class GameManager : MonoBehaviour {
 	/// Reduces the IntelCount, runs ExitLockCheck, then Destroys intelObject.
 	/// </summary>
 	/// <param name="intelObject"></param>
-	public void PickedUpIntel (GameObject intelObject ) {
+	public void PickedUpIntel (GameObject intelObject) {
 		currentIntelObject = intelObject;
-		checkpointIntelState.Add( allIntelObjects.IndexOf( intelObject ) );
+		int intelIndex = allIntelObjects.IndexOf( intelObject );
+		if ( intelIndex == -1 ) { Debug.Log( "allIntelObjects is missing this key. Please verify." ); return; }
+
+		if ( checkpointKeyState.IndexOf( intelIndex ) == -1 ) {
+			checkpointIntelState.Add( intelIndex );
+		}
 
 		/* TODO: Move to Level Manager */
 		intelObject.SetActive( false );
@@ -272,7 +285,7 @@ public class GameManager : MonoBehaviour {
 	/// <param name="parentTag">string tagName of parent containing exit_lock-object</param>
 	/// <param name="exitCheck">bool enable intel-check?</param>
 	public void UnlockExit (string parentTag = "ExfilZone", bool exitCheck = true ) {
-		if ( exitCheck &&  currentPickedUpIntelCount > 0 ) return; /* TODO: Move to Level Manager */
+		if ( exitCheck && currentPickedUpIntelCount != currentLevelIntelTotal ) return; /* TODO: Move to Level Manager */
 
 		/* Allow for more than one exit Zone. */
 		GameObject[] lockObjectParents = GameObject.FindGameObjectsWithTag( parentTag );
@@ -423,6 +436,7 @@ public class GameManager : MonoBehaviour {
 	/// Should return the player to the checkpoint, as well as re-seat the intel-state 
 	/// </summary>
 	public void ReturnToCheckpoint () {
+		Debug.Log("ReturnToCheckpoints: " + currentCheckpoint + " // Intel: " + allIntelObjects.Count + " / " + checkpointIntelState.Count  + " ) ( Keys: " + allKeyObjects.Count + " ## " + checkpointKeyState.Count );
 		if (currentCheckpoint == -1 ) {
 			checkpointIntelState = new List<int>();
 			checkpointKeyState = new List<int>();
@@ -430,26 +444,44 @@ public class GameManager : MonoBehaviour {
 
 			if ( debugMessages ) { 
 				Debug.LogError( "You have no checkpoint to return to." ); 
-			} 
+			}
+
+			//Update missions list and unlock if that is required.
+			MissionList();
+			UnlockExit();
 			return; 
 		}
-		if ( allIntelObjects.Count == 0) { if ( debugMessages ) { Debug.LogError( "allIntelObjects not set, this variable is required for ReturnToCheckPoint." ); } return; }
-		if ( allKeyObjects.Count == 0) { if ( debugMessages ) { Debug.LogError( "allKeys not set, this variable is required for ReturnToCheckPoint." ); } return; }
 
-		// Go through all the intel-objects, and disable intel-objects we do _NOT_ find in checkpointIntelState
-		for ( int i = 0; i < allIntelObjects.Count; i++ ) {
-			allIntelObjects[i].SetActive(( checkpointIntelState.IndexOf( i ) == -1) );
+		if ( allIntelObjects.Count == 0 ) { 
+			if ( debugMessages ) { 
+				Debug.LogError( "allIntelObjects not set, this variable is required for ReturnToCheckPoint." ); 
+			}  
+		} else {
+			// Go through all the intel-objects, and disable intel-objects we find in checkpointIntelState
+			for ( int i = 0; i < allIntelObjects.Count; i++ ) {
+				if ( ( checkpointIntelState.IndexOf( i ) != -1 ) ) {
+					allIntelObjects[ checkpointIntelState[ i ] ].SetActive( false );
+					//PickedUpIntel( allIntelObjects[ checkpointIntelState[i] ] );
+				}
+			}
+
+			//Update missions list and unlock if that is required.
+			MissionList();
+			UnlockExit();
 		}
 
-		for ( int i = 0; i < allKeyObjects.Count; i++ ) {
-			if ( ( checkpointKeyState.IndexOf( i ) != -1 ) ) {
-				PickedUpKey( allKeyObjects[checkpointKeyState[i]]);
+
+		if ( allKeyObjects.Count == 0) { 
+			if ( debugMessages ) { 
+				Debug.LogError( "allKeys not set, this variable is required for ReturnToCheckPoint." ); 
+			}
+		} else { 
+			for ( int i = 0; i < allKeyObjects.Count; i++ ) {
+				if ( ( checkpointKeyState.IndexOf( i ) != -1 ) ) {
+					PickedUpKey( allKeyObjects[checkpointKeyState[i]]);
+				}
 			}
 		}
-
-		//Update missions list and unlock if that is required.
-		MissionList();
-		UnlockExit();
 
 		// IF the respawn zone exists, 
 		GameObject respawn = GameObject.FindGameObjectWithTag("RespawnZone");
@@ -480,7 +512,6 @@ public class GameManager : MonoBehaviour {
 	private void UpdateIntelState (bool setIntelObjects = false) {
 		if ( allIntelObjects.Count == 0 || setIntelObjects) {
 			currentPickedUpIntelCount = 0;
-			checkpointIntelState = new List<int>();
 			allIntelObjects = new List<GameObject> ( GameObject.FindGameObjectsWithTag( "Intel" )); 
 			currentLevelIntelTotal = allIntelObjects.Count;
 		}
