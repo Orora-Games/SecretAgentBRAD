@@ -340,110 +340,6 @@ public class GameManager : MonoBehaviour {
 				break;
 		}
 	}
-	#region GameState
-	/// <summary>
-	/// Returns the current game-state in a string format.
-	/// </summary>
-	/// <returns></returns>
-	/// 
-	public GameState GetGameState () {
-		return currentGameState;
-	}
-
-	/// <summary>
-	/// Changes game state to whichever gamestate you wish.
-	/// </summary>
-	/// <param name="newState">eq GameState.Menu</param>
-	/// <param name="data">string data</param>
-	public void ChangeGameState ( GameState newState, string data = "") {
-		currentGameState = newState;
-
-		switch ( newState ) {
-			case GameState.MainMenu:
-				if ( SceneManager.GetActiveScene().name == menuScene ) { 
-					break;
-				}
-				/* Reset currentLevelIndex */
-				currentLevelIndex = 0;
-				ChangeLevel( menuScene );
-				break;
-			case GameState.Playing:
-				escScreen.SetActive( false );
-				helpScreen.SetActive( false );
-				nextLevelScreen.SetActive( false );
-				gameOverscreen.SetActive( false );
-				break;
-			case GameState.Paused:
-				break;
-			case GameState.LevelSelect:
-				
-				/* Reset currentLevelIndex */
-				currentLevelIndex = 0;
-				ChangeLevel( menuScene );
-				break;
-			case GameState.GameOver:
-				gameOverscreen.SetActive(true);
-				break;
-			case GameState.WinGame:
-				ChangeLevel( winLevel );
-				break;
-			case GameState.EscScreen:
-				escScreen.SetActive( true );
-				break;
-			default:
-				break;
-		}
-		OnGameStateChange?.Invoke( currentGameState );
-	}
-	#endregion
-
-
-	/// <summary>
-	/// SceneChangeActions is run after a scene is loaded. Any script functionality that needs to be run after a scene is loaded goes here.
-	/// </summary>
-	/// <param name="scene"></param>
-	/// <param name="mode"></param>
-	private void SceneChangeActions (Scene scene, LoadSceneMode mode ) {
-		GameState gs = GetGameState();
-
-		if (gs == GameState.LevelSelect ) {
-			ChangeGameState( GameState.Playing );
-		}
-
-		InitializeLevel(scene.name);
-		nextLevelScreen.SetActive( false );
-		escScreen.SetActive( false );
-	}
-
-	/// <summary>
-	/// Initializes level states.
-	/// </summary>
-	/// <param name="name"></param>
-	private void InitializeLevel(string name) {
-		if ( levelNames.IndexOf( name ) != -1 || tutorialLevels.IndexOf( name ) != -1 ) {
-			allIntelObjects = new List<GameObject>();
-
-			allCheckpoints = new List<GameObject>( GameObject.FindGameObjectsWithTag( "Checkpoint" ) );
-			allKeyObjects = new List<GameObject>( GameObject.FindGameObjectsWithTag( "Key" ) );
-
-			if ( lastLevel != currentLevelName) {
-				currentCheckpoint = -1;
-				checkpointIntelState = new List<int>();
-				checkpointKeyState = new List<int>();
-
-				UpdateIntelState( true );
-				MissionList();
-				UnlockExit();
-			} else {
-				UpdateIntelState( true );
-				ReturnToCheckpoint();
-			}
-
-			ChangeGameState( GameState.Playing );
-		} else {
-			MissionList( false );
-		}
-	}
 
 	public void Checkpoint (GameObject checkpoint) {
 		currentCheckpoint = allCheckpoints.IndexOf(checkpoint);
@@ -454,7 +350,6 @@ public class GameManager : MonoBehaviour {
 	/// Should return the player to the checkpoint, as well as re-seat the intel-state 
 	/// </summary>
 	public void ReturnToCheckpoint () {
-		Debug.Log("ReturnToCheckpoints: " + currentCheckpoint + " // Intel: " + allIntelObjects.Count + " / " + checkpointIntelState.Count  + " ) ( Keys: " + allKeyObjects.Count + " ## " + checkpointKeyState.Count );
 		if (currentCheckpoint == -1 ) {
 			checkpointIntelState = new List<int>();
 			checkpointKeyState = new List<int>();
@@ -558,6 +453,113 @@ public class GameManager : MonoBehaviour {
 			MissionListText.text = "- Find all Intel-folders (" + currentPickedUpIntelCount + " / " + currentLevelIntelTotal + ")";
 		}
 	}
+
+	/// <summary>
+	/// SceneChangeActions is run after a scene is loaded. Any script functionality that needs to be run after a scene is loaded goes here.
+	/// </summary>
+	/// <param name="scene"></param>
+	/// <param name="mode"></param>
+	private void SceneChangeActions ( Scene scene, LoadSceneMode mode ) {
+		GameState gs = GetGameState();
+
+		if ( gs == GameState.LevelSelect ) {
+			ChangeGameState( GameState.Playing );
+		}
+
+		InitializeLevel( scene.name );
+		nextLevelScreen.SetActive( false );
+		escScreen.SetActive( false );
+	}
+
+	/// <summary>
+	/// Initializes level states.
+	/// </summary>
+	/// <param name="name"></param>
+	private void InitializeLevel ( string name ) {
+		if ( levelNames.IndexOf( name ) != -1 || tutorialLevels.IndexOf( name ) != -1 ) {
+			allIntelObjects = new List<GameObject>();
+
+			allCheckpoints = new List<GameObject>( GameObject.FindGameObjectsWithTag( "Checkpoint" ) );
+			allKeyObjects = new List<GameObject>( GameObject.FindGameObjectsWithTag( "Key" ) );
+
+			if ( lastLevel != currentLevelName ) {
+				currentCheckpoint = -1;
+				checkpointIntelState = new List<int>();
+				checkpointKeyState = new List<int>();
+
+				UpdateIntelState( true );
+				MissionList();
+				UnlockExit();
+			} else {
+				UpdateIntelState( true );
+				ReturnToCheckpoint();
+			}
+
+			ChangeGameState( GameState.Playing );
+		} else {
+			MissionList( false );
+		}
+	}
+
+
+	#region GameState
+	/// <summary>
+	/// Returns the current game-state in a string format.
+	/// </summary>
+	/// <returns></returns>
+	/// 
+	public GameState GetGameState () {
+		return currentGameState;
+	}
+
+	/// <summary>
+	/// Changes game state to whichever gamestate you wish.
+	/// </summary>
+	/// <param name="newState">eq GameState.Menu</param>
+	/// <param name="data">string data</param>
+	public void ChangeGameState ( GameState newState, string data = "" ) {
+		currentGameState = newState;
+
+		switch ( newState ) {
+			case GameState.MainMenu:
+				if ( SceneManager.GetActiveScene().name == menuScene ) {
+					break;
+				}
+				/* Reset currentLevelIndex */
+				currentLevelIndex = 0;
+				ChangeLevel( menuScene );
+				break;
+			case GameState.Playing:
+				escScreen.SetActive( false );
+				helpScreen.SetActive( false );
+				nextLevelScreen.SetActive( false );
+				gameOverscreen.SetActive( false );
+				winGameScreen.SetActive( false );
+				break;
+			case GameState.Paused:
+				break;
+			case GameState.LevelSelect:
+
+				/* Reset currentLevelIndex */
+				currentLevelIndex = 0;
+				ChangeLevel( menuScene );
+				break;
+			case GameState.GameOver:
+				gameOverscreen.SetActive( true );
+				break;
+			case GameState.WinGame:
+				winGameScreen.SetActive( true );
+				break;
+			case GameState.EscScreen:
+				escScreen.SetActive( true );
+				break;
+			default:
+				break;
+		}
+		OnGameStateChange?.Invoke( currentGameState );
+	}
+
+
 	/// <summary>
 	/// These are our gamestates.
 	/// </summary>
@@ -570,4 +572,5 @@ public class GameManager : MonoBehaviour {
 		WinGame,
 		EscScreen
 	}
+	#endregion
 }
