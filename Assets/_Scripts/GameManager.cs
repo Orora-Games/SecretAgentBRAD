@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour {
 	/* Set static levels here. */
 	[Header("Scene Selection")] 
 	public GameObject gameOverscreen;
-	public string winLevel = "Finished";
+	public GameObject winGameScreen;
 	public string menuScene = "Main Menu";
 
 	[Header( "Prefab Settings" )]
@@ -80,16 +80,22 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	void Update () {
 		if ( Input.GetKeyDown( KeyCode.Escape ) && currentLevelName != menuScene ) {
-				if ( escScreen.activeSelf == true ) {
-					ChangeGameState(GameState.Playing );
-				} else {
-					ChangeGameState( GameState.EscScreen );
-				}
-		} else if ( ( currentLevelName == "Finished" || GetGameState() == GameState.GameOver ) && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
+			if ( escScreen.activeSelf == true ) {
+				ChangeGameState( GameState.Playing );
+			} else {
+				ChangeGameState( GameState.EscScreen );
+			}
+		} else if ( GetGameState() == GameState.WinGame && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
+			anykeyTimer = 0f;
+			ChangeGameState(GameState.MainMenu);
+			return;
+		} else if (  GetGameState() == GameState.GameOver && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
 			anykeyTimer = 0f;
 			RestartLevel();
 		} /* Still used to get out of YouLost scene. */
-		anykeyTimer += Time.deltaTime;
+		if ( GetGameState() == GameState.GameOver  || GetGameState() == GameState.WinGame ) {
+			anykeyTimer += Time.deltaTime;
+		}
 	}
 
 
@@ -154,12 +160,6 @@ public class GameManager : MonoBehaviour {
 			currentLevelIndex++;
 		}
 
-		if ( currentLevelIndex > levelNames.Count - 1 ) {
-			currentLevelIndex = 0;
-			ChangeGameState( GameState.WinGame );
-			return;
-		}
-
 		ChangeLevel( levelNames[ currentLevelIndex ] );
 	}
 
@@ -216,8 +216,14 @@ public class GameManager : MonoBehaviour {
 		/* TODO: Move to Level Manager */
 
 		/* This check makes sure that Player has picked up all intel needed to allow their exfiltration. */
-		if ( currentPickedUpIntelCount > 0 && !ignoreIntelState )
+		if ( currentPickedUpIntelCount != currentLevelIntelTotal && !ignoreIntelState )
 			return;
+
+		if (currentLevelIndex + 1 >= levelNames.Count) {
+			currentLevelIndex = 0;
+			ChangeGameState( GameState.WinGame );
+			return;
+		}
 
 		if ( !ignoreIntelState ) {
 			NextLevelScreen();
