@@ -155,7 +155,7 @@ public class GameManager : MonoBehaviour {
 		} else {
 			levelName = levelNames[ (currentLevelIndex + additive < levelNames.Count) ? currentLevelIndex + additive: currentLevelIndex];
 		}
-		return levelName; //( tutorialLevelIndex != -1 ) ?  : ;
+		return levelName;
 	}
 
 	/// <summary>
