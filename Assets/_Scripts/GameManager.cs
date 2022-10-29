@@ -29,29 +29,36 @@ public class GameManager : MonoBehaviour {
 	private int currentLevelIntelTotal;
 	private float anykeyTimeLimit = 1f;
 	private float anykeyTimer = 0f;
+	private float disguiseTimeLimit = 5f;
+	private float disguiseTimer = 0f;
 
 	/* Set static levels here. */
 	[Header("Scene Selection")] 
-	public GameObject gameOverscreen;
-	public string winLevel = "Finished";
 	public string menuScene = "Main Menu";
 
 	[Header( "Prefab Settings" )]
 	public Canvas MissionListCanvas;
 	public TMP_Text MissionListText;
 	public GameObject escScreen, nextLevelScreen, helpScreen;
+	public GameObject gameOverscreen;
+	public GameObject winGameScreen;
+	public GameObject disguisedOverlay;
 
 	private GameObject currentIntelObject;
 	private List<GameObject> intelState;
 	private List<GameObject> allIntelObjects = new List<GameObject>();
 	private List<int> checkpointIntelState = new List<int>();
 	private List<GameObject> allCheckpoints = new List<GameObject>();
+	private List<int> checkpointKeyState = new List<int>();
+	private List<GameObject> allKeyObjects = new List<GameObject>();
 	private int currentCheckpoint = -1;
 	private string lastLevel;
+	public TMP_Text disguiseTimerText;
 
 	private GameState currentGameState;
 
 	private bool debugMessages = false;
+	private PlayerController playerController;
 
 	private void OnEnable () {
 		SceneManager.sceneLoaded += SceneChangeActions;
@@ -78,31 +85,53 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	void Update () {
 		if ( Input.GetKeyDown( KeyCode.Escape ) && currentLevelName != menuScene ) {
-				if ( escScreen.activeSelf == true ) {
-					ChangeGameState(GameState.Playing );
-				} else {
-					ChangeGameState( GameState.EscScreen );
-				}
-		} else if ( ( currentLevelName == "Finished" || GetGameState() == GameState.GameOver ) && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
+			if ( escScreen.activeSelf == true ) {
+				ChangeGameState( GameState.Playing );
+			} else {
+				ChangeGameState( GameState.EscScreen );
+			}
+		} else if ( GetGameState() == GameState.WinGame && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
+			anykeyTimer = 0f;
+			ChangeGameState(GameState.MainMenu);
+			return;
+		} else if (  GetGameState() == GameState.GameOver && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
 			anykeyTimer = 0f;
 			RestartLevel();
 		} /* Still used to get out of YouLost scene. */
-		anykeyTimer += Time.deltaTime;
+		if ( GetGameState() == GameState.GameOver  || GetGameState() == GameState.WinGame ) {
+			anykeyTimer += Time.deltaTime;
+		}
+		if ( GetGameState() == GameState.Playing  && Input.GetKey( KeyCode.R ) ) {
+			disguiseTimer += Time.deltaTime;
+			disguiseTimerText.text = "Hold for " + (disguiseTimeLimit - disguiseTimer).ToString( "F2" ) + " seconds to disable.";
+
+			if ( disguiseTimer > disguiseTimeLimit ) {
+				disguiseTimer = 0f;
+				disguiseTimerText.text = "";
+				DisguisePlayer( playerController, false);
+			}
+		} else if ( disguiseTimer != 0f ) {
+			disguiseTimer = 0f;
+			disguiseTimerText.text = "";
+		}
 	}
 
 	/// <summary>
-	/// Restarts last loaded level.
+	/// Activates/Deactivates the disguise-overlay
 	/// </summary>
-	public void RestartLevel (bool resetCheckpoint = false) {
-		string data = getTutorialOrRegularLevel();
-		if (resetCheckpoint == true) {
-			currentCheckpoint = -1;
+	/// <param name="player"></param>
+	/// <param name="disguised"></param>
+	public void DisguisePlayer ( PlayerController player, bool disguised) {
+		playerController = player;
 
-			UpdateIntelState( true );
-			MissionList();
+		if ( disguised ) {
+			disguisedOverlay.SetActive( true );
+		} else {
+			playerController.Disguised( false );
+			disguisedOverlay.SetActive( false );
 		}
-		ChangeLevel( data );
 	}
+
 	/// <summary>
 	/// Will return level name if known in tutorials OR in levelNames
 	/// </summary>
@@ -110,13 +139,25 @@ public class GameManager : MonoBehaviour {
 	/// <returns></returns>
 	private string getTutorialOrRegularLevel (int additive = 0) {
 		int tutorialLevelIndex = -1;
+		string levelName = "";
+
 		if ( tutorialLevels.IndexOf( currentLevelName ) != -1 ) {
 			tutorialLevelIndex = tutorialLevels.IndexOf( currentLevelName ) + additive;
 		} else if ( tutorialLevels.IndexOf( SceneManager.GetActiveScene().name ) != -1) {
 			tutorialLevelIndex = tutorialLevels.IndexOf( SceneManager.GetActiveScene().name ) + additive;
 		}
-		return ( tutorialLevelIndex != -1 ) ? ( tutorialLevelIndex >= tutorialLevels.Count ) ? levelNames[ currentLevelIndex + additive ] : tutorialLevels[ tutorialLevelIndex ] : levelNames[ currentLevelIndex + additive ];
+		if ( tutorialLevelIndex != -1 ) {
+			if ( tutorialLevelIndex < tutorialLevels.Count ) {
+				levelName = levelNames[ currentLevelIndex + additive ];
+			} else {
+				levelName = tutorialLevels[ tutorialLevelIndex ];
+			}
+		} else {
+			levelName = levelNames[ (currentLevelIndex + additive < levelNames.Count) ? currentLevelIndex + additive: currentLevelIndex];
+		}
+		return levelName;
 	}
+
 	/// <summary>
 	/// Pulls up the next-level-screen. Allowing the player their time to chose to move on to the next level, restart, go to the main menu, or a level select.
 	/// </summary>
@@ -147,6 +188,7 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+	#region Level changing stuff (NextLevel/ChangeLevel/RestartLevel)
 	/// <summary>
 	/// Moves you on to the next level, or the Finished-level if you managed to finish all the levels. 
 	///		takes string level, which lets you override the level
@@ -161,12 +203,6 @@ public class GameManager : MonoBehaviour {
 
 		if (!skipLevelIncrease ) { 
 			currentLevelIndex++;
-		}
-
-		if ( currentLevelIndex > levelNames.Count - 1 ) {
-			currentLevelIndex = 0;
-			ChangeGameState( GameState.WinGame );
-			return;
 		}
 
 		ChangeLevel( levelNames[ currentLevelIndex ] );
@@ -200,6 +236,24 @@ public class GameManager : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Restarts last loaded level.
+	/// </summary>
+	public void RestartLevel ( bool resetCheckpoint = false ) {
+		string data = getTutorialOrRegularLevel();
+		
+		if ( resetCheckpoint == true ) {
+			currentCheckpoint = -1;
+			checkpointIntelState = new List<int>();//Resetting Checkpoint Intel State
+			checkpointKeyState = new List<int>(); //Resetting Checkpoint Key State
+
+			UpdateIntelState( true );
+			MissionList();
+		}
+
+		ChangeLevel( data );
+	}
+
+	/// <summary>
 	///		Checks that you have picked up all the intel, accepts bool ignoreIntelState which makes winConditionCheck go to the nextLevel
 	/// </summary>
 	/// <param name="ignoreIntelState"></param>
@@ -207,8 +261,14 @@ public class GameManager : MonoBehaviour {
 		/* TODO: Move to Level Manager */
 
 		/* This check makes sure that Player has picked up all intel needed to allow their exfiltration. */
-		if ( currentPickedUpIntelCount > 0 && !ignoreIntelState )
+		if ( currentPickedUpIntelCount != currentLevelIntelTotal && !ignoreIntelState )
 			return;
+
+		if (currentLevelIndex + 1 >= levelNames.Count) {
+			currentLevelIndex = 0;
+			ChangeGameState( GameState.WinGame );
+			return;
+		}
 
 		if ( !ignoreIntelState ) {
 			NextLevelScreen();
@@ -217,13 +277,54 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+	#endregion
+
+	#region Gathering Stuff (Intel/Keys)
+	/// <summary>
+	/// Picks up key, disables all structures associated with key, updates checkpointKeyState
+	/// </summary>
+	/// <param name="keyObject"></param>
+	public void PickedUpKey ( GameObject keyObject ) {
+		string tagName = keyObject.GetComponent<KeyController>().tagName;
+		int keyIndex = allKeyObjects.IndexOf( keyObject );
+		if (keyIndex == -1) { Debug.Log("allKeyObjects is missing this key. Please verify.");  return; }
+
+		DisguisePlayer( playerController, false );
+
+		if ( checkpointKeyState.IndexOf(keyIndex) == -1) {
+			checkpointKeyState.Add( keyIndex );
+		}
+
+		GameObject[] sesameTargets = GameObject.FindGameObjectsWithTag( tagName );
+
+		if ( sesameTargets.Length == 0 ) {
+			Debug.LogError( "You need to place something for me to disable. Please place something with the tag \"" + tagName + "\"." );
+			gameObject.SetActive( false );
+			return;
+		}
+
+		for ( int i = 0; i < sesameTargets.Length; i++ ) {
+			sesameTargets[ i ].SetActive( false );
+		}
+
+		/* TODO: Move to Level Manager */
+		keyObject.SetActive( false );
+	}
+
 	/// <summary>
 	/// Reduces the IntelCount, runs ExitLockCheck, then Destroys intelObject.
 	/// </summary>
 	/// <param name="intelObject"></param>
-	public void PickedUpIntel (GameObject intelObject ) {
+	public void PickedUpIntel (GameObject intelObject) {
 		currentIntelObject = intelObject;
-		checkpointIntelState.Add( allIntelObjects.IndexOf( intelObject ) );
+		int intelIndex = allIntelObjects.IndexOf( intelObject );
+		if ( intelIndex == -1 ) { Debug.Log( "allIntelObjects is missing this key. Please verify." ); return; }
+
+		DisguisePlayer( playerController, false );
+
+		if ( checkpointIntelState.IndexOf( intelIndex ) == -1 ) {
+			checkpointIntelState.Add( intelIndex );
+		}
 
 		/* TODO: Move to Level Manager */
 		intelObject.SetActive( false );
@@ -231,6 +332,7 @@ public class GameManager : MonoBehaviour {
 		MissionList();
 		UnlockExit();
 	}
+	#endregion
 
 	/// <summary>
 	/// Default behaviour: Check if all intel is picked up, by "currentLevelIntelCount", searches for tags named "ExfilZone", disables all "exit_lock"-named objects.
@@ -238,7 +340,7 @@ public class GameManager : MonoBehaviour {
 	/// <param name="parentTag">string tagName of parent containing exit_lock-object</param>
 	/// <param name="exitCheck">bool enable intel-check?</param>
 	public void UnlockExit (string parentTag = "ExfilZone", bool exitCheck = true ) {
-		if ( exitCheck &&  currentPickedUpIntelCount > 0 ) return; /* TODO: Move to Level Manager */
+		if ( exitCheck && currentPickedUpIntelCount != currentLevelIntelTotal ) return; /* TODO: Move to Level Manager */
 
 		/* Allow for more than one exit Zone. */
 		GameObject[] lockObjectParents = GameObject.FindGameObjectsWithTag( parentTag );
@@ -275,108 +377,7 @@ public class GameManager : MonoBehaviour {
 				break;
 		}
 	}
-	/// <summary>
-	/// Returns the current game-state in a string format.
-	/// </summary>
-	/// <returns></returns>
-	/// 
-	#region GameState
-	public GameState GetGameState () {
-		return currentGameState;
-	}
-	/// <summary>
-	/// Changes game state to whichever gamestate you wish.
-	/// </summary>
-	/// <param name="newState">eq GameState.Menu</param>
-	/// <param name="data">string data</param>
-	public void ChangeGameState ( GameState newState, string data = "") {
-		currentGameState = newState;
-
-		switch ( newState ) {
-			case GameState.MainMenu:
-				if ( SceneManager.GetActiveScene().name == menuScene ) { 
-					break;
-				}
-				/* Reset currentLevelIndex */
-				currentLevelIndex = 0;
-				ChangeLevel( menuScene );
-				break;
-			case GameState.Playing:
-				escScreen.SetActive( false );
-				helpScreen.SetActive( false );
-				nextLevelScreen.SetActive( false );
-				gameOverscreen.SetActive( false );
-				break;
-			case GameState.Paused:
-				break;
-			case GameState.LevelSelect:
-				
-				/* Reset currentLevelIndex */
-				currentLevelIndex = 0;
-				ChangeLevel( menuScene );
-				break;
-			case GameState.GameOver:
-				gameOverscreen.SetActive(true);
-				break;
-			case GameState.WinGame:
-				ChangeLevel( winLevel );
-				break;
-			case GameState.EscScreen:
-				escScreen.SetActive( true );
-				break;
-			default:
-				break;
-		}
-		OnGameStateChange?.Invoke( currentGameState );
-	}
-	#endregion
-
-
-	/// <summary>
-	/// SceneChangeActions is run after a scene is loaded. Any script functionality that needs to be run after a scene is loaded goes here.
-	/// </summary>
-	/// <param name="scene"></param>
-	/// <param name="mode"></param>
-	private void SceneChangeActions (Scene scene, LoadSceneMode mode ) {
-		GameState gs = GetGameState();
-
-		if (gs == GameState.LevelSelect ) {
-			ChangeGameState( GameState.Playing );
-		}
-
-		InitializeLevel(scene.name);
-		nextLevelScreen.SetActive( false );
-		escScreen.SetActive( false );
-	}
-
-	/// <summary>
-	/// Initializes level states.
-	/// </summary>
-	/// <param name="name"></param>
-	private void InitializeLevel(string name) {
-		if ( levelNames.IndexOf( name ) != -1 || tutorialLevels.IndexOf( name ) != -1 ) {
-			allIntelObjects = new List<GameObject>();
-
-			allCheckpoints = new List<GameObject>( GameObject.FindGameObjectsWithTag( "Checkpoint" ) );
-
-			if ( lastLevel != currentLevelName) {
-				currentCheckpoint = -1;
-				checkpointIntelState = new List<int>();
-				
-				UpdateIntelState( true );
-				MissionList();
-				UnlockExit();
-			} else {
-				UpdateIntelState( true );
-				ReturnToCheckpoint();
-			}
-
-			ChangeGameState( GameState.Playing );
-		} else {
-			MissionList( false );
-		}
-	}
-
+	#region Checkpoints 
 	public void Checkpoint (GameObject checkpoint) {
 		currentCheckpoint = allCheckpoints.IndexOf(checkpoint);
 
@@ -388,23 +389,49 @@ public class GameManager : MonoBehaviour {
 	public void ReturnToCheckpoint () {
 		if (currentCheckpoint == -1 ) {
 			checkpointIntelState = new List<int>();
+			checkpointKeyState = new List<int>();
 			MissionList();
 
 			if ( debugMessages ) { 
 				Debug.LogError( "You have no checkpoint to return to." ); 
-			} 
+			}
+
+			//Update missions list and unlock if that is required.
+			MissionList();
+			UnlockExit();
 			return; 
 		}
-		if ( allIntelObjects.Count == 0) { if ( debugMessages ) { Debug.LogError( "allIntelObjects not set, this variable is required for ReturnToCheckPoint." ); } return; }
 
-		// Go through all the intel-objects, and disable intel-objects we do _NOT_ find in checkpointIntelState
-		for ( int i = 0; i < allIntelObjects.Count; i++ ) {
-			allIntelObjects[i].SetActive(( checkpointIntelState.IndexOf( i ) == -1) );
+		if ( allIntelObjects.Count == 0 ) { 
+			if ( debugMessages ) { 
+				Debug.LogError( "allIntelObjects not set, this variable is required for ReturnToCheckPoint." ); 
+			}  
+		} else {
+			// Go through all the intel-objects, and disable intel-objects we find in checkpointIntelState
+			for ( int i = 0; i < allIntelObjects.Count; i++ ) {
+				if ( ( checkpointIntelState.IndexOf( i ) != -1 ) ) {
+					allIntelObjects[ checkpointIntelState[ i ] ].SetActive( false );
+					//PickedUpIntel( allIntelObjects[ checkpointIntelState[i] ] );
+				}
+			}
+
+			//Update missions list and unlock if that is required.
+			MissionList();
+			UnlockExit();
 		}
 
-		//Update missions list and unlock if that is required.
-		MissionList();
-		UnlockExit();
+
+		if ( allKeyObjects.Count == 0) { 
+			if ( debugMessages ) { 
+				Debug.LogError( "allKeys not set, this variable is required for ReturnToCheckPoint." ); 
+			}
+		} else { 
+			for ( int i = 0; i < allKeyObjects.Count; i++ ) {
+				if ( ( checkpointKeyState.IndexOf( i ) != -1 ) ) {
+					PickedUpKey( allKeyObjects[checkpointKeyState[i]]);
+				}
+			}
+		}
 
 		// IF the respawn zone exists, 
 		GameObject respawn = GameObject.FindGameObjectWithTag("RespawnZone");
@@ -427,6 +454,7 @@ public class GameManager : MonoBehaviour {
 
 		allCheckpoints[ currentCheckpoint ].transform.GetComponent<Renderer>().material.color = Color.green;
 	}
+	#endregion
 
 	/// <summary>
 	/// Initializes, and updates our intel-state related variables/objects. 
@@ -435,7 +463,6 @@ public class GameManager : MonoBehaviour {
 	private void UpdateIntelState (bool setIntelObjects = false) {
 		if ( allIntelObjects.Count == 0 || setIntelObjects) {
 			currentPickedUpIntelCount = 0;
-			checkpointIntelState = new List<int>();
 			allIntelObjects = new List<GameObject> ( GameObject.FindGameObjectsWithTag( "Intel" )); 
 			currentLevelIntelTotal = allIntelObjects.Count;
 		}
@@ -464,6 +491,114 @@ public class GameManager : MonoBehaviour {
 			MissionListText.text = "- Find all Intel-folders (" + currentPickedUpIntelCount + " / " + currentLevelIntelTotal + ")";
 		}
 	}
+
+	#region New Sceene Activity
+	/// <summary>
+	/// SceneChangeActions is run after a scene is loaded. Any script functionality that needs to be run after a scene is loaded goes here.
+	/// </summary>
+	/// <param name="scene"></param>
+	/// <param name="mode"></param>
+	private void SceneChangeActions ( Scene scene, LoadSceneMode mode ) {
+		GameState gs = GetGameState();
+
+		if ( gs == GameState.LevelSelect ) {
+			ChangeGameState( GameState.Playing );
+		}
+
+		InitializeLevel( scene.name );
+		nextLevelScreen.SetActive( false );
+		escScreen.SetActive( false );
+	}
+
+	/// <summary>
+	/// Initializes level states.
+	/// </summary>
+	/// <param name="name"></param>
+	private void InitializeLevel ( string name ) {
+		if ( levelNames.IndexOf( name ) != -1 || tutorialLevels.IndexOf( name ) != -1 ) {
+			allIntelObjects = new List<GameObject>();
+
+			allCheckpoints = new List<GameObject>( GameObject.FindGameObjectsWithTag( "Checkpoint" ) );
+			allKeyObjects = new List<GameObject>( GameObject.FindGameObjectsWithTag( "Key" ) );
+
+			if ( lastLevel != currentLevelName ) {
+				currentCheckpoint = -1;
+				checkpointIntelState = new List<int>();
+				checkpointKeyState = new List<int>();
+
+				UpdateIntelState( true );
+				MissionList();
+				UnlockExit();
+			} else {
+				UpdateIntelState( true );
+				ReturnToCheckpoint();
+			}
+
+			ChangeGameState( GameState.Playing );
+		} else {
+			MissionList( false );
+		}
+	}
+	#endregion
+
+	#region GameState
+	/// <summary>
+	/// Returns the current game-state in a string format.
+	/// </summary>
+	/// <returns></returns>
+	/// 
+	public GameState GetGameState () {
+		return currentGameState;
+	}
+
+	/// <summary>
+	/// Changes game state to whichever gamestate you wish.
+	/// </summary>
+	/// <param name="newState">eq GameState.Menu</param>
+	/// <param name="data">string data</param>
+	public void ChangeGameState ( GameState newState, string data = "" ) {
+		currentGameState = newState;
+
+		switch ( newState ) {
+			case GameState.MainMenu:
+				if ( SceneManager.GetActiveScene().name == menuScene ) {
+					break;
+				}
+				/* Reset currentLevelIndex */
+				currentLevelIndex = 0;
+				ChangeLevel( menuScene );
+				break;
+			case GameState.Playing:
+				escScreen.SetActive( false );
+				helpScreen.SetActive( false );
+				nextLevelScreen.SetActive( false );
+				gameOverscreen.SetActive( false );
+				winGameScreen.SetActive( false );
+				break;
+			case GameState.Paused:
+				break;
+			case GameState.LevelSelect:
+
+				/* Reset currentLevelIndex */
+				currentLevelIndex = 0;
+				ChangeLevel( menuScene );
+				break;
+			case GameState.GameOver:
+				gameOverscreen.SetActive( true );
+				break;
+			case GameState.WinGame:
+				winGameScreen.SetActive( true );
+				break;
+			case GameState.EscScreen:
+				escScreen.SetActive( true );
+				break;
+			default:
+				break;
+		}
+		OnGameStateChange?.Invoke( currentGameState );
+	}
+
+
 	/// <summary>
 	/// These are our gamestates.
 	/// </summary>
@@ -476,4 +611,5 @@ public class GameManager : MonoBehaviour {
 		WinGame,
 		EscScreen
 	}
+	#endregion
 }
