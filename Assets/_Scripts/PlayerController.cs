@@ -12,16 +12,23 @@ public class PlayerController : MonoBehaviour {
 	private float startHeight; 
 	private float turnSmoothVelocity;
 	private CharacterController controller;
+	private bool planningMode = false;
+	private int defaultLayerMask;
+	private GameObject hatObject;
 
 	void Start () {
 		controller = GetComponent<CharacterController>();
 
+		hatObject = gameObject.transform.Find( "BRAD_improved" ).transform.Find( "hat" ).gameObject;
 		if ( gameObject.tag == "Untagged" )
 			Debug.LogError( "Your " + gameObject.name + " object needs to have the correct tag to be killable." ); // Make sure to Tag your player-object Player.
 		if ( gameObject.layer == 0 )
 			Debug.LogError( "Your " + gameObject.name + " object needs to have the correct layer to be detectable by the FieldOfView Controller." ); // Player-Layer will fix this issue.
 
 		startHeight = gameObject.transform.position.y;
+		defaultLayerMask = gameObject.layer;
+
+		Disguised( planningMode );
 	}
 
 	// Update is called once per frame
@@ -54,6 +61,23 @@ public class PlayerController : MonoBehaviour {
 
 			/* Time to go move the character in our calculated direction. */
 			controller.Move( direction * speed * Time.deltaTime );
+		}
+	}
+
+	public void Disguised ( bool disguised, bool fromGameManager = false) {
+		if ( !GameManager.Instance ) { 
+			Debug.LogError("To enable disguise, make sure you have a GameManager.");
+			return;
+		}
+
+		if ( disguised ) {
+			gameObject.layer = 0;
+			hatObject.SetActive(false);
+			GameManager.Instance.DisguisePlayer( gameObject.GetComponent<PlayerController>(), disguised );
+		} else {
+			hatObject.SetActive(true);
+			hatObject.GetComponent<Renderer>().material.SetColor( "_Color", Color.black );
+			gameObject.layer = defaultLayerMask;
 		}
 	}
 }

@@ -1,8 +1,7 @@
 using UnityEngine;
 
-public class KeyContoller : MonoBehaviour {
+public class KeyController : MonoBehaviour {
 	public string tagName;
-	private GameObject[] sesameTargets; 
 
 	// Start is called before the first frame update
 	void Start () {
@@ -17,22 +16,13 @@ public class KeyContoller : MonoBehaviour {
 			gameObject.SetActive(false);
 			return;
 		}
-		
-		sesameTargets = GameObject.FindGameObjectsWithTag(tagName);
-
-		if ( sesameTargets.Length == 0 ) {
-			Debug.LogError( "You need to place something for me to disable. Please place something with the tag \"" + tagName + "\"." );
-			gameObject.SetActive( false );
-			return;
-		}
 	}
 
 	private void OnTriggerEnter ( Collider other ) {
 		if ( other.transform.tag == "Player" ) {
-			for ( int i = 0; i < sesameTargets.Length; i++ ) {
-				sesameTargets[i].SetActive(false);
-			}
-			gameObject.SetActive(false);
+			if ( !GameManager.Instance )
+				return;
+			GameManager.Instance.PickedUpKey( this.gameObject );
 		}
 	}
 
