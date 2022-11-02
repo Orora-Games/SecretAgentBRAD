@@ -50,8 +50,6 @@ public class EnemyController : MonoBehaviour {
 	private GameObject[] toBeAlerted;
 
 	public LayerMask viewVisualizationMask;
-	[HideInInspector]
-	public Vector3 visualizationDetectionHeight;
 
 	// Start is called before the first frame update
 	void Start () {
