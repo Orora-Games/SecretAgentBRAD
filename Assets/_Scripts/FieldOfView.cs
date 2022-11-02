@@ -30,22 +30,23 @@ public class FieldOfView : MonoBehaviour {
 
 	[HideInInspector]
 	public List<Transform> visibleTargets = new List<Transform>();
-	private Vector3 visualizationDetectionHeight;
+	private Vector3 visualizationDetectionHeight = Vector3.zero;
 
 	protected virtual void Start () {
 		viewMesh = new Mesh();
 		viewMesh.name = "View Mesh";
 		viewMeshFilter.mesh = viewMesh;
 
-		SetDetectionHeight( viewMeshFilter.transform );
+		SetDetectionHeight( );
 	}
 
-	private void SetDetectionHeight ( Transform viewVisualization ) {
+	private void SetDetectionHeight ( ) {
+		Transform viewVisualization = viewMeshFilter.transform;
 		/* Find floor, so we can use floor.transform.position.y to find the floor height, then set ViewVisualization to floorHeight+some 
 		 *	Example: https://docs.unity3d.com/ScriptReference/RaycastHit-distance.html */
 		RaycastHit hit;
-		if ( Physics.Raycast( transform.parent.position, Vector3.down, out hit, Mathf.Infinity ) ) {
 
+		if ( Physics.Raycast( transform.position, Vector3.down, out hit, Mathf.Infinity ) ) {
 			if ( hit.transform.name == "Floor" ) {
 				float visualizationHeight = 0f;
 				visualizationHeight = hit.point.y + 0.05f;
@@ -63,10 +64,7 @@ public class FieldOfView : MonoBehaviour {
 			FindVisibleTargets();
 		}
 		if ( visualizationDetectionHeight == Vector3.zero) {
-			EnemyController enemyController = gameObject.transform.GetComponent<EnemyController>();
-			if ( enemyController != null) {
-				visualizationDetectionHeight = enemyController.visualizationDetectionHeight;
-			}
+			SetDetectionHeight();
 		}
 	}
 
