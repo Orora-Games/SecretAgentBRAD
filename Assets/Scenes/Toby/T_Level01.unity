@@ -168,7 +168,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 421181d12bf962142a77d229ffd62eba, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: fef922f3d5ee48a438d6b7c020a4329e, type: 2}
   m_BuildHeightMesh: 0
 --- !u!4 &65645987
 Transform:
@@ -624,7 +624,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5996753341210856288, guid: 1a5e974e8df437f4abe3e17c7ce0021b, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5996753341210856288, guid: 1a5e974e8df437f4abe3e17c7ce0021b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1453,7 +1453,7 @@ Transform:
   - {fileID: 1716526401}
   - {fileID: 1401877673}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1071196964
 GameObject:
@@ -2015,6 +2015,10 @@ PrefabInstance:
       propertyPath: waypointContainer
       value: 
       objectReference: {fileID: 1460695495}
+    - target: {fileID: 458600362717544056, guid: a87a343545f0cd74c8f5f9f5405d120f, type: 3}
+      propertyPath: visualizationDetectionHeight.y
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 458600362717544063, guid: a87a343545f0cd74c8f5f9f5405d120f, type: 3}
       propertyPath: m_RootOrder
       value: 1
