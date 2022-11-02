@@ -122,12 +122,12 @@ public class GameManager : MonoBehaviour {
 	/// <param name="player"></param>
 	/// <param name="disguised"></param>
 	public void DisguisePlayer ( PlayerController player, bool disguised) {
-		playerController = player;
 
 		if ( disguised ) {
 			disguisedOverlay.SetActive( true );
 		} else {
-			playerController.Disguised( false );
+			if (!player ) { return; }
+			player.Disguised( false );
 			disguisedOverlay.SetActive( false );
 		}
 	}

@@ -64,7 +64,7 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	public void Disguised ( bool disguised, bool fromGameManager = false) {
+	public void Disguised ( bool disguised ) {
 		if ( !GameManager.Instance ) { 
 			Debug.LogError("To enable disguise, make sure you have a GameManager.");
 			return;
