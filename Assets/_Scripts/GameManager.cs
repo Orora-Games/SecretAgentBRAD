@@ -99,17 +99,11 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	private PlayerController GetPlayerController () {
-		
-		return playerController;
-	}
-
 	/// <summary>
 	/// Activates/Deactivates the disguise-overlay
 	/// </summary>
 	/// <param name="disguised"></param>
 	public void DisguisePlayer ( bool disguised) {
-
 		if ( disguised ) {
 			disguisedOverlay.SetActive( true );
 		} else {
