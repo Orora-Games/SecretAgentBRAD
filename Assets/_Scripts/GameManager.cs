@@ -29,8 +29,6 @@ public class GameManager : MonoBehaviour {
 	private int currentLevelIntelTotal;
 	private float anykeyTimeLimit = 1f;
 	private float anykeyTimer = 0f;
-	private float disguiseTimeLimit = 5f;
-	private float disguiseTimer = 0f;
 
 	/* Set static levels here. */
 	[Header("Scene Selection")] 
@@ -50,7 +48,6 @@ public class GameManager : MonoBehaviour {
 	private List<GameObject> allKeyObjects = new List<GameObject>();
 	private int currentCheckpoint = -1;
 	private string lastLevel;
-	public TMP_Text disguiseTimerText;
 	[HideInInspector]
 	public List<GameObject> enemiesAlerted;
 
@@ -99,20 +96,6 @@ public class GameManager : MonoBehaviour {
 		} /* Still used to get out of YouLost scene. */
 		if ( GetGameState() == GameState.GameOver  || GetGameState() == GameState.WinGame ) {
 			anykeyTimer += Time.deltaTime;
-		}
-		if ( GetGameState() == GameState.Playing  && Input.GetKey( KeyCode.R ) ) {
-			disguiseTimer += Time.deltaTime;
-			disguiseTimerText.text = "Hold for " + (disguiseTimeLimit - disguiseTimer).ToString( "F2" ) + " seconds to disable.";
-
-			if ( disguiseTimer > disguiseTimeLimit ) {
-				disguiseTimer = 0f;
-				disguiseTimerText.text = "";
-
-				DisguisePlayer(false);
-			}
-		} else if ( disguiseTimer != 0f ) {
-			disguiseTimer = 0f;
-			disguiseTimerText.text = "";
 		}
 	}
 
