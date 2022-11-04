@@ -35,12 +35,19 @@ public class PlayerController : MonoBehaviour {
 
 		levelManager = GameObject.FindObjectOfType<LevelManager>();
 		Disguised( false );
-		GameManager.Instance.UpdateDisguiseState( usedDisguises, disguisesAvailable );
+
+		if (!levelManager) {
+			GameManager.Instance.UpdateDisguiseState( usedDisguises, disguisesAvailable );
+		} else {
+			levelManager.doNumbers();
+		}
 	}
 
 	// Update is called once per frame
 	void Update () {
-		if ( !GameManager.Instance || GameManager.Instance.GetGameState() != GameState.Playing ) { return; }
+		if ( !GameManager.Instance || GameManager.Instance.GetGameState() != GameState.Playing ) {
+			return; 
+		}
 		if ( disguised ) {
 			disguiseTimer += Time.deltaTime;
 
@@ -94,11 +101,13 @@ public class PlayerController : MonoBehaviour {
 				bool disguiseCheck =  disguisesAvailable > usedDisguises;
 
 				Disguised( disguiseCheck );
+				GameManager.Instance.UpdateDisguiseState( usedDisguises, disguisesAvailable );
 			} else {
+				levelManager.doNumbers();
 				Disguised(levelManager.DisguiseCheck());
 			}
+
 			usedDisguises++;
-			GameManager.Instance.UpdateDisguiseState( usedDisguises, disguisesAvailable );
 		}
 	}
 	/// <summary>
@@ -107,7 +116,6 @@ public class PlayerController : MonoBehaviour {
 	/// <param name="disguisedLocal"></param>
 	public void Disguised ( bool disguisedLocal ) {
 		disguised = disguisedLocal;
-		disguiseTimer = 0f;
 
 		GameManager.Instance.DisguisePlayer( disguisedLocal );
 
