@@ -54,14 +54,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   alerted: 0
   alertedTimer: 5
-  turnSmoothTime: 1.2
+  turnSmoothTime: 0.6
   waypointContainer: {fileID: 0}
   waypointTarget: {fileID: 0}
   waypointWaitTime: 3.5
   viewVisualizationMask:
     serializedVersion: 2
     m_Bits: 0
-  visualizationDetectionHeight: {x: 0, y: 0, z: 0}
 --- !u!114 &4929101403293160297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,7 +163,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 4.5
+  m_Speed: 7
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
