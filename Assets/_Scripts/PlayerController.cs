@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour {
 	private bool planningMode = false;
 	private int defaultLayerMask;
 	private GameObject hatObject;
+	private LevelManager levelManager;
+	private int disguisesAvailable = 7, usedDisguises = 0;
 
 	void Start () {
 		controller = GetComponent<CharacterController>();

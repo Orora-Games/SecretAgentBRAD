@@ -50,6 +50,7 @@ public class EnemyController : MonoBehaviour {
 	private GameObject[] toBeAlerted;
 
 	public LayerMask viewVisualizationMask;
+	private LevelManager levelManager;
 
 	// Start is called before the first frame update
 	void Start () {
