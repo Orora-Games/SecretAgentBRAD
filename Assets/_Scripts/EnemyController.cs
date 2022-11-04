@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEngine.GraphicsBuffer;
 
 //[RequireComponent( typeof( NavMeshAgent ) )]
 public class EnemyController : MonoBehaviour {
@@ -50,6 +49,7 @@ public class EnemyController : MonoBehaviour {
 	private GameObject[] toBeAlerted;
 
 	public LayerMask viewVisualizationMask;
+	private LevelManager levelManager;
 
 	// Start is called before the first frame update
 	void Start () {
@@ -88,6 +88,8 @@ public class EnemyController : MonoBehaviour {
 
 				/* .. alerted-check is used when Enemies are no longer spotting Player  ... */
 				alerted = true;
+
+				UpdateGameManagerAlertedList();
 
 				/* .. When the Enemy spots the Player they are supposed to alert everyone to their location ... */
 				if ( !hasAlerted ) {
@@ -185,6 +187,12 @@ public class EnemyController : MonoBehaviour {
 		}
 	}
 
+	private void UpdateGameManagerAlertedList () {
+		if ( GameManager.Instance && !GameManager.Instance.enemiesAlerted.Contains( gameObject ) ) {
+			GameManager.Instance.enemiesAlerted.Add( gameObject );
+		}
+	}
+
 	private void wasAlertedReset () {
 		wasAlerted = false;
 		/* .. beneath this line resets the EnemyController and VisionLine's materials ... */
@@ -199,6 +207,9 @@ public class EnemyController : MonoBehaviour {
 		/* .. Set the alerted-timer to the default alerted timer .. */
 		currentAlertTime = 0;
 
+		if ( GameManager.Instance ) {
+			GameManager.Instance.enemiesAlerted.Remove( gameObject );
+		}
 
 		/* .. Set the waypointTimer to the default waypoint timer .. */
 		waypointWaitTime = defaultWaypointWaitTime;
@@ -229,7 +240,10 @@ public class EnemyController : MonoBehaviour {
 		}
 		/* .. Set the alerted-timer to the default alerted timer .. */
 		currentAlertTime = 0;
-		/* .. Trigger the red vision-indicator. */
+
+		UpdateGameManagerAlertedList();
+
+		/* .. Trigger the yellow vision-indicator. */
 		fieldOfView.ChangeColorState( ColoredFieldOfView.FieldOfViewStates.Alerted );
 	}
 
