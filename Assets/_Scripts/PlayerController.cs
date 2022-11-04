@@ -12,7 +12,6 @@ public class PlayerController : MonoBehaviour {
 	private float startHeight; 
 	private float turnSmoothVelocity;
 	private CharacterController controller;
-	private bool planningMode = false;
 	private int defaultLayerMask;
 	private GameObject hatObject;
 	private LevelManager levelManager;
@@ -30,7 +29,8 @@ public class PlayerController : MonoBehaviour {
 		startHeight = gameObject.transform.position.y;
 		defaultLayerMask = gameObject.layer;
 
-		Disguised( planningMode );
+		levelManager = GameObject.FindObjectOfType<LevelManager>();
+		Disguised( false );
 	}
 
 	// Update is called once per frame
@@ -47,6 +47,8 @@ public class PlayerController : MonoBehaviour {
 		}
 		/* This block makes Player Turn the way they're moving. */
 		if ( direction.magnitude >= 0.1f ) {
+			Disguised(false);
+
 			/* doubleStraightControls checks if the mapmaker wants to force people to press two buttons to go down or up a hallway. */
 			float doubleStraightControls = (testAbsoluteControls) ? 0f : 45f;
 
@@ -64,18 +66,41 @@ public class PlayerController : MonoBehaviour {
 			/* Time to go move the character in our calculated direction. */
 			controller.Move( direction * speed * Time.deltaTime );
 		}
-	}
 
+		if (Input.GetKeyDown( KeyCode.R ) ) {
+			if ( !levelManager ) {
+				levelManager = GameObject.FindObjectOfType<LevelManager>();
+			}
+			if (!levelManager ) {
+				Debug.LogError("We do not have a level-manager, using default values.");
+				bool disguiseCheck =  disguisesAvailable > usedDisguises;
+
+				if ( GameManager.Instance ) {
+					GameManager.Instance.UpdateDisguiseState( usedDisguises, disguisesAvailable );
+				}
+				Disguised( disguiseCheck );
+			} else {
+				Disguised(levelManager.DisguiseCheck());
+			}
+			usedDisguises++;
+		}
+	}
+	/// <summary>
+	/// Changes players Layermask to Default, allowing them to hide from being seen.
+	/// </summary>
+	/// <param name="disguised"></param>
 	public void Disguised ( bool disguised ) {
 		if ( !GameManager.Instance ) { 
-			Debug.LogError("To enable disguise, make sure you have a GameManager.");
+			Debug.LogWarning("To enable disguise, make sure you have a GameManager.");
 			return;
 		}
+
+
+		GameManager.Instance.DisguisePlayer( disguised );
 
 		if ( disguised ) {
 			gameObject.layer = 0;
 			hatObject.SetActive(false);
-			GameManager.Instance.DisguisePlayer( gameObject.GetComponent<PlayerController>(), disguised );
 		} else {
 			hatObject.SetActive(true);
 			hatObject.GetComponent<Renderer>().material.SetColor( "_Color", Color.black );

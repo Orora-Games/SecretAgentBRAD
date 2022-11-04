@@ -38,11 +38,8 @@ public class GameManager : MonoBehaviour {
 
 	[Header( "Prefab Settings" )]
 	public Canvas MissionListCanvas;
-	public TMP_Text MissionListText;
-	public GameObject escScreen, nextLevelScreen, helpScreen;
-	public GameObject gameOverscreen;
-	public GameObject winGameScreen;
-	public GameObject disguisedOverlay;
+	public TMP_Text ui_t_intelStateField, ui_t_disguiseStateField;
+	public GameObject escScreen, nextLevelScreen, helpScreen, gameOverscreen, winGameScreen, disguisedOverlay;
 
 	private GameObject currentIntelObject;
 	private List<GameObject> intelState;
@@ -54,6 +51,8 @@ public class GameManager : MonoBehaviour {
 	private int currentCheckpoint = -1;
 	private string lastLevel;
 	public TMP_Text disguiseTimerText;
+	[HideInInspector]
+	public List<GameObject> enemiesAlerted;
 
 	private GameState currentGameState;
 
@@ -108,7 +107,8 @@ public class GameManager : MonoBehaviour {
 			if ( disguiseTimer > disguiseTimeLimit ) {
 				disguiseTimer = 0f;
 				disguiseTimerText.text = "";
-				DisguisePlayer( playerController, false);
+
+				DisguisePlayer(false);
 			}
 		} else if ( disguiseTimer != 0f ) {
 			disguiseTimer = 0f;
@@ -116,18 +116,20 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+	private PlayerController GetPlayerController () {
+		
+		return playerController;
+	}
+
 	/// <summary>
 	/// Activates/Deactivates the disguise-overlay
 	/// </summary>
-	/// <param name="player"></param>
 	/// <param name="disguised"></param>
-	public void DisguisePlayer ( PlayerController player, bool disguised) {
+	public void DisguisePlayer ( bool disguised) {
 
 		if ( disguised ) {
 			disguisedOverlay.SetActive( true );
 		} else {
-			if (!player ) { return; }
-			player.Disguised( false );
 			disguisedOverlay.SetActive( false );
 		}
 	}
@@ -289,8 +291,6 @@ public class GameManager : MonoBehaviour {
 		int keyIndex = allKeyObjects.IndexOf( keyObject );
 		if (keyIndex == -1) { Debug.Log("allKeyObjects is missing this key. Please verify.");  return; }
 
-		DisguisePlayer( playerController, false );
-
 		if ( checkpointKeyState.IndexOf(keyIndex) == -1) {
 			checkpointKeyState.Add( keyIndex );
 		}
@@ -319,8 +319,6 @@ public class GameManager : MonoBehaviour {
 		currentIntelObject = intelObject;
 		int intelIndex = allIntelObjects.IndexOf( intelObject );
 		if ( intelIndex == -1 ) { Debug.Log( "allIntelObjects is missing this key. Please verify." ); return; }
-
-		DisguisePlayer( playerController, false );
 
 		if ( checkpointIntelState.IndexOf( intelIndex ) == -1 ) {
 			checkpointIntelState.Add( intelIndex );
@@ -468,6 +466,22 @@ public class GameManager : MonoBehaviour {
 		}
 		
 		currentPickedUpIntelCount = checkpointIntelState.Count;
+		
+		if ( currentPickedUpIntelCount == currentLevelIntelTotal ) {
+			ui_t_intelStateField.SetText( "<s>Intel: " + currentLevelIntelTotal + " / " + currentLevelIntelTotal + "</s>" );
+		} else {
+			ui_t_intelStateField.SetText( "Intel: " + currentPickedUpIntelCount + " / " + currentLevelIntelTotal );
+		}
+	}
+	/// <summary>
+	/// Update the Used disguises number to the most recent one.
+	/// </summary>
+	/// <param name="usedDisguises"></param>
+	/// <param name="disguisesTotal"></param>
+	public void UpdateDisguiseState ( int usedDisguises, int totalDisguises) {
+		int subtractedDisguises = totalDisguises - usedDisguises;
+		
+		ui_t_disguiseStateField.SetText( "Disguises Available: " + subtractedDisguises.ToString());
 	}
 
 	/// <summary>
@@ -475,20 +489,11 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	/// <param name="activateMissionList"></param>
 	public void MissionList (bool activateMissionList = true) {
-		if (!activateMissionList ) {
+		if ( !activateMissionList ) {
 			MissionListCanvas.gameObject.SetActive( false );
-			MissionListText.text = "";
-			return;
-		}
-
-		UpdateIntelState();
-
-		MissionListCanvas.gameObject.SetActive(true);
-		if ( currentPickedUpIntelCount == currentLevelIntelTotal ) {
-			MissionListText.SetText( "<s>- Find all Intel-folders (" + currentLevelIntelTotal + " / " + currentLevelIntelTotal + ")</s>" );
-			//MissionListText.text = ;
 		} else {
-			MissionListText.text = "- Find all Intel-folders (" + currentPickedUpIntelCount + " / " + currentLevelIntelTotal + ")";
+			UpdateIntelState();
+			MissionListCanvas.gameObject.SetActive(true);
 		}
 	}
 
@@ -515,6 +520,7 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	/// <param name="name"></param>
 	private void InitializeLevel ( string name ) {
+
 		if ( levelNames.IndexOf( name ) != -1 || tutorialLevels.IndexOf( name ) != -1 ) {
 			allIntelObjects = new List<GameObject>();
 
