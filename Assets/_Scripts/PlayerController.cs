@@ -1,4 +1,5 @@
 using UnityEngine;
+using static GameManager;
 
 public class PlayerController : MonoBehaviour {
 	public float speed = 6f;
@@ -12,9 +13,13 @@ public class PlayerController : MonoBehaviour {
 	private float startHeight; 
 	private float turnSmoothVelocity;
 	private CharacterController controller;
-	private bool planningMode = false;
 	private int defaultLayerMask;
 	private GameObject hatObject;
+	private LevelManager levelManager;
+	private int disguisesAvailable = 7, usedDisguises = 0;
+	private bool disguised;
+	public float disguiseHoldTimerMax = 0.3f;
+	public float disguiseTimer;
 
 	void Start () {
 		controller = GetComponent<CharacterController>();
@@ -28,13 +33,30 @@ public class PlayerController : MonoBehaviour {
 		startHeight = gameObject.transform.position.y;
 		defaultLayerMask = gameObject.layer;
 
-		Disguised( planningMode );
+		levelManager = GameObject.FindObjectOfType<LevelManager>();
+		Disguised( false );
+		GameManager.Instance.UpdateDisguiseState( usedDisguises, disguisesAvailable );
 	}
 
 	// Update is called once per frame
 	void Update () {
+		if ( !GameManager.Instance || GameManager.Instance.GetGameState() != GameState.Playing ) { return; }
+		if ( disguised ) {
+			disguiseTimer += Time.deltaTime;
+
+			if ( disguiseTimer < disguiseHoldTimerMax ) {
+				return;
+			}
+		}
+		
+		if ( !levelManager ) {
+			levelManager = GameObject.FindObjectOfType<LevelManager>();
+		}
+
 		float horizontal = Input.GetAxisRaw( "Horizontal" );
 		float vertical = Input.GetAxisRaw( "Vertical" );
+
+
 
 		/* We went with True North Absolute controls. */
 		Vector3 direction = new Vector3( horizontal, 0f, vertical ).normalized;
@@ -43,8 +65,11 @@ public class PlayerController : MonoBehaviour {
 		if ( Mathf.Abs( transform.position.y - startHeight ) >= 0.001f ) {
 			transform.position = new Vector3( transform.position.x, startHeight, transform.position.z );
 		}
+
 		/* This block makes Player Turn the way they're moving. */
 		if ( direction.magnitude >= 0.1f ) {
+			Disguised(false);
+
 			/* doubleStraightControls checks if the mapmaker wants to force people to press two buttons to go down or up a hallway. */
 			float doubleStraightControls = (testAbsoluteControls) ? 0f : 45f;
 
@@ -62,18 +87,33 @@ public class PlayerController : MonoBehaviour {
 			/* Time to go move the character in our calculated direction. */
 			controller.Move( direction * speed * Time.deltaTime );
 		}
-	}
 
-	public void Disguised ( bool disguised ) {
-		if ( !GameManager.Instance ) { 
-			Debug.LogError("To enable disguise, make sure you have a GameManager.");
-			return;
+		if (Input.GetKeyDown( KeyCode.R ) && !(GameManager.Instance.enemiesAlerted.Count > 0) ) {
+			if (!levelManager ) {
+				Debug.LogError("We do not have a level-manager, using default values.");
+				bool disguiseCheck =  disguisesAvailable > usedDisguises;
+
+				Disguised( disguiseCheck );
+			} else {
+				Disguised(levelManager.DisguiseCheck());
+			}
+			usedDisguises++;
+			GameManager.Instance.UpdateDisguiseState( usedDisguises, disguisesAvailable );
 		}
+	}
+	/// <summary>
+	/// Changes players Layermask to Default, allowing them to hide from being seen.
+	/// </summary>
+	/// <param name="disguisedLocal"></param>
+	public void Disguised ( bool disguisedLocal ) {
+		disguised = disguisedLocal;
+		disguiseTimer = 0f;
 
-		if ( disguised ) {
+		GameManager.Instance.DisguisePlayer( disguisedLocal );
+
+		if ( disguisedLocal ) {
 			gameObject.layer = 0;
 			hatObject.SetActive(false);
-			GameManager.Instance.DisguisePlayer( gameObject.GetComponent<PlayerController>(), disguised );
 		} else {
 			hatObject.SetActive(true);
 			hatObject.GetComponent<Renderer>().material.SetColor( "_Color", Color.black );
