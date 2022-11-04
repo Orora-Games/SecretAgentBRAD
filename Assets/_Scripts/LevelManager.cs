@@ -7,10 +7,26 @@ public class LevelManager : MonoBehaviour {
 	private int usedDisguises = 0;
 
 	private void Start () {
-		if ( GameManager.Instance ) {
-			GameManager.Instance.UpdateDisguiseState( usedDisguises, disguisesAvailable );
-		}
+		doNumbers();
 	}
+
+	/// <summary>
+	/// Will update based on levelManager's numbers.
+	/// </summary>
+	public void doNumbers () {
+		UpdateDisguiseNumbers( usedDisguises, disguisesAvailable );
+	}
+
+	/// <summary>
+	/// Updates the Disguise State using GameManager
+	/// </summary>
+	/// <param name="usedDisguisesLocal"></param>
+	/// <param name="disguiseAvailableLocal"></param>
+	public void UpdateDisguiseNumbers ( int usedDisguisesLocal, int disguiseAvailableLocal) {
+		if ( !GameManager.Instance ) { return; }
+		GameManager.Instance.UpdateDisguiseState( usedDisguisesLocal, disguiseAvailableLocal );
+	}
+
 	/// <summary>
 	/// Returns true/false if the player is able to disguise themselves.
 	/// </summary>
@@ -20,16 +36,16 @@ public class LevelManager : MonoBehaviour {
 
 		if ( disguiseCheck ) {
 			usedDisguises++;
-			if ( GameManager.Instance ) {
-				GameManager.Instance.UpdateDisguiseState( usedDisguises, disguisesAvailable );
-			} else {
-				Debug.LogError( "You have no GameManager, so Disguise state can't be updated." );
-			}
+			UpdateDisguiseNumbers( usedDisguises, disguisesAvailable );
 		}
 		return disguiseCheck;
 	}
-	public bool AlertCheck () { 
+	/// <summary>
+	/// Checks GameManager if enemies are alerted.
+	/// </summary>
+	/// <returns></returns>
+	public bool AlertCheck () {
+		if ( !GameManager.Instance ) { return false; }
 		return GameManager.Instance.enemiesAlerted.Count>0;
 	}
-
 }
