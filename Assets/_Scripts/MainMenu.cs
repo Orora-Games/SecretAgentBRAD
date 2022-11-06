@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static GameManager;
 
 public class MainMenu : MonoBehaviour {
@@ -9,12 +11,12 @@ public class MainMenu : MonoBehaviour {
 			GameObject.Find( "quitButton" ).gameObject.SetActive( false );
 		}
 		if ( !GameManager.Instance ) { return;  }
-		
+
 		if (GameManager.Instance.GetGameState() == GameManager.GameState.LevelSelect) {
 			mainMenu.SetActive( false );
 			levelSelectMenu.SetActive( true );
+			GameManager.Instance.ChangeGameState( GameState.Playing );
 		}
-		
 	}
 	//Load Scene
 	public void Play() {
