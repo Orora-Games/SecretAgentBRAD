@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour {
 		if (!levelManager) {
 			GameManager.Instance.UpdateDisguiseState( usedDisguises, disguisesAvailable );
 		} else {
-			levelManager.doNumbers();
+			levelManager.UpdateDisguiseNumbers();
 		}
 	}
 
@@ -103,7 +103,7 @@ public class PlayerController : MonoBehaviour {
 				Disguised( disguiseCheck );
 				GameManager.Instance.UpdateDisguiseState( usedDisguises, disguisesAvailable );
 			} else {
-				levelManager.doNumbers();
+				levelManager.UpdateDisguiseNumbers();
 				Disguised(levelManager.DisguiseCheck());
 			}
 

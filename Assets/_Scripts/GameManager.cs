@@ -481,12 +481,6 @@ public class GameManager : MonoBehaviour {
 	/// <param name="scene"></param>
 	/// <param name="mode"></param>
 	private void SceneChangeActions ( Scene scene, LoadSceneMode mode ) {
-		GameState gs = GetGameState();
-
-		if ( gs == GameState.LevelSelect ) {
-			ChangeGameState( GameState.Playing );
-		}
-
 		InitializeLevel( scene.name );
 		nextLevelScreen.SetActive( false );
 		escScreen.SetActive( false );

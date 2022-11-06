@@ -7,24 +7,14 @@ public class LevelManager : MonoBehaviour {
 	private int usedDisguises = 0;
 
 	private void Start () {
-		doNumbers();
+		UpdateDisguiseNumbers();
 	}
-
-	/// <summary>
-	/// Will update based on levelManager's numbers.
-	/// </summary>
-	public void doNumbers () {
-		UpdateDisguiseNumbers( usedDisguises, disguisesAvailable );
-	}
-
 	/// <summary>
 	/// Updates the Disguise State using GameManager
 	/// </summary>
-	/// <param name="usedDisguisesLocal"></param>
-	/// <param name="disguiseAvailableLocal"></param>
-	public void UpdateDisguiseNumbers ( int usedDisguisesLocal, int disguiseAvailableLocal) {
+	public void UpdateDisguiseNumbers () {
 		if ( !GameManager.Instance ) { return; }
-		GameManager.Instance.UpdateDisguiseState( usedDisguisesLocal, disguiseAvailableLocal );
+		GameManager.Instance.UpdateDisguiseState( usedDisguises, disguisesAvailable );
 	}
 
 	/// <summary>
@@ -36,7 +26,7 @@ public class LevelManager : MonoBehaviour {
 
 		if ( disguiseCheck ) {
 			usedDisguises++;
-			UpdateDisguiseNumbers( usedDisguises, disguisesAvailable );
+			UpdateDisguiseNumbers( );
 		}
 		return disguiseCheck;
 	}
