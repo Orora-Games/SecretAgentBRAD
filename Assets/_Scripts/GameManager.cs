@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour {
 	public string menuScene = "Main Menu";
 
 	[Header( "Prefab Settings" )]
-	public Canvas MissionListCanvas;
+	public Canvas missionListCanvas;
 	public TMP_Text ui_t_intelStateField, ui_t_disguiseStateField;
 	public GameObject escScreen, nextLevelScreen, helpScreen, gameOverscreen, winGameScreen, disguisedOverlay;
 
@@ -55,6 +55,8 @@ public class GameManager : MonoBehaviour {
 
 	private bool debugMessages = false;
 	private PlayerController playerController;
+
+	private Camera mainCamera;
 
 	private void OnEnable () {
 		SceneManager.sceneLoaded += SceneChangeActions;
@@ -355,7 +357,7 @@ public class GameManager : MonoBehaviour {
 	#region Checkpoints 
 	public void Checkpoint (GameObject checkpoint) {
 		currentCheckpoint = allCheckpoints.IndexOf(checkpoint);
-
+		checkpoint.transform.GetComponent<Renderer>().material.color = Color.cyan;
 		checkpoint.transform.GetComponent<Renderer>().material.color = Color.green;
 	}
 	/// <summary>
@@ -431,6 +433,7 @@ public class GameManager : MonoBehaviour {
 	}
 	#endregion
 
+	#region Mission List
 	/// <summary>
 	/// Initializes, and updates our intel-state related variables/objects. 
 	/// </summary>
@@ -467,12 +470,13 @@ public class GameManager : MonoBehaviour {
 	/// <param name="activateMissionList"></param>
 	public void MissionList (bool activateMissionList = true) {
 		if ( !activateMissionList ) {
-			MissionListCanvas.gameObject.SetActive( false );
+			missionListCanvas.gameObject.SetActive( false );
 		} else {
 			UpdateIntelState();
-			MissionListCanvas.gameObject.SetActive(true);
+			missionListCanvas.gameObject.SetActive(true);
 		}
 	}
+	#endregion
 
 	#region New Sceene Activity
 	/// <summary>
@@ -486,12 +490,21 @@ public class GameManager : MonoBehaviour {
 		escScreen.SetActive( false );
 	}
 
+	public void UpdateMainCamera () {
+		mainCamera = FindObjectOfType<Camera>();
+		GameObject[] overlays = { escScreen, nextLevelScreen, helpScreen, gameOverscreen, winGameScreen, disguisedOverlay, missionListCanvas.gameObject};
+		foreach ( var item in overlays ) {
+			item.GetComponent<Canvas>().worldCamera = mainCamera;
+			item.GetComponent<Canvas>().planeDistance = 10;
+		}
+	}
+
 	/// <summary>
 	/// Initializes level states.
 	/// </summary>
 	/// <param name="name"></param>
 	private void InitializeLevel ( string name ) {
-
+		UpdateMainCamera();
 		if ( levelNames.IndexOf( name ) != -1 || tutorialLevels.IndexOf( name ) != -1 ) {
 			allIntelObjects = new List<GameObject>();
 
