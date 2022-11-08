@@ -8,7 +8,7 @@ public class MainMenu : MonoBehaviour {
 
 	private void Start () {
 		if ( Application.platform == RuntimePlatform.WebGLPlayer ) {
-			GameObject.Find( "quitButton" ).gameObject.SetActive( false );
+			GameObject.Find( "quitButton" ).SetActive( false );
 		}
 		if ( !GameManager.Instance ) { return;  }
 
