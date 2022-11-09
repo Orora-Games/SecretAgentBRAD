@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour {
 	private LevelManager levelManager;
 	private int disguisesAvailable = 7, usedDisguises = 0;
 	private bool disguised;
-	public float disguiseHoldTimerMax = 0.3f;
+	public float disguiseHoldTimerMax = 1f;
 	public float disguiseTimer;
 
 	void Start () {
@@ -54,6 +54,7 @@ public class PlayerController : MonoBehaviour {
 			if ( disguiseTimer < disguiseHoldTimerMax ) {
 				return;
 			}
+			disguiseTimer = 0f;
 		}
 		
 		if ( !levelManager ) {
