@@ -505,6 +505,8 @@ public class GameManager : MonoBehaviour {
 	/// <param name="name"></param>
 	private void InitializeLevel ( string name ) {
 		UpdateMainCamera();
+		GameManager.Instance.enemiesAlerted = new List<GameObject>();
+
 		if ( levelNames.IndexOf( name ) != -1 || tutorialLevels.IndexOf( name ) != -1 ) {
 			allIntelObjects = new List<GameObject>();
 
