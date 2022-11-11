@@ -48,7 +48,7 @@ public class GameManager : MonoBehaviour {
 	private List<GameObject> allKeyObjects = new List<GameObject>();
 	private int currentCheckpoint = -1;
 	private string lastLevel;
-	[HideInInspector]
+	//[HideInInspector]
 	public List<GameObject> enemiesAlerted;
 
 	private GameState currentGameState;
@@ -461,7 +461,7 @@ public class GameManager : MonoBehaviour {
 	public void UpdateDisguiseState ( int usedDisguises, int totalDisguises) {
 		int subtractedDisguises = totalDisguises - usedDisguises;
 		
-		ui_t_disguiseStateField.SetText( "Disguises Available: " + subtractedDisguises.ToString());
+		ui_t_disguiseStateField.SetText( "Disguises Available: " + subtractedDisguises.ToString() + " (R)");
 	}
 
 	/// <summary>
@@ -505,6 +505,8 @@ public class GameManager : MonoBehaviour {
 	/// <param name="name"></param>
 	private void InitializeLevel ( string name ) {
 		UpdateMainCamera();
+		GameManager.Instance.enemiesAlerted = new List<GameObject>();
+
 		if ( levelNames.IndexOf( name ) != -1 || tutorialLevels.IndexOf( name ) != -1 ) {
 			allIntelObjects = new List<GameObject>();
 
