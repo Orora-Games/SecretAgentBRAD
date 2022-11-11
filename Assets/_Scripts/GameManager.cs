@@ -82,20 +82,24 @@ public class GameManager : MonoBehaviour {
 	///		Lets you move on from the Start scene. 
 	/// </summary>
 	void Update () {
-		if ( Input.GetKeyDown( KeyCode.Escape ) && currentLevelName != menuScene ) {
+		if ( GetGameState() == GameState.GameOver && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
+			if ( Input.GetKeyDown( KeyCode.Escape ) ) {
+				ChangeGameState( GameState.MainMenu );
+				return;
+			}
+			anykeyTimer = 0f;
+			RestartLevel();
+		} else if ( GetGameState() == GameState.WinGame && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
+			anykeyTimer = 0f;
+			ChangeGameState(GameState.MainMenu);
+			return;
+		} else if ( Input.GetKeyDown( KeyCode.Escape ) && currentLevelName != menuScene ) {
 			if ( escScreen.activeSelf == true ) {
 				ChangeGameState( GameState.Playing );
 			} else {
 				ChangeGameState( GameState.EscScreen );
 			}
-		} else if ( GetGameState() == GameState.WinGame && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
-			anykeyTimer = 0f;
-			ChangeGameState(GameState.MainMenu);
-			return;
-		} else if (  GetGameState() == GameState.GameOver && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
-			anykeyTimer = 0f;
-			RestartLevel();
-		} /* Still used to get out of YouLost scene. */
+		}
 		if ( GetGameState() == GameState.GameOver  || GetGameState() == GameState.WinGame ) {
 			anykeyTimer += Time.deltaTime;
 		}
