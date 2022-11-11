@@ -118,7 +118,9 @@ public class PlayerController : MonoBehaviour {
 	public void Disguised ( bool disguisedLocal ) {
 		disguised = disguisedLocal;
 
-		GameManager.Instance.DisguisePlayer( disguisedLocal );
+		if ( GameManager.Instance ) {
+			GameManager.Instance.DisguisePlayer( disguisedLocal );
+		}
 
 		if ( disguisedLocal ) {
 			gameObject.layer = 0;
