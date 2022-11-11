@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEngine.GraphicsBuffer;
 
 //[RequireComponent( typeof( NavMeshAgent ) )]
 public class EnemyController : MonoBehaviour {
@@ -50,8 +49,7 @@ public class EnemyController : MonoBehaviour {
 	private GameObject[] toBeAlerted;
 
 	public LayerMask viewVisualizationMask;
-	[HideInInspector]
-	public Vector3 visualizationDetectionHeight;
+	private LevelManager levelManager;
 
 	// Start is called before the first frame update
 	void Start () {
@@ -64,31 +62,11 @@ public class EnemyController : MonoBehaviour {
 
 		toBeAlerted = GameObject.FindGameObjectsWithTag( "Enemy" );
 
-		Transform viewVisualization = gameObject.transform.Find( "ViewVisualization" );
-		/* Find floor, so we can use floor.transform.position.y to find the floor height, then set ViewVisualization to floorHeight+some 
-		 *	Example: https://docs.unity3d.com/ScriptReference/RaycastHit-distance.html */
-		RaycastHit hit;
-		if ( Physics.Raycast( transform.position, Vector3.down, out hit, Mathf.Infinity ) ) {
-
-			if ( hit.transform.name == "Floor") {
-				float visualizationHeight = 0f;
-				if ( hit.point.y < 0f) {
-					visualizationHeight =  transform.position.y + hit.distance - 0.05f;
-				} else {
-					visualizationHeight =  transform.position.y - hit.distance + 0.05f;
-				}
-				visualizationDetectionHeight = new Vector3( viewVisualization.position.x, visualizationHeight, viewVisualization.position.z );
-				viewVisualization.position = visualizationDetectionHeight;
-			}
-		}
-		//float viewVisualizationHeight = 
-		// transform.position
-
 		/* Initializes waypoint system, and gets next waypoint */
 		Transform nextTarget = InitializeWaypoints();
 
 		/* .. Tell AI movement to move to the next waypointTarget ... */
-		if (agent ) { 
+		if ( agent ) { 
 			agent.SetDestination( nextTarget.position );
 		}
 	}
@@ -110,6 +88,8 @@ public class EnemyController : MonoBehaviour {
 
 				/* .. alerted-check is used when Enemies are no longer spotting Player  ... */
 				alerted = true;
+
+				UpdateGameManagerAlertedList();
 
 				/* .. When the Enemy spots the Player they are supposed to alert everyone to their location ... */
 				if ( !hasAlerted ) {
@@ -207,6 +187,12 @@ public class EnemyController : MonoBehaviour {
 		}
 	}
 
+	private void UpdateGameManagerAlertedList () {
+		if ( GameManager.Instance && !GameManager.Instance.enemiesAlerted.Contains( gameObject ) ) {
+			GameManager.Instance.enemiesAlerted.Add( gameObject );
+		}
+	}
+
 	private void wasAlertedReset () {
 		wasAlerted = false;
 		/* .. beneath this line resets the EnemyController and VisionLine's materials ... */
@@ -221,6 +207,9 @@ public class EnemyController : MonoBehaviour {
 		/* .. Set the alerted-timer to the default alerted timer .. */
 		currentAlertTime = 0;
 
+		if ( GameManager.Instance ) {
+			GameManager.Instance.enemiesAlerted.Remove( gameObject );
+		}
 
 		/* .. Set the waypointTimer to the default waypoint timer .. */
 		waypointWaitTime = defaultWaypointWaitTime;
@@ -251,7 +240,10 @@ public class EnemyController : MonoBehaviour {
 		}
 		/* .. Set the alerted-timer to the default alerted timer .. */
 		currentAlertTime = 0;
-		/* .. Trigger the red vision-indicator. */
+
+		UpdateGameManagerAlertedList();
+
+		/* .. Trigger the yellow vision-indicator. */
 		fieldOfView.ChangeColorState( ColoredFieldOfView.FieldOfViewStates.Alerted );
 	}
 
