@@ -144,23 +144,16 @@ public class GameManager : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Will return level name if known in tutorials OR in levelNames
+	/// Returns level name, and updates currentLevelIndex if the level is found in experimentLevels, or levelNames
 	/// </summary>
 	/// <param name="additive"></param>
 	/// <returns></returns>
-	private string getTutorialOrRegularLevel (int additive = 0) {
-		int tutorialLevelIndex = -1;
+	private string GetTutorialOrRegularLevel (int additive = 0) {
 		string levelName = "";
 
 		if ( experimentLevels.IndexOf( currentLevelName ) != -1 || experimentLevels.IndexOf( SceneManager.GetActiveScene().name ) != -1 ) {
-			currentLevelName = ( experimentLevels.IndexOf( currentLevelName ) != -1 ) ? currentLevelName  : SceneManager.GetActiveScene().name;
-			tutorialLevelIndex = experimentLevels.IndexOf( currentLevelName ) + additive;
-			
-			if ( tutorialLevelIndex < experimentLevels.Count ) {
-				levelName = levelNames[ currentLevelIndex + additive ];
-			} else {
-				levelName = experimentLevels[ tutorialLevelIndex ];
-			}
+			currentLevelIndex = ( experimentLevels.IndexOf( currentLevelName ) != -1 ) ? experimentLevels.IndexOf( currentLevelName ) : experimentLevels.IndexOf( SceneManager.GetActiveScene().name );
+			levelName = experimentLevels[ ( currentLevelIndex + additive < experimentLevels.Count ) ? currentLevelIndex + additive : currentLevelIndex ];
 		} else if ( levelNames.IndexOf( currentLevelName ) != -1 || levelNames.IndexOf( SceneManager.GetActiveScene().name ) != -1 ) {
 			currentLevelIndex = ( levelNames.IndexOf( currentLevelName ) != -1 ) ? levelNames.IndexOf( currentLevelName ) : levelNames.IndexOf( SceneManager.GetActiveScene().name);
 			levelName = levelNames[ (currentLevelIndex + additive < levelNames.Count) ? currentLevelIndex + additive: currentLevelIndex];
@@ -176,7 +169,7 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	/// <param name="mode"></param>
 	public void NextLevelScreen (string mode = "") {
-		string data = getTutorialOrRegularLevel(1);
+		string data = GetTutorialOrRegularLevel(1);
 		//* Make sure ChangeGameState/nextLevelScreen/if mode return is in that order. *//
 		ChangeGameState( GameState.Paused );
 		nextLevelScreen.SetActive( true );
@@ -253,7 +246,7 @@ public class GameManager : MonoBehaviour {
 	/// Restarts last loaded level.
 	/// </summary>
 	public void RestartLevel ( bool resetCheckpoint = false ) {
-		string data = getTutorialOrRegularLevel();
+		string data = GetTutorialOrRegularLevel();
 		
 		if ( resetCheckpoint == true ) {
 			currentCheckpoint = -1;
