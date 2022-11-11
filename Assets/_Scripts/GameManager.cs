@@ -126,20 +126,22 @@ public class GameManager : MonoBehaviour {
 		int tutorialLevelIndex = -1;
 		string levelName = "";
 
-		if ( tutorialLevels.IndexOf( currentLevelName ) != -1 ) {
+		if ( tutorialLevels.IndexOf( currentLevelName ) != -1 || tutorialLevels.IndexOf( SceneManager.GetActiveScene().name ) != -1 ) {
+			currentLevelName = ( tutorialLevels.IndexOf( currentLevelName ) != -1 ) ? currentLevelName  : SceneManager.GetActiveScene().name;
 			tutorialLevelIndex = tutorialLevels.IndexOf( currentLevelName ) + additive;
-		} else if ( tutorialLevels.IndexOf( SceneManager.GetActiveScene().name ) != -1) {
-			tutorialLevelIndex = tutorialLevels.IndexOf( SceneManager.GetActiveScene().name ) + additive;
-		}
-		if ( tutorialLevelIndex != -1 ) {
+			
 			if ( tutorialLevelIndex < tutorialLevels.Count ) {
 				levelName = levelNames[ currentLevelIndex + additive ];
 			} else {
 				levelName = tutorialLevels[ tutorialLevelIndex ];
 			}
-		} else {
+		} else if ( levelNames.IndexOf( currentLevelName ) != -1 || levelNames.IndexOf( SceneManager.GetActiveScene().name ) != -1 ) {
+			currentLevelIndex = ( levelNames.IndexOf( currentLevelName ) != -1 ) ? levelNames.IndexOf( currentLevelName ) : levelNames.IndexOf( SceneManager.GetActiveScene().name);
 			levelName = levelNames[ (currentLevelIndex + additive < levelNames.Count) ? currentLevelIndex + additive: currentLevelIndex];
+		} else {
+			levelName = SceneManager.GetActiveScene().name;
 		}
+		
 		return levelName;
 	}
 
@@ -511,7 +513,7 @@ public class GameManager : MonoBehaviour {
 		UpdateMainCamera();
 		GameManager.Instance.enemiesAlerted = new List<GameObject>();
 
-		if ( levelNames.IndexOf( name ) != -1 || tutorialLevels.IndexOf( name ) != -1 ) {
+		if ( levelNames.IndexOf( name ) != -1 || tutorialLevels.IndexOf( name ) != -1 || GameObject.Find("LevelManager") || GetGameState() == GameState.Playing) {
 			allIntelObjects = new List<GameObject>();
 
 			allCheckpoints = new List<GameObject>( GameObject.FindGameObjectsWithTag( "Checkpoint" ) );
@@ -533,6 +535,7 @@ public class GameManager : MonoBehaviour {
 			ChangeGameState( GameState.Playing );
 		} else {
 			MissionList( false );
+			ChangeGameState( GameState.Playing );
 		}
 	}
 	#endregion
