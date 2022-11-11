@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour {
 	void Start () {
 		controller = GetComponent<CharacterController>();
 
-		hatObject = gameObject.transform.Find( "BRAD_improved" ).transform.Find( "hat" ).gameObject;
+		hatObject = gameObject.transform.Find( "BRAD_model" ).transform.Find( "disguise" ).gameObject;
 		if ( gameObject.tag == "Untagged" )
 			Debug.LogError( "Your " + gameObject.name + " object needs to have the correct tag to be killable." ); // Make sure to Tag your player-object Player.
 		if ( gameObject.layer == 0 )
@@ -118,14 +118,18 @@ public class PlayerController : MonoBehaviour {
 	public void Disguised ( bool disguisedLocal ) {
 		disguised = disguisedLocal;
 
-		GameManager.Instance.DisguisePlayer( disguisedLocal );
+		if ( GameManager.Instance ) {
+			GameManager.Instance.DisguisePlayer( disguisedLocal );
+		}
 
 		if ( disguisedLocal ) {
 			gameObject.layer = 0;
 			hatObject.SetActive(false);
 		} else {
 			hatObject.SetActive(true);
-			hatObject.GetComponent<Renderer>().material.SetColor( "_Color", Color.black );
+			foreach ( Transform item in hatObject.transform ) {
+				item.GetComponent<Renderer>().material.SetColor( "_Color", Color.black );
+			}
 			gameObject.layer = defaultLayerMask;
 		}
 	}

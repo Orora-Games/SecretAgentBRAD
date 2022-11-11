@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using static GameManager;
+using System.Collections;
 
 public class GameManager : MonoBehaviour {
 	/* Game Manager tutorial
@@ -17,8 +18,29 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public List<string> levelNames = new List<string> { "T_Level01", "T_Level02", "T_Level03", "T_Level04", "A_Level05" };
-	public List<string> tutorialLevels = new List<string> { "Tut01", "Tut02", "Level01", "Level02", "Level03", "Level04", "Level05", "Level06", "Level07" , "Level08-Maze", "Level09"};
+	public List<string> levelNames = new List<string> { "T_Level01", "T_Level02", "T_Level03", "T_Level04", "A_Level05", "A_Level06-Maze", "A_Level07", "TA_Asset_Museum" };
+	public List<string> experimentLevels = new List<string> { "Tut01", "Level01", "Level02", "Level04", "Level05", "Level06", "Level07" , "Level09"};
+	
+	private Dictionary<string,string> presentableLevelNames = new Dictionary<string, string>() {
+		{ "T_Level01","Level 1" },
+		{ "T_Level02","Level 2" },
+		{ "T_Level03", "Level 3"},
+		{ "T_Level04", "Level 4" },
+		{"A_Level05", "Level 5" },
+		{"A_Level06-Maze", "Level 6 - Maze" },
+		{"A_Level07", "Level 7" },
+		{"TA_Asset_Museum", "Asset Museum" },
+		{ "Tut01", "Experiment 1"},
+		{ "Level01", "Experiment 2"},
+		{ "Level02", "Experiment 3"},
+		{ "Level04", "Experiment 4"},
+		{ "Level05", "Experiment 5"},
+		{ "Level06", "Experiment 6"},
+		{ "Level07", "Experiment 7"},
+		{ "Level09", "Experiment 8"}
+	};
+
+
 	private int currentLevelIndex = 0;
 	private string currentLevelName;
 
@@ -36,7 +58,7 @@ public class GameManager : MonoBehaviour {
 
 	[Header( "Prefab Settings" )]
 	public Canvas missionListCanvas;
-	public TMP_Text ui_t_intelStateField, ui_t_disguiseStateField;
+	public TMP_Text ui_t_intelStateField, ui_t_disguiseStateField, uiTMapNameField;
 	public GameObject escScreen, nextLevelScreen, helpScreen, gameOverscreen, winGameScreen, disguisedOverlay;
 
 	private GameObject currentIntelObject;
@@ -74,28 +96,36 @@ public class GameManager : MonoBehaviour {
 
 
 	void Start () {
-		currentLevelName = SceneManager.GetActiveScene().name;
 		currentLevelIndex = 0;
+		currentLevelName = SceneManager.GetActiveScene().name;
+		if (currentLevelName == "Preload") {
+			currentLevelName = menuScene;
+			ChangeGameState(GameState.MainMenu);
+		}
 	}
 
 	/// <summary>
 	///		Lets you move on from the Start scene. 
 	/// </summary>
 	void Update () {
-		if ( Input.GetKeyDown( KeyCode.Escape ) && currentLevelName != menuScene ) {
+		if ( GetGameState() == GameState.GameOver && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
+			if ( Input.GetKeyDown( KeyCode.Escape ) ) {
+				ChangeGameState( GameState.MainMenu );
+				return;
+			}
+			anykeyTimer = 0f;
+			RestartLevel();
+		} else if ( GetGameState() == GameState.WinGame && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
+			anykeyTimer = 0f;
+			ChangeGameState(GameState.MainMenu);
+			return;
+		} else if ( Input.GetKeyDown( KeyCode.Escape ) && currentLevelName != menuScene ) {
 			if ( escScreen.activeSelf == true ) {
 				ChangeGameState( GameState.Playing );
 			} else {
 				ChangeGameState( GameState.EscScreen );
 			}
-		} else if ( GetGameState() == GameState.WinGame && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
-			anykeyTimer = 0f;
-			ChangeGameState(GameState.MainMenu);
-			return;
-		} else if (  GetGameState() == GameState.GameOver && anykeyTimer > anykeyTimeLimit && Input.anyKeyDown ) {
-			anykeyTimer = 0f;
-			RestartLevel();
-		} /* Still used to get out of YouLost scene. */
+		}
 		if ( GetGameState() == GameState.GameOver  || GetGameState() == GameState.WinGame ) {
 			anykeyTimer += Time.deltaTime;
 		}
@@ -114,28 +144,23 @@ public class GameManager : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Will return level name if known in tutorials OR in levelNames
+	/// Returns level name, and updates currentLevelIndex if the level is found in experimentLevels, or levelNames
 	/// </summary>
 	/// <param name="additive"></param>
 	/// <returns></returns>
-	private string getTutorialOrRegularLevel (int additive = 0) {
-		int tutorialLevelIndex = -1;
+	private string GetTutorialOrRegularLevel (int additive = 0) {
 		string levelName = "";
 
-		if ( tutorialLevels.IndexOf( currentLevelName ) != -1 ) {
-			tutorialLevelIndex = tutorialLevels.IndexOf( currentLevelName ) + additive;
-		} else if ( tutorialLevels.IndexOf( SceneManager.GetActiveScene().name ) != -1) {
-			tutorialLevelIndex = tutorialLevels.IndexOf( SceneManager.GetActiveScene().name ) + additive;
-		}
-		if ( tutorialLevelIndex != -1 ) {
-			if ( tutorialLevelIndex < tutorialLevels.Count ) {
-				levelName = levelNames[ currentLevelIndex + additive ];
-			} else {
-				levelName = tutorialLevels[ tutorialLevelIndex ];
-			}
-		} else {
+		if ( experimentLevels.IndexOf( currentLevelName ) != -1 || experimentLevels.IndexOf( SceneManager.GetActiveScene().name ) != -1 ) {
+			currentLevelIndex = ( experimentLevels.IndexOf( currentLevelName ) != -1 ) ? experimentLevels.IndexOf( currentLevelName ) : experimentLevels.IndexOf( SceneManager.GetActiveScene().name );
+			levelName = experimentLevels[ ( currentLevelIndex + additive < experimentLevels.Count ) ? currentLevelIndex + additive : currentLevelIndex ];
+		} else if ( levelNames.IndexOf( currentLevelName ) != -1 || levelNames.IndexOf( SceneManager.GetActiveScene().name ) != -1 ) {
+			currentLevelIndex = ( levelNames.IndexOf( currentLevelName ) != -1 ) ? levelNames.IndexOf( currentLevelName ) : levelNames.IndexOf( SceneManager.GetActiveScene().name);
 			levelName = levelNames[ (currentLevelIndex + additive < levelNames.Count) ? currentLevelIndex + additive: currentLevelIndex];
+		} else {
+			levelName = SceneManager.GetActiveScene().name;
 		}
+		
 		return levelName;
 	}
 
@@ -144,7 +169,7 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	/// <param name="mode"></param>
 	public void NextLevelScreen (string mode = "") {
-		string data = getTutorialOrRegularLevel(1);
+		string data = GetTutorialOrRegularLevel(1);
 		//* Make sure ChangeGameState/nextLevelScreen/if mode return is in that order. *//
 		ChangeGameState( GameState.Paused );
 		nextLevelScreen.SetActive( true );
@@ -199,13 +224,14 @@ public class GameManager : MonoBehaviour {
 			return;
 		}
 
+		UpdateMapNameTitle();
 		lastLevel = currentLevelName;
 		currentLevelName = level;
 		anykeyTimer = 0f;
 
 		/* If the level exists in our list of levels, load it . */
-		if ( levelNames.IndexOf( level ) != -1) {
-			currentLevelIndex = levelNames.IndexOf( currentLevelName );
+		if ( levelNames.IndexOf( level ) != -1 || experimentLevels.IndexOf( level ) != -1 ) {
+			currentLevelIndex = (levelNames.IndexOf( level ) != -1 ) ? levelNames.IndexOf( currentLevelName ): experimentLevels.IndexOf( currentLevelName );
 
 			SceneManager.LoadScene( level );
 			/* Functions needed for missions to work, can be found in SceneChangeActions() */
@@ -220,7 +246,7 @@ public class GameManager : MonoBehaviour {
 	/// Restarts last loaded level.
 	/// </summary>
 	public void RestartLevel ( bool resetCheckpoint = false ) {
-		string data = getTutorialOrRegularLevel();
+		string data = GetTutorialOrRegularLevel();
 		
 		if ( resetCheckpoint == true ) {
 			currentCheckpoint = -1;
@@ -448,9 +474,9 @@ public class GameManager : MonoBehaviour {
 		currentPickedUpIntelCount = checkpointIntelState.Count;
 		
 		if ( currentPickedUpIntelCount == currentLevelIntelTotal ) {
-			ui_t_intelStateField.SetText( "<s>Intel: " + currentLevelIntelTotal + " / " + currentLevelIntelTotal + "</s>" );
+			ui_t_intelStateField.SetText( "<s>Collect Intel: " + currentLevelIntelTotal + " / " + currentLevelIntelTotal + "</s>" );
 		} else {
-			ui_t_intelStateField.SetText( "Intel: " + currentPickedUpIntelCount + " / " + currentLevelIntelTotal );
+			ui_t_intelStateField.SetText( "Collect Intel: " + currentPickedUpIntelCount + " / " + currentLevelIntelTotal );
 		}
 	}
 	/// <summary>
@@ -474,6 +500,19 @@ public class GameManager : MonoBehaviour {
 		} else {
 			UpdateIntelState();
 			missionListCanvas.gameObject.SetActive(true);
+		}
+	}
+
+	private void UpdateMapNameTitle () {
+		if ( currentLevelName == null ) {
+			return;
+		}
+
+
+		if ( GetGameState() == GameState.Playing && presentableLevelNames.ContainsKey(currentLevelName)) { 
+			uiTMapNameField.text = presentableLevelNames[currentLevelName];
+		} else if ( currentLevelName != menuScene && !presentableLevelNames.ContainsKey( currentLevelName ) ) {
+			Debug.LogError("You have to add a presentable Level Name for " + currentLevelName + " to presentableLevelName in the GameManager.");
 		}
 	}
 	#endregion
@@ -505,9 +544,10 @@ public class GameManager : MonoBehaviour {
 	/// <param name="name"></param>
 	private void InitializeLevel ( string name ) {
 		UpdateMainCamera();
+
 		GameManager.Instance.enemiesAlerted = new List<GameObject>();
 
-		if ( levelNames.IndexOf( name ) != -1 || tutorialLevels.IndexOf( name ) != -1 ) {
+		if ( levelNames.IndexOf( name ) != -1 || experimentLevels.IndexOf( name ) != -1 || GameObject.Find("LevelManager") || GetGameState() == GameState.Playing) {
 			allIntelObjects = new List<GameObject>();
 
 			allCheckpoints = new List<GameObject>( GameObject.FindGameObjectsWithTag( "Checkpoint" ) );
@@ -522,6 +562,7 @@ public class GameManager : MonoBehaviour {
 				MissionList();
 				UnlockExit();
 			} else {
+				UpdateIntelState();
 				UpdateIntelState( true );
 				ReturnToCheckpoint();
 			}
@@ -529,7 +570,10 @@ public class GameManager : MonoBehaviour {
 			ChangeGameState( GameState.Playing );
 		} else {
 			MissionList( false );
+			ChangeGameState( GameState.Playing );
 		}
+
+		UpdateMapNameTitle();
 	}
 	#endregion
 

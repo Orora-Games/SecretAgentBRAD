@@ -10,7 +10,7 @@ public class MainMenu : MonoBehaviour {
 		if ( Application.platform == RuntimePlatform.WebGLPlayer ) {
 			GameObject.Find( "quitButton" ).SetActive( false );
 		}
-		if ( !GameManager.Instance ) { return;  }
+		if ( !GameManager.Instance ) { SceneManager.LoadScene("Preload");  return;  }
 
 		if (GameManager.Instance.GetGameState() == GameManager.GameState.LevelSelect) {
 			mainMenu.SetActive( false );
