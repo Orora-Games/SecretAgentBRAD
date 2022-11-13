@@ -26,6 +26,7 @@ public class CameraController : MonoBehaviour {
 	
 	/* cameraContainer is how we are getting all the cameras, it's set in the prefab. */
 	public bool disableCameraSwap = false;
+	private bool initialTargetPositionSet = false;
 
 	private Transform Target {
 		get {
@@ -40,11 +41,6 @@ public class CameraController : MonoBehaviour {
 	}
 
 	private void Start () {
-		/* This is here to allow us to check for targetPlayer not existing*/
-		if ( Target ) {
-			/* Start by setting our camera to the target, wherever they are. */
-			transform.position = Target.position;
-		}
 		/* Build our CameraList */
 		foreach ( Camera child in transform.GetComponentsInChildren<Camera>() ) {
 			var newCamera = new CameraLocation {
@@ -68,6 +64,12 @@ public class CameraController : MonoBehaviour {
 		/* Source: https://docs.unity3d.com/ScriptReference/Vector3.SmoothDamp.html */
 		if ( !Target )
 			return;
+		
+		if (!initialTargetPositionSet ) {
+			/* Start by setting our camera to the target, wherever they are. */
+			transform.position = Target.position;
+			initialTargetPositionSet = true;
+		}
 
 		transform.position = Vector3.SmoothDamp( transform.position, Target.position, ref velocity, smoothTime );
 
