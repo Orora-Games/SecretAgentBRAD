@@ -47,8 +47,6 @@ public class EnemyController : MonoBehaviour {
 
 	// These are the objects that need to be alerted when a Player has been detected.
 	private GameObject[] toBeAlerted;
-
-	public LayerMask viewVisualizationMask;
 	private LevelManager levelManager;
 
 	// Start is called before the first frame update
