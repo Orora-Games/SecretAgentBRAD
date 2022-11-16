@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour {
 		{ "T_Level04", "Level 4" },
 		{"A_Level05", "Level 5" },
 		{"A_Level06-Maze", "Level 6 - Maze" },
-		{"A_Level07", "Level 7" },
+		{"Z_level_fuckk", "Level 7" },
 		{"TA_Asset_Museum", "Asset Museum" },
 		{ "Tut01", "Experiment 1"},
 		{ "Level01", "Experiment 2"},
