@@ -50,11 +50,9 @@ public class PlayerController : MonoBehaviour {
 		}
 		if ( disguised ) {
 			disguiseTimer += Time.deltaTime;
-
 			if ( disguiseTimer < disguiseHoldTimerMax ) {
 				return;
 			}
-			disguiseTimer = 0f;
 		}
 		
 		if ( !levelManager ) {
@@ -125,6 +123,7 @@ public class PlayerController : MonoBehaviour {
 		if ( disguisedLocal ) {
 			gameObject.layer = 0;
 			hatObject.SetActive(false);
+			disguiseTimer = 0f;
 		} else {
 			hatObject.SetActive(true);
 			foreach ( Transform item in hatObject.transform ) {
