@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour {
 	[Header( "Prefab Settings" )]
 	public Canvas missionListCanvas;
 	public TMP_Text ui_t_intelStateField, ui_t_disguiseStateField, uiTMapNameField;
-	public GameObject escScreen, nextLevelScreen, helpScreen, gameOverscreen, winGameScreen, disguisedOverlay;
+	public GameObject escScreen, nextLevelScreen, helpScreen, gameOverscreen, winGameScreen, disguisedOverlay, levelSelectScreen;
 
 	private GameObject currentIntelObject;
 	private List<GameObject> intelState;
@@ -544,7 +544,11 @@ public class GameManager : MonoBehaviour {
 	/// <param name="name"></param>
 	private void InitializeLevel ( string name ) {
 		UpdateMainCamera();
-
+		if (GetGameState() == GameState.LevelSelect ) {
+			levelSelectScreen.SetActive( true );
+			GameObject.FindObjectOfType<MainMenu>().mainMenu.SetActive(false);
+			return;
+		}
 		GameManager.Instance.enemiesAlerted = new List<GameObject>();
 
 		if ( levelNames.IndexOf( name ) != -1 || experimentLevels.IndexOf( name ) != -1 || GameObject.Find("LevelManager") || GetGameState() == GameState.Playing) {
@@ -610,6 +614,7 @@ public class GameManager : MonoBehaviour {
 				nextLevelScreen.SetActive( false );
 				gameOverscreen.SetActive( false );
 				winGameScreen.SetActive( false );
+				levelSelectScreen.SetActive( false );
 				break;
 			case GameState.Paused:
 				break;
