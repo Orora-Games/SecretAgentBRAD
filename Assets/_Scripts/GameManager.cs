@@ -544,9 +544,15 @@ public class GameManager : MonoBehaviour {
 	/// <param name="name"></param>
 	private void InitializeLevel ( string name ) {
 		UpdateMainCamera();
+		
 		if (GetGameState() == GameState.LevelSelect ) {
-			levelSelectScreen.SetActive( true );
-			GameObject.FindObjectOfType<MainMenu>().mainMenu.SetActive(false);
+			if ( name != null && name == menuScene ) {
+				MainMenu mainMenu = GameObject.FindObjectOfType<MainMenu>();
+				mainMenu.mainMenuPanel.SetActive( false );
+				mainMenu.levelSelectMenu.SetActive( true );
+			} else {
+				Debug.LogError("No menuScene in name.");
+			}
 			return;
 		}
 		GameManager.Instance.enemiesAlerted = new List<GameObject>();
