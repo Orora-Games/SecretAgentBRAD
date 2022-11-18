@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour {
 	private CharacterController controller;
 	private int defaultLayerMask;
 	[SerializeField]
-	private GameObject disguiseObject;
+	private GameObject disguiseObject, frenchDisguise;
 	private LevelManager levelManager;
 	private int disguisesAvailable = 7, usedDisguises = 0;
 	private bool disguised;
