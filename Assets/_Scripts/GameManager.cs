@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour {
 		{ "T_Level04", "Level 4" },
 		{"A_Level05", "Level 5" },
 		{"A_Level06-Maze", "Level 6 - Maze" },
-		{"A_Level07", "Level 7" },
+		{"Z_level_fuckk", "Level 7" },
 		{"TA_Asset_Museum", "Asset Museum" },
 		{ "Tut01", "Experiment 1"},
 		{ "Level01", "Experiment 2"},
@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour {
 	[Header( "Prefab Settings" )]
 	public Canvas missionListCanvas;
 	public TMP_Text ui_t_intelStateField, ui_t_disguiseStateField, uiTMapNameField;
-	public GameObject escScreen, nextLevelScreen, helpScreen, gameOverscreen, winGameScreen, disguisedOverlay;
+	public GameObject escScreen, nextLevelScreen, helpScreen, gameOverscreen, winGameScreen, disguisedOverlay, levelSelectScreen;
 
 	private GameObject currentIntelObject;
 	private List<GameObject> intelState;
@@ -544,7 +544,17 @@ public class GameManager : MonoBehaviour {
 	/// <param name="name"></param>
 	private void InitializeLevel ( string name ) {
 		UpdateMainCamera();
-
+		
+		if (GetGameState() == GameState.LevelSelect ) {
+			if ( name != null && name == menuScene ) {
+				MainMenu mainMenu = GameObject.FindObjectOfType<MainMenu>();
+				mainMenu.mainMenuPanel.SetActive( false );
+				mainMenu.levelSelectMenu.SetActive( true );
+			} else {
+				Debug.LogError("No menuScene in name.");
+			}
+			return;
+		}
 		GameManager.Instance.enemiesAlerted = new List<GameObject>();
 
 		if ( levelNames.IndexOf( name ) != -1 || experimentLevels.IndexOf( name ) != -1 || GameObject.Find("LevelManager") || GetGameState() == GameState.Playing) {
@@ -610,6 +620,7 @@ public class GameManager : MonoBehaviour {
 				nextLevelScreen.SetActive( false );
 				gameOverscreen.SetActive( false );
 				winGameScreen.SetActive( false );
+				levelSelectScreen.SetActive( false );
 				break;
 			case GameState.Paused:
 				break;
