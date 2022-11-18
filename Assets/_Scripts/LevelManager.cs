@@ -22,7 +22,7 @@ public class LevelManager : MonoBehaviour {
 	/// </summary>
 	/// <returns></returns>
 	public bool DisguiseCheck () {
-		bool disguiseCheck = disguisesAvailable > usedDisguises && !AlertCheck();
+		bool disguiseCheck = disguisesAvailable - usedDisguises > 0 && !AlertCheck();
 
 		if ( disguiseCheck ) {
 			usedDisguises++;
