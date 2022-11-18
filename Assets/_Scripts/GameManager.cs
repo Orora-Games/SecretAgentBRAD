@@ -485,7 +485,7 @@ public class GameManager : MonoBehaviour {
 	/// <param name="usedDisguises"></param>
 	/// <param name="disguisesTotal"></param>
 	public void UpdateDisguiseState ( int usedDisguises, int totalDisguises) {
-		int subtractedDisguises = totalDisguises - usedDisguises;
+		int subtractedDisguises = ( totalDisguises - usedDisguises > 0 ) ? totalDisguises - usedDisguises : 0;
 		
 		ui_t_disguiseStateField.SetText( "Disguises Available: " + subtractedDisguises.ToString() + " (R)");
 	}

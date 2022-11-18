@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour {
 		if (Input.GetKeyDown( KeyCode.R ) && !(GameManager.Instance.enemiesAlerted.Count > 0) ) {
 			if (!levelManager ) {
 				Debug.LogError("We do not have a level-manager, using default values.");
-				bool disguiseCheck =  disguisesAvailable > usedDisguises;
+				bool disguiseCheck =  disguisesAvailable - usedDisguises > 0;
 
 				Disguised( disguiseCheck );
 				GameManager.Instance.UpdateDisguiseState( usedDisguises, disguisesAvailable );
