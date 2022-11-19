@@ -413,6 +413,10 @@ public class GameManager : MonoBehaviour {
 			// Go through all the intel-objects, and disable intel-objects we find in checkpointIntelState
 			for ( int i = 0; i < allIntelObjects.Count; i++ ) {
 				if ( ( checkpointIntelState.IndexOf( i ) != -1 ) ) {
+					if ( allIntelObjects[ checkpointIntelState[ i ] ].gameObject.name == "IntelComputer" ) {
+						allIntelObjects[ checkpointIntelState[ i ] ].GetComponentInParent<ComputerIntelManager>().GrabIntel();
+						continue;
+					}
 					allIntelObjects[ checkpointIntelState[ i ] ].SetActive( false );
 					//PickedUpIntel( allIntelObjects[ checkpointIntelState[i] ] );
 				}

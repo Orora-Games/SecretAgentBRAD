@@ -6,24 +6,25 @@ public class EnableComputerHacking : MonoBehaviour {
 	[SerializeField]
 	private ComputerIntelManager computerIntelManager;
 	[HideInInspector]
-	public bool doneHacking;
+	public bool doneHacking = false;
 
 	// Start is called before the first frame update
 	void Start () {
-		//ComputerHackingIntel compuHacking = 
 		gameObject.GetComponent<Collider>().isTrigger = true;
 	}
 
 	private void OnTriggerEnter ( Collider other ) {
 		if ( computerIntelManager != null ) {
 			if ( other.transform.tag == "Player" && !doneHacking ) {
-				computerIntelManager.EnableHacking();
+				computerIntelManager.EnableHacking(true);
 			}
 		}
 	}
+
 	private void OnTriggerExit ( Collider other ) {
-		if ( other.transform.tag == "Player" && doneHacking ) {
-			
+		if ( other.transform.tag == "Player" ) {
+			doneHacking = false;
+			computerIntelManager.EnableHacking(false);
 		}
 	}
 }
