@@ -24,7 +24,9 @@ public class PlayerController : MonoBehaviour {
 
 	void Start () {
 		controller = GetComponent<CharacterController>();
-
+		if ( GameManager.Instance ) { 
+			GameManager.Instance.SetTransformHeightFloor( transform, 0.05f );
+		}
 		//disguiseObject = gameObject.transform.Find( "Model" ).transform.Find( "CowBoy_Brad" ).transform.Find( "disguise" ).gameObject;
 
 		if ( gameObject.tag == "Untagged" )
