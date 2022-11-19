@@ -16,8 +16,8 @@ public class ProgressBarController : MonoBehaviour {
 
 	// Start is called before the first frame update
 	void Start () {
-		informationDisplay.Rotate( new Vector3( informationDisplay.rotation.x, informationDisplay.rotation.y - 45, informationDisplay.rotation.z ) );
 		sliderRenderer = progressSlider.GetComponent<Image>();
+		informationDisplay.rotation = new Quaternion( informationDisplay.rotation.x, informationDisplay.rotation.y - 22.5f, informationDisplay.rotation.z, 45f );
 	}
 
 	// Update is called once per frame
