@@ -50,6 +50,10 @@ public class PlayerController : MonoBehaviour {
 		if ( !GameManager.Instance || GameManager.Instance.GetGameState() != GameState.Playing ) {
 			return; 
 		}
+		if (Input.GetKeyDown(KeyCode.F)) {
+			Disguised(false);
+		}
+
 		if ( disguised ) {
 			disguiseTimer += Time.deltaTime;
 			if ( disguiseTimer < disguiseHoldTimerMax ) {
@@ -63,7 +67,6 @@ public class PlayerController : MonoBehaviour {
 
 		float horizontal = Input.GetAxisRaw( "Horizontal" );
 		float vertical = Input.GetAxisRaw( "Vertical" );
-
 
 
 		/* We went with True North Absolute controls. */
