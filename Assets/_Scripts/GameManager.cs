@@ -663,4 +663,18 @@ public class GameManager : MonoBehaviour {
 		EscScreen
 	}
 	#endregion
+	public void SetTransformHeightFloor ( Transform transformToHeightAdjust, float heightAdjustment = 0.05f ) {
+		/* Find floor, so we can use floor.transform.position.y to find the floor height, then set ViewVisualization to floorHeight+some 
+			*	Example: https://docs.unity3d.com/ScriptReference/RaycastHit-distance.html */
+		RaycastHit hit;
+
+		if ( Physics.Raycast( transformToHeightAdjust.position, Vector3.down, out hit, Mathf.Infinity ) ) {
+			if ( hit.transform.name == "Floor" ) {
+				float adjustedFloorHeight = 0f;
+				adjustedFloorHeight = hit.point.y + heightAdjustment;
+
+				transformToHeightAdjust.position = new Vector3( transformToHeightAdjust.position.x, adjustedFloorHeight, transformToHeightAdjust.position.z );
+			}
+		}
+	}
 }
