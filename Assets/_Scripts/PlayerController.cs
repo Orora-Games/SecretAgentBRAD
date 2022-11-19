@@ -50,6 +50,10 @@ public class PlayerController : MonoBehaviour {
 		if ( !GameManager.Instance || GameManager.Instance.GetGameState() != GameState.Playing ) {
 			return; 
 		}
+		if (Input.GetKeyDown(KeyCode.F)) {
+			Disguised(false);
+		}
+
 		if ( disguised ) {
 			disguiseTimer += Time.deltaTime;
 			if ( disguiseTimer < disguiseHoldTimerMax ) {
@@ -63,7 +67,6 @@ public class PlayerController : MonoBehaviour {
 
 		float horizontal = Input.GetAxisRaw( "Horizontal" );
 		float vertical = Input.GetAxisRaw( "Vertical" );
-
 
 
 		/* We went with True North Absolute controls. */
@@ -96,7 +99,7 @@ public class PlayerController : MonoBehaviour {
 			controller.Move( direction * speed * Time.deltaTime );
 		}
 
-		if (Input.GetKeyDown( KeyCode.R ) && !(GameManager.Instance.enemiesAlerted.Count > 0) ) {
+		if (Input.GetKeyDown( KeyCode.R ) && !(GameManager.Instance.enemiesAlerted.Count > 0) && !Input.GetKey( KeyCode.F ) ) {
 			if (!levelManager ) {
 				Debug.LogError("We do not have a level-manager, using default values.");
 				bool disguiseCheck =  disguisesAvailable - usedDisguises > 0;
