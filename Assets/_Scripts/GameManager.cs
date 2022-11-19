@@ -413,6 +413,10 @@ public class GameManager : MonoBehaviour {
 			// Go through all the intel-objects, and disable intel-objects we find in checkpointIntelState
 			for ( int i = 0; i < allIntelObjects.Count; i++ ) {
 				if ( ( checkpointIntelState.IndexOf( i ) != -1 ) ) {
+					if ( allIntelObjects[ checkpointIntelState[ i ] ].gameObject.name == "IntelComputer" ) {
+						allIntelObjects[ checkpointIntelState[ i ] ].GetComponentInParent<ComputerIntelManager>().GrabIntel();
+						continue;
+					}
 					allIntelObjects[ checkpointIntelState[ i ] ].SetActive( false );
 					//PickedUpIntel( allIntelObjects[ checkpointIntelState[i] ] );
 				}
@@ -485,7 +489,7 @@ public class GameManager : MonoBehaviour {
 	/// <param name="usedDisguises"></param>
 	/// <param name="disguisesTotal"></param>
 	public void UpdateDisguiseState ( int usedDisguises, int totalDisguises) {
-		int subtractedDisguises = totalDisguises - usedDisguises;
+		int subtractedDisguises = ( totalDisguises - usedDisguises > 0 ) ? totalDisguises - usedDisguises : 0;
 		
 		ui_t_disguiseStateField.SetText( "Disguises Available: " + subtractedDisguises.ToString() + " (R)");
 	}
@@ -551,7 +555,7 @@ public class GameManager : MonoBehaviour {
 				mainMenu.mainMenuPanel.SetActive( false );
 				mainMenu.levelSelectMenu.SetActive( true );
 			} else {
-				Debug.LogError("No menuScene in name.");
+				Debug.LogError("No menuScene in name. Scene Name: '" + name + "'");
 			}
 			return;
 		}
