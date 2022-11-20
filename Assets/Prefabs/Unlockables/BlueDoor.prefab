@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8190208599140289206}
   - component: {fileID: 6717097820597476803}
   - component: {fileID: 66488594200428879}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BlueDoor
   m_TagString: BlueStructure
   m_Icon: {fileID: 0}
@@ -134,6 +134,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: d0a067944b132b3459994a88495c9335, type: 3}
       propertyPath: m_Name
       value: generic_door
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d0a067944b132b3459994a88495c9335, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d0a067944b132b3459994a88495c9335, type: 3}
