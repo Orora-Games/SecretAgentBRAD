@@ -11,7 +11,7 @@ public class TeleportController : MonoBehaviour {
 	void Start () {
 		cameraContainer = GameObject.Find( "CameraContainer" );
 		foreach ( Transform child in transform ) {
-			teleportLocations.Add( child.transform );
+			teleportLocations.Add( child );
 		}
 	}
 
@@ -37,18 +37,19 @@ public class TeleportController : MonoBehaviour {
 	/// <param name="playerObject"></param>
 	public void Teleport(Transform currentLocation, GameObject playerObject ) {
 		Transform nextLocation = NextLoaction( currentLocation );
-		TeleporterBehaviour tpBehaviour = nextLocation.GetComponent<TeleporterBehaviour>();
+		InteractionHandler interactionHandler = nextLocation.GetComponent<InteractionHandler>();
 		CharacterController charController = playerObject.GetComponent<CharacterController>();
 
-		tpBehaviour.disableTeleport = true;
+		interactionHandler.disableEnterTrigger = true;
+		interactionHandler.EnableInteraction(false, playerObject);
 
 		//Play animation (Dim Down camera or something)
 		charController.enabled = false;
 		float playerHeight = playerObject.transform.position.y; // We're getting the player height here, because nextLocation is not the height we want our player at.
 		playerObject.transform.position = new Vector3( nextLocation.position.x, playerHeight, nextLocation.position.z );
+		cameraContainer.transform.position = nextLocation.position;
 		charController.enabled = true;
 
-		cameraContainer.transform.position = nextLocation.position;
 	}
 	#endregion
 }
