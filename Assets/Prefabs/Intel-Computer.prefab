@@ -95,14 +95,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dcae8b9c3371dc48b31dcf59ecf3d7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hackingEnabled: 0
+  interactionEnabled: 0
   progressSlider: {fileID: 7620214839340558445}
-  intelComputer: {fileID: 2922442019033771641}
-  boringComputer: {fileID: 7467170728275907062}
-  hackingEnabler: {fileID: 7620214840007530910}
+  interactionEnablerObject: {fileID: 7620214840007530910}
   informationDisplay: {fileID: 7620214839427977211}
   progressBarTimer: {fileID: 2831873905258410042}
   progressBarController: {fileID: 379958847940343911}
+  interactionAction: hacking
+  intelComputer: {fileID: 2922442019033771641}
+  boringComputer: {fileID: 7467170728275907062}
+  disableEnterTrigger: 0
 --- !u!1 &7620214840007530910
 GameObject:
   m_ObjectHideFlags: 0
@@ -158,8 +160,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8443390530984b443808293b4bd5495c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  computerIntelManager: {fileID: 7620214839891125966}
-  doneHacking: 0
+  interactionHandler: {fileID: 7620214839891125966}
+  interactionDone: 0
 --- !u!23 &7620214840007530907
 MeshRenderer:
   m_ObjectHideFlags: 0
