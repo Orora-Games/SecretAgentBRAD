@@ -555,7 +555,7 @@ public class GameManager : MonoBehaviour {
 				mainMenu.mainMenuPanel.SetActive( false );
 				mainMenu.levelSelectMenu.SetActive( true );
 			} else {
-				Debug.LogError("No menuScene in name. Scene Name: '" + name + "'");
+				//Debug.LogError("No menuScene in name. Scene Name: '" + name + "'");
 			}
 			return;
 		}
