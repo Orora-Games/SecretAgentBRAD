@@ -14,7 +14,8 @@ public class PlayerController : MonoBehaviour {
 	private float turnSmoothVelocity;
 	private CharacterController controller;
 	private int defaultLayerMask;
-	private GameObject hatObject;
+	[SerializeField]
+	private GameObject disguiseObject, frenchDisguise;
 	private LevelManager levelManager;
 	private int disguisesAvailable = 7, usedDisguises = 0;
 	private bool disguised;
@@ -23,8 +24,11 @@ public class PlayerController : MonoBehaviour {
 
 	void Start () {
 		controller = GetComponent<CharacterController>();
+		if ( GameManager.Instance ) { 
+			GameManager.Instance.SetTransformHeightFloor( transform, 0.05f );
+		}
+		//disguiseObject = gameObject.transform.Find( "Model" ).transform.Find( "CowBoy_Brad" ).transform.Find( "disguise" ).gameObject;
 
-		hatObject = gameObject.transform.Find( "BRAD_model" ).transform.Find( "disguise" ).gameObject;
 		if ( gameObject.tag == "Untagged" )
 			Debug.LogError( "Your " + gameObject.name + " object needs to have the correct tag to be killable." ); // Make sure to Tag your player-object Player.
 		if ( gameObject.layer == 0 )
@@ -48,6 +52,10 @@ public class PlayerController : MonoBehaviour {
 		if ( !GameManager.Instance || GameManager.Instance.GetGameState() != GameState.Playing ) {
 			return; 
 		}
+		if (Input.GetKeyDown(KeyCode.F)) {
+			Disguised(false);
+		}
+
 		if ( disguised ) {
 			disguiseTimer += Time.deltaTime;
 			if ( disguiseTimer < disguiseHoldTimerMax ) {
@@ -61,7 +69,6 @@ public class PlayerController : MonoBehaviour {
 
 		float horizontal = Input.GetAxisRaw( "Horizontal" );
 		float vertical = Input.GetAxisRaw( "Vertical" );
-
 
 
 		/* We went with True North Absolute controls. */
@@ -94,10 +101,10 @@ public class PlayerController : MonoBehaviour {
 			controller.Move( direction * speed * Time.deltaTime );
 		}
 
-		if (Input.GetKeyDown( KeyCode.R ) && !(GameManager.Instance.enemiesAlerted.Count > 0) ) {
+		if (Input.GetKeyDown( KeyCode.R ) && !disguised && !Input.GetKey( KeyCode.F ) && !(GameManager.Instance.enemiesAlerted.Count > 0) ) {
 			if (!levelManager ) {
 				Debug.LogError("We do not have a level-manager, using default values.");
-				bool disguiseCheck =  disguisesAvailable > usedDisguises;
+				bool disguiseCheck =  disguisesAvailable - usedDisguises > 0;
 
 				Disguised( disguiseCheck );
 				GameManager.Instance.UpdateDisguiseState( usedDisguises, disguisesAvailable );
@@ -122,11 +129,11 @@ public class PlayerController : MonoBehaviour {
 
 		if ( disguisedLocal ) {
 			gameObject.layer = 0;
-			hatObject.SetActive(false);
+			disguiseObject.SetActive(false);
 			disguiseTimer = 0f;
 		} else {
-			hatObject.SetActive(true);
-			foreach ( Transform item in hatObject.transform ) {
+			disguiseObject.SetActive(true);
+			foreach ( Transform item in disguiseObject.transform ) {
 				item.GetComponent<Renderer>().material.SetColor( "_Color", Color.black );
 			}
 			gameObject.layer = defaultLayerMask;
