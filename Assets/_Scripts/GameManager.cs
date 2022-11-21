@@ -224,6 +224,10 @@ public class GameManager : MonoBehaviour {
 			return;
 		}
 
+		if ( level != menuScene) {
+			ChangeGameState( GameState.Playing );
+		}
+		
 		UpdateMapNameTitle();
 		lastLevel = currentLevelName;
 		currentLevelName = level;
@@ -555,7 +559,7 @@ public class GameManager : MonoBehaviour {
 				mainMenu.mainMenuPanel.SetActive( false );
 				mainMenu.levelSelectMenu.SetActive( true );
 			} else {
-				Debug.LogError("No menuScene in name. Scene Name: '" + name + "'");
+				//Debug.LogError("No menuScene in name. Scene Name: '" + name + "'");
 			}
 			return;
 		}
