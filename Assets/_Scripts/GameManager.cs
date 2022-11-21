@@ -414,7 +414,7 @@ public class GameManager : MonoBehaviour {
 			for ( int i = 0; i < allIntelObjects.Count; i++ ) {
 				if ( ( checkpointIntelState.IndexOf( i ) != -1 ) ) {
 					if ( allIntelObjects[ checkpointIntelState[ i ] ].gameObject.name == "IntelComputer" ) {
-						allIntelObjects[ checkpointIntelState[ i ] ].GetComponentInParent<ComputerIntelManager>().GrabIntel();
+						allIntelObjects[ checkpointIntelState[ i ] ].GetComponentInParent<InteractionHandler>().GrabIntel();
 						continue;
 					}
 					allIntelObjects[ checkpointIntelState[ i ] ].SetActive( false );
