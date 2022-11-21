@@ -86,6 +86,8 @@ MonoBehaviour:
   progressBarTimer: {fileID: 5889390264656998926}
   progressBarController: {fileID: 8336837878196091475}
   interactionAction: vents
+  disableEnterTrigger: 0
+  teleportController: {fileID: 0}
   intelComputer: {fileID: 0}
   boringComputer: {fileID: 0}
 --- !u!1 &3634290224207775900
@@ -190,6 +192,8 @@ MonoBehaviour:
   progressBarTimer: {fileID: 2798957255625847405}
   progressBarController: {fileID: 350946606783445552}
   interactionAction: vents
+  disableEnterTrigger: 0
+  teleportController: {fileID: 0}
   intelComputer: {fileID: 0}
   boringComputer: {fileID: 0}
 --- !u!1 &3634414129931812680
@@ -249,7 +253,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactionHandler: {fileID: 7040460709322934506}
   interactionDone: 0
-  disableEnterTrigger: 0
 --- !u!23 &8392842669854231200
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -395,7 +398,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactionHandler: {fileID: 3874316721609515781}
   interactionDone: 0
-  disableEnterTrigger: 0
 --- !u!23 &3434002238028329010
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -459,6 +461,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3634290223853449180}
     m_Modifications:
+    - target: {fileID: 1049135944685634889, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
+      propertyPath: m_fontSize
+      value: 39.35
+      objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423897, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 1
@@ -501,15 +507,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.015699
+      value: 0.011000001
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.015699
+      value: 0.011000001
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.015699
+      value: 0.011000001
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_LocalPosition.x
@@ -545,7 +551,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 4.45
+      value: 2.9
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -566,6 +572,10 @@ PrefabInstance:
     - target: {fileID: 1049135944810423900, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_Name
       value: InformationDisplay
+      objectReference: {fileID: 0}
+    - target: {fileID: 1049135944810423900, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
@@ -728,15 +738,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.015699
+      value: 0.011000001
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.015699
+      value: 0.011000001
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.015699
+      value: 0.011000001
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_LocalPosition.x
@@ -772,7 +782,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 4.45
+      value: 2.9
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
