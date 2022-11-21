@@ -224,6 +224,10 @@ public class GameManager : MonoBehaviour {
 			return;
 		}
 
+		if ( level != menuScene) {
+			ChangeGameState( GameState.Playing );
+		}
+		
 		UpdateMapNameTitle();
 		lastLevel = currentLevelName;
 		currentLevelName = level;
