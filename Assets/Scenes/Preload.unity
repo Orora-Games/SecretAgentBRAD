@@ -154,6 +154,18 @@ PrefabInstance:
       propertyPath: m_RenderMode
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2505697658426206141, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 154335190}
+    - target: {fileID: 2505697658426206141, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: SetActive
+      objectReference: {fileID: 0}
+    - target: {fileID: 2853526018601632811, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3105345713114856407, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_Color.b
       value: 0
@@ -348,7 +360,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7131491366890350955, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7459383422574853820, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_Camera
@@ -575,6 +587,11 @@ GameObject:
 --- !u!223 &154335189 stripped
 Canvas:
   m_CorrespondingSourceObject: {fileID: 1470302064227411554, guid: 93521bc085951174892902b7da3b4138, type: 3}
+  m_PrefabInstance: {fileID: 154335186}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &154335190 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7635103657998853036, guid: 93521bc085951174892902b7da3b4138, type: 3}
   m_PrefabInstance: {fileID: 154335186}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1691759932
