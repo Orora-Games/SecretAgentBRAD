@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour {
 		{"A_Level05", "Level 5" },
 		{"A_Level06-Maze", "Level 6 - Maze" },
 		{"Z_level_fuckk", "Level 7" },
+		{"Level_sheesh", "Level 8" },
 		{"TA_Asset_Museum", "Asset Museum" },
 		{ "Tut01", "Experiment 1"},
 		{ "Level01", "Experiment 2"},
@@ -99,6 +100,7 @@ public class GameManager : MonoBehaviour {
 	void Start () {
 		currentLevelIndex = 0;
 		currentLevelName = SceneManager.GetActiveScene().name;
+		//TODO: move to a more viable location.
 		if (currentLevelName == "Preload") {
 			currentLevelName = menuScene;
 			ChangeGameState(GameState.MainMenu);
