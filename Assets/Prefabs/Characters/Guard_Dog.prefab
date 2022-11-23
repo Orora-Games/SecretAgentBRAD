@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 458600362717544061}
   - component: {fileID: 458600362717544060}
   - component: {fileID: 5507343709003120195}
+  - component: {fileID: 8351313207058588822}
   m_Layer: 6
   m_Name: Guard_Dog
   m_TagString: Enemy
@@ -160,7 +161,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 458600362717479299}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 1
   m_Speed: 7
   m_Acceleration: 8
   avoidancePriority: 50
@@ -173,6 +174,22 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &8351313207058588822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458600362717479299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 0
+  m_Area: 0
+  m_IgnoreFromBuild: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &458600363010448197
 GameObject:
   m_ObjectHideFlags: 0

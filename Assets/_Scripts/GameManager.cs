@@ -68,6 +68,7 @@ public class GameManager : MonoBehaviour {
 	private List<GameObject> allCheckpoints = new List<GameObject>();
 	private List<int> checkpointKeyState = new List<int>();
 	private List<GameObject> allKeyObjects = new List<GameObject>();
+	public int checkpointUsedDisguises = 0;
 	private int currentCheckpoint = -1;
 	private string lastLevel;
 	//[HideInInspector]
@@ -385,8 +386,15 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 	#region Checkpoints 
+	public bool CheckpointActive () {
+		return currentCheckpoint != -1;
+	}
 	public void Checkpoint (GameObject checkpoint) {
 		currentCheckpoint = allCheckpoints.IndexOf(checkpoint);
+		LevelManager currentLevelManager = GameObject.FindObjectOfType<LevelManager>();
+		if (currentLevelManager != null && currentLevelManager.usedDisguises > checkpointUsedDisguises ) {
+			checkpointUsedDisguises = currentLevelManager.usedDisguises;
+		}
 		checkpoint.transform.GetComponent<Renderer>().material.color = Color.cyan;
 		checkpoint.transform.GetComponent<Renderer>().material.color = Color.green;
 	}
@@ -494,7 +502,6 @@ public class GameManager : MonoBehaviour {
 	/// <param name="disguisesTotal"></param>
 	public void UpdateDisguiseState ( int usedDisguises, int totalDisguises) {
 		int subtractedDisguises = ( totalDisguises - usedDisguises > 0 ) ? totalDisguises - usedDisguises : 0;
-		
 		ui_t_disguiseStateField.SetText( "Disguises Available: " + subtractedDisguises.ToString() + " (R)");
 	}
 

@@ -10,7 +10,7 @@ public class CheckpointBehaviour : MonoBehaviour {
 	/// <param name="other"></param>
 	private void OnTriggerEnter ( Collider other ) {
 		if ( other.transform.tag == "Player"  && enableCheckpoint ) {
-			if (!GameManager.Instance) { return; }
+			if (!GameManager.Instance) return;
 
 			GameManager.Instance.Checkpoint(gameObject);
 		}
