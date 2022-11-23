@@ -102,9 +102,10 @@ MonoBehaviour:
   progressBarTimer: {fileID: 2831873905258410042}
   progressBarController: {fileID: 379958847940343911}
   interactionAction: hacking
+  disableEnterTrigger: 0
+  teleportController: {fileID: 0}
   intelComputer: {fileID: 2922442019033771641}
   boringComputer: {fileID: 7467170728275907062}
-  disableEnterTrigger: 0
 --- !u!1 &7620214840007530910
 GameObject:
   m_ObjectHideFlags: 0
@@ -747,11 +748,11 @@ PrefabInstance:
     - target: {fileID: -7585756410567796403, guid: 42f6a0b020f254a4db29fd40b0472a35, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 73a2096c4ab80464fbdc9aced8af3899, type: 2}
+      objectReference: {fileID: 2100000, guid: 2f0381558bb04c14a8c17d02e2e75952, type: 2}
     - target: {fileID: -4746482078177707318, guid: 42f6a0b020f254a4db29fd40b0472a35, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 38a6c341282cefb4da2316f7f1ac4342, type: 2}
+      objectReference: {fileID: 2100000, guid: 94fcaea32007cab46874a898d0aefa1a, type: 2}
     - target: {fileID: -4063539234735300904, guid: 42f6a0b020f254a4db29fd40b0472a35, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.071
@@ -771,7 +772,7 @@ PrefabInstance:
     - target: {fileID: -1871435416682238145, guid: 42f6a0b020f254a4db29fd40b0472a35, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 38a6c341282cefb4da2316f7f1ac4342, type: 2}
+      objectReference: {fileID: 2100000, guid: 94fcaea32007cab46874a898d0aefa1a, type: 2}
     - target: {fileID: -1493399050519233773, guid: 42f6a0b020f254a4db29fd40b0472a35, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -799,7 +800,7 @@ PrefabInstance:
     - target: {fileID: 1493797034412853236, guid: 42f6a0b020f254a4db29fd40b0472a35, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 38a6c341282cefb4da2316f7f1ac4342, type: 2}
+      objectReference: {fileID: 2100000, guid: c42a558bb33a2c84facf04eae527744a, type: 2}
     - target: {fileID: 4324948377984031748, guid: 42f6a0b020f254a4db29fd40b0472a35, type: 3}
       propertyPath: m_Layer
       value: 7
