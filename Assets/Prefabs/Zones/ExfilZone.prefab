@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2071159573959418787}
   - component: {fileID: 2272016351631092436}
   - component: {fileID: 7453347826496747054}
-  m_Layer: 0
+  m_Layer: 1
   m_Name: exit_lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,8 @@ GameObject:
   - component: {fileID: 5125018529649253144}
   - component: {fileID: 5125018529649253145}
   - component: {fileID: 5125018529649253150}
-  m_Layer: 0
+  - component: {fileID: 6824342831547652501}
+  m_Layer: 1
   m_Name: ExfilZone
   m_TagString: ExfilZone
   m_Icon: {fileID: 0}
@@ -198,6 +199,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6824342831547652501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5125018529649253151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 0
+  m_Area: 0
+  m_IgnoreFromBuild: 1
+  m_AffectedAgents: ffffffff
 --- !u!1001 &1547027733308837643
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -265,6 +282,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 5bc2e041d1ba31e43a26a44e984295f2, type: 2}
+    - target: {fileID: -4972353781853006902, guid: 108f310454efc8746ac1d0b6e82043be, type: 3}
+      propertyPath: m_Layer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: -846606243991616138, guid: 108f310454efc8746ac1d0b6e82043be, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -272,6 +293,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 108f310454efc8746ac1d0b6e82043be, type: 3}
       propertyPath: m_Name
       value: metal_door_UV
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 108f310454efc8746ac1d0b6e82043be, type: 3}
+      propertyPath: m_Layer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1909029067143269857, guid: 108f310454efc8746ac1d0b6e82043be, type: 3}
+      propertyPath: m_Layer
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 108f310454efc8746ac1d0b6e82043be, type: 3}
@@ -287,6 +316,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5125018529649253147}
     m_Modifications:
+    - target: {fileID: 5107730839518202434, guid: beac6f9303951294886998611359f0e7, type: 3}
+      propertyPath: m_Layer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6127990277884679931, guid: beac6f9303951294886998611359f0e7, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -343,9 +376,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6958542052863034872, guid: beac6f9303951294886998611359f0e7, type: 3}
+      propertyPath: m_Layer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7679494783660372919, guid: beac6f9303951294886998611359f0e7, type: 3}
       propertyPath: m_Name
       value: ExitSign
+      objectReference: {fileID: 0}
+    - target: {fileID: 7679494783660372919, guid: beac6f9303951294886998611359f0e7, type: 3}
+      propertyPath: m_Layer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7804981080234403650, guid: beac6f9303951294886998611359f0e7, type: 3}
+      propertyPath: m_Layer
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: beac6f9303951294886998611359f0e7, type: 3}

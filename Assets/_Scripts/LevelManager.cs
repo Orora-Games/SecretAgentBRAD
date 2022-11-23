@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour {
 	public int disguisesAvailable = 7;
-	private int usedDisguises = 0;
+	public int usedDisguises = 0;
 
 	private void Start () {
 		UpdateDisguiseNumbers();
@@ -14,6 +14,10 @@ public class LevelManager : MonoBehaviour {
 	/// </summary>
 	public void UpdateDisguiseNumbers () {
 		if ( !GameManager.Instance ) { return; }
+		
+		if ( GameManager.Instance.CheckpointActive() && GameManager.Instance.checkpointUsedDisguises > usedDisguises ) {
+			usedDisguises = GameManager.Instance.checkpointUsedDisguises;
+		}
 		GameManager.Instance.UpdateDisguiseState( usedDisguises, disguisesAvailable );
 	}
 
@@ -26,8 +30,8 @@ public class LevelManager : MonoBehaviour {
 
 		if ( disguiseCheck ) {
 			usedDisguises++;
-			UpdateDisguiseNumbers( );
 		}
+		UpdateDisguiseNumbers( );
 		return disguiseCheck;
 	}
 	/// <summary>
