@@ -9138,6 +9138,7 @@ GameObject:
   - component: {fileID: 1944230062}
   - component: {fileID: 1944230061}
   - component: {fileID: 1944230060}
+  - component: {fileID: 1944230063}
   m_Layer: 0
   m_Name: Settings
   m_TagString: Untagged
@@ -9232,6 +9233,19 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1944230063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1944230058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc85a1c1767b1a2488b269bbec38168a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  graphicsLevelSetting: {fileID: 556648871}
 --- !u!1 &1969234208
 GameObject:
   m_ObjectHideFlags: 0

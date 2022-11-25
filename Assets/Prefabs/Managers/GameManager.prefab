@@ -7437,9 +7437,9 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-        m_MethodName: SetGraphicsQuality
+      - m_Target: {fileID: 174477898676678455}
+        m_TargetAssemblyTypeName: SettingsMenu, Assembly-CSharp
+        m_MethodName: SetGraphicsLevel
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9963,6 +9963,7 @@ GameObject:
   - component: {fileID: 677494520295612153}
   - component: {fileID: 5334360439566833453}
   - component: {fileID: 2202947487039389100}
+  - component: {fileID: 174477898676678455}
   m_Layer: 0
   m_Name: Settings
   m_TagString: Untagged
@@ -10059,6 +10060,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &174477898676678455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6542867744730998012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc85a1c1767b1a2488b269bbec38168a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  graphicsLevelSetting: {fileID: 4522427078679000963}
 --- !u!1 &6559897556027133100
 GameObject:
   m_ObjectHideFlags: 0

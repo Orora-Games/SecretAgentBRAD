@@ -15,6 +15,7 @@ public class MainMenu : MonoBehaviour {
 		if ( !GameManager.Instance ) { SceneManager.LoadScene("Preload");  return;  }
 		graphicsDropDown.value = QualitySettings.GetQualityLevel();
 	}
+
 	//Load Scene
 	public void Play() {
 		if ( !GameManager.Instance ) { return; }
