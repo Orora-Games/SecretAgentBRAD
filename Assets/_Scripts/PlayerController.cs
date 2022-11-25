@@ -132,9 +132,9 @@ public class PlayerController : MonoBehaviour {
 			disguiseTimer = 0f;
 		} else {
 			disguiseObject.SetActive(true);
-			foreach ( Transform item in disguiseObject.transform ) {
-				item.GetComponent<Renderer>().material.SetColor( "_Color", Color.black );
-			}
+			//foreach ( Transform item in disguiseObject.transform ) {
+			//	item.GetComponent<Renderer>().material.SetColor( "_Color", Color.black );
+			//}
 			gameObject.layer = defaultLayerMask;
 		}
 	}
