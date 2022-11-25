@@ -77,8 +77,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5dcae8b9c3371dc48b31dcf59ecf3d7b, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   interactionEnabled: 0
   progressSlider: {fileID: 2249537481607998041}
   interactionEnablerObject: {fileID: 3634414129931812680}
@@ -101,7 +101,7 @@ GameObject:
   - component: {fileID: 3634290224207775901}
   - component: {fileID: 3634290224207775842}
   m_Layer: 0
-  m_Name: TeleportContainer
+  m_Name: VentContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -134,8 +134,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cf661f6a3122b864ba9bc2a8ca45ef65, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   teleportLocations: []
   cameraContainer: {fileID: 0}
 --- !u!1 &3634290224418347107
@@ -183,8 +183,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5dcae8b9c3371dc48b31dcf59ecf3d7b, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   interactionEnabled: 0
   progressSlider: {fileID: 7519678351590124090}
   interactionEnablerObject: {fileID: 8121013098430157474}
@@ -249,8 +249,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8443390530984b443808293b4bd5495c, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   interactionHandler: {fileID: 7040460709322934506}
   interactionDone: 0
 --- !u!23 &8392842669854231200
@@ -394,8 +394,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8443390530984b443808293b4bd5495c, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   interactionHandler: {fileID: 3874316721609515781}
   interactionDone: 0
 --- !u!23 &3434002238028329010
@@ -507,15 +507,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.011000001
+      value: 0.00900001
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.011000001
+      value: 0.0150000155
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.011000001
+      value: 0.00900001
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_LocalPosition.x
@@ -598,8 +598,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &8336837878196091475 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7064692198163812807, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
@@ -609,8 +609,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 66e4ac74e264f404987626db6bc2496c, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5182971587799512242
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -738,15 +738,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.011000001
+      value: 0.00900001
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.011000001
+      value: 0.01500002
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.011000001
+      value: 0.00900001
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_LocalPosition.x
@@ -798,7 +798,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_ConstrainProportionsScale
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1049135944810423900, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
       propertyPath: m_Name
@@ -819,8 +819,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 66e4ac74e264f404987626db6bc2496c, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2798957255625847405 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4612777560951429530, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
@@ -830,8 +830,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &7519678351409630636 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1049135944810423899, guid: 7c65e52f8a748cb4c8ce2eb959e4e813, type: 3}
