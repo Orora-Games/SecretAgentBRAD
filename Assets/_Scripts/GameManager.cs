@@ -649,6 +649,7 @@ public class GameManager : MonoBehaviour {
 				break;
 			case GameState.GameOver:
 				gameOverscreen.SetActive( true );
+				MissionList( false );
 				break;
 			case GameState.WinGame:
 				winGameScreen.SetActive( true );
