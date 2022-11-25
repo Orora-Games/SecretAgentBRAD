@@ -101,9 +101,9 @@ public class GameManager : MonoBehaviour {
 		currentLevelIndex = 0;
 		currentLevelName = SceneManager.GetActiveScene().name;
 		//TODO: move to a more viable location.
-		if (currentLevelName == "Preload") {
-			currentLevelName = menuScene;
-			ChangeGameState(GameState.MainMenu);
+
+		if ( currentLevelName == "Preload" ) {
+			ChangeGameState( GameState.MainMenu );
 		}
 	}
 
@@ -528,7 +528,7 @@ public class GameManager : MonoBehaviour {
 
 		if ( GetGameState() == GameState.Playing && presentableLevelNames.ContainsKey(currentLevelName)) { 
 			uiTMapNameField.text = presentableLevelNames[currentLevelName];
-		} else if ( currentLevelName != menuScene && !presentableLevelNames.ContainsKey( currentLevelName ) ) {
+		} else if ( currentLevelName != menuScene && currentLevelName != "Preload" && !presentableLevelNames.ContainsKey( currentLevelName ) ) {
 			Debug.LogError("You have to add a presentable Level Name for " + currentLevelName + " to presentableLevelName in the GameManager.");
 		}
 	}
