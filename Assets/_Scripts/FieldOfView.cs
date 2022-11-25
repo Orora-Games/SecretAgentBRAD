@@ -31,6 +31,8 @@ public class FieldOfView : MonoBehaviour {
 	[HideInInspector]
 	public List<Transform> visibleTargets = new List<Transform>();
 	private Vector3 visualizationDetectionHeight = Vector3.zero;
+	private GameObject[] targetGameObjects = {};
+	[SerializeField] string targetTag;
 
 	protected virtual void Start () {
 		viewMesh = new Mesh();
@@ -38,6 +40,7 @@ public class FieldOfView : MonoBehaviour {
 		viewMeshFilter.mesh = viewMesh;
 
 		SetDetectionHeight( );
+		SetTargetColliders();
 	}
 
 	private void SetDetectionHeight ( ) {
@@ -58,13 +61,21 @@ public class FieldOfView : MonoBehaviour {
 	}
 
 	private void Update () {
+		SetTargetColliders();
+
 		targetSpottingTime += Time.deltaTime;
 		if ( targetSpottingTime >= targetSpottingFrequency ) {
 			targetSpottingTime = 0f;
 			FindVisibleTargets();
 		}
-		if ( visualizationDetectionHeight == Vector3.zero) {
+		if ( visualizationDetectionHeight == Vector3.zero ) {
 			SetDetectionHeight();
+		}
+	}
+
+	private void SetTargetColliders () {
+		if ( targetTag != null && ( targetGameObjects == null || targetGameObjects.Length == 0 || targetTag.Length > 0 )) {
+			targetGameObjects = GameObject.FindGameObjectsWithTag( targetTag );
 		}
 	}
 
@@ -77,8 +88,20 @@ public class FieldOfView : MonoBehaviour {
 		/* Make sure our visibleTargets list doesn't clog up with duplicates ...*/
 		visibleTargets.Clear();
 
+		if ( targetGameObjects.Length > 0 ) {
+			bool targetsInRange = false;
+			foreach ( GameObject target in targetGameObjects ) {
+				if ( Vector3.Distance( target.transform.position, new Vector3( transform.position.x, visualizationDetectionHeight.y, transform.position.z ) ) < viewRadius ) {
+					targetsInRange = true;
+				}
+			}
+			if ( !targetsInRange ) return; // No targets in range, so no reason to run the rest.
+		} else {
+			return; // There are no targets in level, so no reason to run this.
+		}
 		Vector3 visualizationDetectionPosition = (visualizationDetectionHeight != null ) ? new Vector3( transform.position.x, visualizationDetectionHeight.y, transform.position.z ): transform.position;
 		/* .. Find every Player within viewRadius ...*/
+		//Collider2D[] targetsInViewRadius = Physics2D.OverlapCircleAll( new Vector3( transform.position.x, transform.position.z, visualizationDetectionHeight.y ), viewRadius, targetMask );
 		Collider[] targetsInViewRadius = Physics.OverlapSphere( new Vector3(transform.position.x, visualizationDetectionHeight.y, transform.position.z), viewRadius, targetMask );
 
 		/* If our OverlapSphere finds no colliders within the area, then get out of this function (none of the code below return will be run); */
