@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b61ad658abb59941b4e94e393ffe706, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explosionPrefab: {fileID: 961127426299259999, guid: ee7a64abfe37db74681b79bc0b93372e, type: 3}
 --- !u!114 &668400156345482405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,6 +75,7 @@ MonoBehaviour:
   meshResolution: 0
   viewMeshFilter: {fileID: 5391439408231475765}
   visibleTargets: []
+  targetTag: Player
   detectedMaterial: {fileID: 2100000, guid: b2764ce4ab5fa4a4ba412982704e46c5, type: 2}
   undetectedMaterial: {fileID: 2100000, guid: 13e7b2af341c8c2438420b078f0a9d3c, type: 2}
   alertedMaterial: {fileID: 2100000, guid: 413ebc23d79776f46bfe756b5fda389d, type: 2}

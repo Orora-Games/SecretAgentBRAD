@@ -130,6 +130,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 228640314670757344, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 268913799739393144, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -141,6 +145,14 @@ PrefabInstance:
     - target: {fileID: 268913799739393144, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: GameManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1255546786377946799, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1432770555677834064, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1443850394687763938, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_Camera
@@ -154,6 +166,10 @@ PrefabInstance:
       propertyPath: m_RenderMode
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1940328860494029062, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2505697658426206141, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
@@ -162,8 +178,20 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
       value: SetActive
       objectReference: {fileID: 0}
+    - target: {fileID: 2712402617421911546, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2853526018601632811, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2913243932180523959, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2913243932180523959, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3105345713114856407, guid: 93521bc085951174892902b7da3b4138, type: 3}
@@ -177,6 +205,10 @@ PrefabInstance:
     - target: {fileID: 3105345713114856407, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_Color.r
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3157878241327166063, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_CullTransparentMesh
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3288497113526682861, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_AnchorMax.x
@@ -206,6 +238,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 15
       objectReference: {fileID: 0}
+    - target: {fileID: 3626425382905440120, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3920124921552204867, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_Camera
       value: 
@@ -214,13 +250,25 @@ PrefabInstance:
       propertyPath: m_RenderMode
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4055991827832890615, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -777.9
+      objectReference: {fileID: 0}
     - target: {fileID: 4323329590073341729, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4323329590073341729, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4323329590073341729, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_RenderMode
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4323329590073341729, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 29
       objectReference: {fileID: 0}
     - target: {fileID: 5616294896349700003, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_Camera
@@ -231,6 +279,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5681326400280092011, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5773707790302005291, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -269,6 +321,14 @@ PrefabInstance:
     - target: {fileID: 6455169278543009538, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6559897556027133100, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6741194840961391230, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6774109093308433269, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_AnchorMax.x
@@ -309,6 +369,10 @@ PrefabInstance:
     - target: {fileID: 6896595438689142940, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_ReferenceResolution.y
       value: 1080
+      objectReference: {fileID: 0}
+    - target: {fileID: 6923607915869857810, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6923607915869857810, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_UiScaleMode
@@ -366,9 +430,43 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7474231255557447451, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7635103657998853036, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7904222889856037414, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8041250156693769573, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_isRightToLeft
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8212203851018613617, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8212203851018613617, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_fontSize
+      value: 36
+      objectReference: {fileID: 0}
+    - target: {fileID: 8720986877772196176, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -493.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8966209382211635062, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_text
+      value: 'Focused on hiding
+
+        (any action will abort)'
+      objectReference: {fileID: 0}
+    - target: {fileID: 8966209382211635062, guid: 93521bc085951174892902b7da3b4138, type: 3}
+      propertyPath: m_fontSize
+      value: 70.8
       objectReference: {fileID: 0}
     - target: {fileID: 9042971403352410253, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_RootOrder
@@ -564,7 +662,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9130629364166607476, guid: 93521bc085951174892902b7da3b4138, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 138
+      value: 128.4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93521bc085951174892902b7da3b4138, type: 3}
@@ -629,8 +727,8 @@ Camera:
   m_GameObject: {fileID: 1691759932}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0.1509434, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

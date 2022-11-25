@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static GameManager;
 
 public class CaughtController : MonoBehaviour {
 	private List<Transform> visibleTargets;
 	private FieldOfView fov;
+	[SerializeField] GameObject explosionPrefab;
 
 	private void Start () {
 		fov = gameObject.GetComponent<FieldOfView>();
@@ -24,6 +26,10 @@ public class CaughtController : MonoBehaviour {
 			if (GameManager.Instance.GetGameState() != GameState.Playing) return;
 			
 			GameManager.Instance.ChangeGameState( GameState.GameOver );
+			GameObject explosion = Instantiate( explosionPrefab );
+			explosion.transform.position = fov.visibleTargets[ 0 ].position;
+			fov.visibleTargets[0].gameObject.SetActive( false );
+
 		}
 	}
 }
