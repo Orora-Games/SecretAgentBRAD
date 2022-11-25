@@ -74,7 +74,7 @@ public class FieldOfView : MonoBehaviour {
 	}
 
 	private void SetTargetColliders () {
-		if ( targetTag != null && ( targetGameObjects == null || targetGameObjects.Length == 0 || targetTag.Length > 0 )) {
+		if ( ( targetGameObjects == null || targetGameObjects.Length == 0 ) && targetTag != null && targetTag.Length > 0 ) {
 			targetGameObjects = GameObject.FindGameObjectsWithTag( targetTag );
 		}
 	}
