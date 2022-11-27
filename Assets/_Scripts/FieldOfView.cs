@@ -191,16 +191,18 @@ public class FieldOfView : MonoBehaviour {
 			}
 		}
 
-		/* .. clear viewMesh to get rid of old data ... */
-		viewMesh.Clear();
-		/* .. give viewMesh our vertices ... */
-		viewMesh.vertices = vertices;
-		/* .. give viewMesh our triangles ... */
-		viewMesh.triangles = triangles;
+		if ( viewMesh ) {
+			/* .. clear viewMesh to get rid of old data ... */
+			viewMesh.Clear();
+			/* .. give viewMesh our vertices ... */
+			viewMesh.vertices = vertices;
+			/* .. give viewMesh our triangles ... */
+			viewMesh.triangles = triangles;
 
 
-		/* .. have viewMesh recalculate normals (render the new fov) ... */
-		viewMesh.RecalculateNormals();
+			/* .. have viewMesh recalculate normals (render the new fov) ... */
+			viewMesh.RecalculateNormals();
+		}
 	}
 
 	EdgeInfo FindEdge ( ViewCastInfo minViewCast, ViewCastInfo maxViewCast ) {
