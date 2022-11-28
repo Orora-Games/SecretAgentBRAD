@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TeleportController : MonoBehaviour {
+public class VentController : MonoBehaviour {
 	[HideInInspector]
 	public List<Transform> teleportLocations;
 	[HideInInspector]

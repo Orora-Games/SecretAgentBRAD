@@ -17,7 +17,7 @@ public class InteractionHandler : MonoBehaviour {
 	};
 	private GameObject interactionTarget;
 	public bool disableEnterTrigger = false;
-	public TeleportController teleportController;
+	public VentController ventController;
 
 	[Header( "Action: Computer Hacking" )]
 	[SerializeField] private GameObject intelComputer;
@@ -27,10 +27,9 @@ public class InteractionHandler : MonoBehaviour {
 
 	// Start is called before the first frame update
 	void Start () {
-		teleportController = gameObject.transform.parent.GetComponent<TeleportController>();
-
 		if ( interactionAction == "") return;
 		progressBarController.progressBarText.text = "Press \"F\" to " + interactions[interactionAction] + ".";
+
 	}
 
 	// Update is called once per frame
@@ -45,6 +44,10 @@ public class InteractionHandler : MonoBehaviour {
 				GrabIntel();
 				break;
 			case "vents":
+				if ( ventController == null ) {
+					ventController = gameObject.transform.parent.GetComponent<VentController>();
+				}
+
 				ClimbThroughVent();
 				break;
 			default:
@@ -54,11 +57,11 @@ public class InteractionHandler : MonoBehaviour {
 	}
 
 	private void ClimbThroughVent () {
-		if ( teleportController == null || interactionTarget == null) return;
+		if ( ventController == null || interactionTarget == null) return;
 
 		progressBarController.gameObject.SetActive( false );
 
-		teleportController.Teleport( transform, interactionTarget );
+		ventController.Teleport( transform, interactionTarget );
 		interactionEnabled = false;
 	}
 
