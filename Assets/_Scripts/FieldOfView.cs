@@ -13,8 +13,7 @@ public class FieldOfView : MonoBehaviour {
 	 *    Field of view visualisation (E02) https://www.youtube.com/watch?v=73Dc5JTCmKI */
 
 	public float viewRadius;
-	[Range( 0, 360 )]
-	public float viewAngle;
+	[Range( 0, 360 )] public float viewAngle;
 	public float targetSpottingFrequency = 0.2f;
 	private float targetSpottingTime = 0f;
 
@@ -28,8 +27,7 @@ public class FieldOfView : MonoBehaviour {
 	public MeshFilter viewMeshFilter;
 	private Mesh viewMesh;
 
-	[HideInInspector]
-	public List<Transform> visibleTargets = new List<Transform>();
+	[HideInInspector] public List<Transform> visibleTargets = new List<Transform>();
 	private Vector3 visualizationDetectionHeight = Vector3.zero;
 	private GameObject[] targetGameObjects = {};
 	[SerializeField] string targetTag;
