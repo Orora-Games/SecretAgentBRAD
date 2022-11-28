@@ -17,12 +17,13 @@ public class InteractionHandler : MonoBehaviour {
 	};
 	private GameObject interactionTarget;
 	public bool disableEnterTrigger = false;
-	public VentController ventController;
 
 	[Header( "Action: Computer Hacking" )]
 	[SerializeField] private GameObject intelComputer;
 	[SerializeField] private GameObject boringComputer;
 
+	[Header( "Action: Vent Exploration" )]
+	public VentController ventController;
 
 
 	// Start is called before the first frame update
@@ -44,10 +45,6 @@ public class InteractionHandler : MonoBehaviour {
 				GrabIntel();
 				break;
 			case "vents":
-				if ( ventController == null ) {
-					ventController = gameObject.transform.parent.GetComponent<VentController>();
-				}
-
 				ClimbThroughVent();
 				break;
 			default:
@@ -61,7 +58,7 @@ public class InteractionHandler : MonoBehaviour {
 
 		progressBarController.gameObject.SetActive( false );
 
-		ventController.Teleport( transform, interactionTarget );
+		ventController.MoveToLocation( transform, interactionTarget );
 		interactionEnabled = false;
 	}
 

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class VentController : MonoBehaviour {
 	[HideInInspector]
-	public List<Transform> teleportLocations;
+	public List<Transform> movementDestinations;
 	[HideInInspector]
 	public GameObject cameraContainer;
 
@@ -11,11 +11,11 @@ public class VentController : MonoBehaviour {
 	void Start () {
 		cameraContainer = GameObject.Find( "CameraContainer" );
 		foreach ( Transform child in transform ) {
-			teleportLocations.Add( child );
+			movementDestinations.Add( child );
 		}
 	}
 
-	#region Teleports
+	#region Movement
 	/// <summary>
 	/// Will provide the next teleportTarget
 	/// </summary>
@@ -23,19 +23,19 @@ public class VentController : MonoBehaviour {
 	/// <returns></returns>
 	public Transform NextLoaction (Transform currentLocation) {
 		Transform teleportTarget;
-		int currentIndex = teleportLocations.IndexOf( currentLocation );
+		int currentIndex = movementDestinations.IndexOf( currentLocation );
 		currentIndex++;
-		currentIndex = ( currentIndex == teleportLocations.Count ) ? 0 : currentIndex;
+		currentIndex = ( currentIndex == movementDestinations.Count ) ? 0 : currentIndex;
 
-		teleportTarget = teleportLocations[ currentIndex ];
+		teleportTarget = movementDestinations[ currentIndex ];
 		return teleportTarget;
 	}
 	/// <summary>
-	/// Takes currentLocation (transform object of teleport zone), and "PlayerObject", moves the player there while making sure they're not interrupting the teleportation
+	/// Takes currentLocation (transform object of gameObject), and "PlayerObject", moves the player there while making sure they're not interrupting the teleportation
 	/// </summary>
 	/// <param name="currentLocation"></param>
 	/// <param name="playerObject"></param>
-	public void Teleport(Transform currentLocation, GameObject playerObject ) {
+	public void MoveToLocation(Transform currentLocation, GameObject playerObject ) {
 		Transform nextLocation = NextLoaction( currentLocation );
 		InteractionHandler interactionHandler = nextLocation.GetComponent<InteractionHandler>();
 		CharacterController charController = playerObject.GetComponent<CharacterController>();
