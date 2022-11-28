@@ -4,10 +4,8 @@ using UnityEngine;
 /// InteractionEnabler runs interactionHandler.EnableInteraction when entering and exiting the interactionEnabler collider
 /// </summary>
 public class InteractionEnabler : MonoBehaviour {
-	[SerializeField]
-	private InteractionHandler interactionHandler;
-	[HideInInspector]
-	public bool interactionDone = false;
+	[SerializeField] private InteractionHandler interactionHandler;
+	[HideInInspector] public bool interactionDone = false;
 
 	// Start is called before the first frame update
 	void Start () {
