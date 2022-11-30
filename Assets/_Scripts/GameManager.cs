@@ -261,7 +261,7 @@ public class GameManager : MonoBehaviour {
 			checkpointKeyState = new List<int>(); //Resetting Checkpoint Key State
 
 			UpdateIntelState( true );
-			MissionList();
+			DisplayGameUI();
 		}
 
 		ChangeLevel( data );
@@ -339,7 +339,7 @@ public class GameManager : MonoBehaviour {
 		/* TODO: Move to Level Manager */
 		intelObject.SetActive( false );
 
-		MissionList();
+		DisplayGameUI();
 		UnlockExit();
 	}
 	#endregion
@@ -407,14 +407,14 @@ public class GameManager : MonoBehaviour {
 		if (currentCheckpoint == -1 ) {
 			checkpointIntelState = new List<int>();
 			checkpointKeyState = new List<int>();
-			MissionList();
+			DisplayGameUI();
 
 			if ( debugMessages ) { 
 				Debug.LogError( "You have no checkpoint to return to." ); 
 			}
 
 			//Update missions list and unlock if that is required.
-			MissionList();
+			DisplayGameUI();
 			UnlockExit();
 			return; 
 		}
@@ -437,7 +437,7 @@ public class GameManager : MonoBehaviour {
 			}
 
 			//Update missions list and unlock if that is required.
-			MissionList();
+			DisplayGameUI();
 			UnlockExit();
 		}
 
@@ -511,7 +511,7 @@ public class GameManager : MonoBehaviour {
 	/// Enables (by default) and generates mission list. bool activateMissionList 
 	/// </summary>
 	/// <param name="activateMissionList"></param>
-	public void MissionList (bool activateMissionList = true) {
+	public void DisplayGameUI (bool activateMissionList = true) {
 		if ( !activateMissionList ) {
 			missionListCanvas.gameObject.SetActive( false );
 		} else {
@@ -586,7 +586,7 @@ public class GameManager : MonoBehaviour {
 				checkpointKeyState = new List<int>();
 
 				UpdateIntelState( true );
-				MissionList();
+				DisplayGameUI();
 				UnlockExit();
 			} else {
 				UpdateIntelState();
@@ -596,7 +596,7 @@ public class GameManager : MonoBehaviour {
 
 			ChangeGameState( GameState.Playing );
 		} else {
-			MissionList( false );
+			DisplayGameUI( false );
 			ChangeGameState( GameState.Playing );
 		}
 
@@ -649,10 +649,11 @@ public class GameManager : MonoBehaviour {
 				break;
 			case GameState.GameOver:
 				gameOverscreen.SetActive( true );
-				MissionList( false );
+				DisplayGameUI( false );
 				break;
 			case GameState.WinGame:
 				winGameScreen.SetActive( true );
+				DisplayGameUI( false );
 				break;
 			case GameState.EscScreen:
 				escScreen.SetActive( true );
