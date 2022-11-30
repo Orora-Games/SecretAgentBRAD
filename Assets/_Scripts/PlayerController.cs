@@ -5,8 +5,6 @@ public class PlayerController : MonoBehaviour {
 	public float speed = 6f;
 	public float turnSmoothTime = 0.1f;
 
-	[Header( "Controls" )]
-	public bool testAbsoluteControls = false;
 	[HideInInspector]
 	public float movementRotation = 0f;
 
@@ -70,25 +68,24 @@ public class PlayerController : MonoBehaviour {
 		float horizontal = Input.GetAxisRaw( "Horizontal" );
 		float vertical = Input.GetAxisRaw( "Vertical" );
 
-
-		/* We went with True North Absolute controls. */
 		Vector3 direction = new Vector3( horizontal, 0f, vertical ).normalized;
 
 		/* This next one is supposed to move Player back to the ground if they manage to bug themselves to a floating position. */
 		if ( Mathf.Abs( transform.position.y - startHeight ) >= 0.001f ) {
-			transform.position = new Vector3( transform.position.x, startHeight, transform.position.z );
+			transform.position = new Vector3( transform.position.x, startHeight, transform.position.z ); // Move player position
+			controller.height = startHeight; // Tell the controller to keep their height.
 		}
 
 		/* This block makes Player Turn the way they're moving. */
 		if ( direction.magnitude >= 0.1f ) {
 			Disguised(false);
 
-			/* doubleStraightControls checks if the mapmaker wants to force people to press two buttons to go down or up a hallway. */
-			float doubleStraightControls = (testAbsoluteControls) ? 0f : 45f;
+			/* Rotate controlls 45 degrees to make up be north. */
+			float controlRotation = 45f;
 
 			/* movementRotation contains the rotation angle the cameras send the player Object, this is where we rotate the player's movement to make it "straight". 
 				*   Source: http://answers.unity.com/answers/46772/view.html */
-			direction = Quaternion.AngleAxis( movementRotation - doubleStraightControls, Vector3.up ) * direction;
+			direction = Quaternion.AngleAxis( movementRotation - controlRotation, Vector3.up ) * direction;
 
 			/* Next comes smooth rotation stuff. */
 			float targetAngle = Mathf.Atan2( direction.x, direction.z ) * Mathf.Rad2Deg;
