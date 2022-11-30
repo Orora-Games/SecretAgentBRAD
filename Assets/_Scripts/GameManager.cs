@@ -425,7 +425,6 @@ public class GameManager : MonoBehaviour {
 			}  
 		} else {
 			// Go through all the intel-objects, and disable intel-objects we find in checkpointIntelState
-			Debug.Log( allIntelObjects );
 			for ( int i = 0; i < allIntelObjects.Count; i++ ) {
 				if ( ( checkpointIntelState.IndexOf( i ) != -1 ) ) {
 					if ( allIntelObjects[ i ].gameObject.name == "IntelComputer" ) {
