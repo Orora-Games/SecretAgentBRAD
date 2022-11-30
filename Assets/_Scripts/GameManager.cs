@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour {
 	public string menuScene = "Main Menu";
 
 	[Header( "Prefab Settings" )]
-	public Canvas missionListCanvas;
+	public Canvas gameUICanvas;
 	public TMP_Text ui_t_intelStateField, ui_t_disguiseStateField, uiTMapNameField;
 	public GameObject escScreen, nextLevelScreen, helpScreen, gameOverscreen, winGameScreen, disguisedOverlay, levelSelectScreen;
 
@@ -513,10 +513,10 @@ public class GameManager : MonoBehaviour {
 	/// <param name="activateMissionList"></param>
 	public void DisplayGameUI (bool activateMissionList = true) {
 		if ( !activateMissionList ) {
-			missionListCanvas.gameObject.SetActive( false );
+			gameUICanvas.gameObject.SetActive( false );
 		} else {
 			UpdateIntelState();
-			missionListCanvas.gameObject.SetActive(true);
+			gameUICanvas.gameObject.SetActive(true);
 		}
 	}
 
@@ -548,7 +548,7 @@ public class GameManager : MonoBehaviour {
 
 	public void UpdateMainCamera () {
 		mainCamera = FindObjectOfType<Camera>();
-		GameObject[] overlays = { escScreen, nextLevelScreen, helpScreen, gameOverscreen, winGameScreen, disguisedOverlay, missionListCanvas.gameObject};
+		GameObject[] overlays = { escScreen, nextLevelScreen, helpScreen, gameOverscreen, winGameScreen, disguisedOverlay, gameUICanvas.gameObject};
 		foreach ( var item in overlays ) {
 			item.GetComponent<Canvas>().worldCamera = mainCamera;
 			item.GetComponent<Canvas>().planeDistance = 10;
