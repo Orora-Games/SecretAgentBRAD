@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour {
 	public string menuScene = "Main Menu";
 
 	[Header( "Prefab Settings" )]
-	public Canvas missionListCanvas;
+	public Canvas gameUICanvas;
 	public TMP_Text ui_t_intelStateField, ui_t_disguiseStateField, uiTMapNameField;
 	public GameObject escScreen, nextLevelScreen, helpScreen, gameOverscreen, winGameScreen, disguisedOverlay, levelSelectScreen;
 
@@ -261,7 +261,7 @@ public class GameManager : MonoBehaviour {
 			checkpointKeyState = new List<int>(); //Resetting Checkpoint Key State
 
 			UpdateIntelState( true );
-			MissionList();
+			DisplayGameUI();
 		}
 
 		ChangeLevel( data );
@@ -339,7 +339,7 @@ public class GameManager : MonoBehaviour {
 		/* TODO: Move to Level Manager */
 		intelObject.SetActive( false );
 
-		MissionList();
+		DisplayGameUI();
 		UnlockExit();
 	}
 	#endregion
@@ -407,14 +407,14 @@ public class GameManager : MonoBehaviour {
 		if (currentCheckpoint == -1 ) {
 			checkpointIntelState = new List<int>();
 			checkpointKeyState = new List<int>();
-			MissionList();
+			DisplayGameUI();
 
 			if ( debugMessages ) { 
 				Debug.LogError( "You have no checkpoint to return to." ); 
 			}
 
 			//Update missions list and unlock if that is required.
-			MissionList();
+			DisplayGameUI();
 			UnlockExit();
 			return; 
 		}
@@ -427,17 +427,17 @@ public class GameManager : MonoBehaviour {
 			// Go through all the intel-objects, and disable intel-objects we find in checkpointIntelState
 			for ( int i = 0; i < allIntelObjects.Count; i++ ) {
 				if ( ( checkpointIntelState.IndexOf( i ) != -1 ) ) {
-					if ( allIntelObjects[ checkpointIntelState[ i ] ].gameObject.name == "IntelComputer" ) {
-						allIntelObjects[ checkpointIntelState[ i ] ].GetComponentInParent<InteractionHandler>().GrabIntel();
+					if ( allIntelObjects[ i ].gameObject.name == "IntelComputer" ) {
+						allIntelObjects[ i ].GetComponentInParent<InteractionHandler>().GrabIntel();
 						continue;
 					}
-					allIntelObjects[ checkpointIntelState[ i ] ].SetActive( false );
+					allIntelObjects[ i ].SetActive( false );
 					//PickedUpIntel( allIntelObjects[ checkpointIntelState[i] ] );
 				}
 			}
 
 			//Update missions list and unlock if that is required.
-			MissionList();
+			DisplayGameUI();
 			UnlockExit();
 		}
 
@@ -477,7 +477,7 @@ public class GameManager : MonoBehaviour {
 	}
 	#endregion
 
-	#region Mission List
+	#region Game UI
 	/// <summary>
 	/// Initializes, and updates our intel-state related variables/objects. 
 	/// </summary>
@@ -511,12 +511,12 @@ public class GameManager : MonoBehaviour {
 	/// Enables (by default) and generates mission list. bool activateMissionList 
 	/// </summary>
 	/// <param name="activateMissionList"></param>
-	public void MissionList (bool activateMissionList = true) {
+	public void DisplayGameUI (bool activateMissionList = true) {
 		if ( !activateMissionList ) {
-			missionListCanvas.gameObject.SetActive( false );
+			gameUICanvas.gameObject.SetActive( false );
 		} else {
 			UpdateIntelState();
-			missionListCanvas.gameObject.SetActive(true);
+			gameUICanvas.gameObject.SetActive(true);
 		}
 	}
 
@@ -548,7 +548,7 @@ public class GameManager : MonoBehaviour {
 
 	public void UpdateMainCamera () {
 		mainCamera = FindObjectOfType<Camera>();
-		GameObject[] overlays = { escScreen, nextLevelScreen, helpScreen, gameOverscreen, winGameScreen, disguisedOverlay, missionListCanvas.gameObject};
+		GameObject[] overlays = { escScreen, nextLevelScreen, helpScreen, gameOverscreen, winGameScreen, disguisedOverlay, gameUICanvas.gameObject};
 		foreach ( var item in overlays ) {
 			item.GetComponent<Canvas>().worldCamera = mainCamera;
 			item.GetComponent<Canvas>().planeDistance = 10;
@@ -586,7 +586,7 @@ public class GameManager : MonoBehaviour {
 				checkpointKeyState = new List<int>();
 
 				UpdateIntelState( true );
-				MissionList();
+				DisplayGameUI();
 				UnlockExit();
 			} else {
 				UpdateIntelState();
@@ -596,7 +596,7 @@ public class GameManager : MonoBehaviour {
 
 			ChangeGameState( GameState.Playing );
 		} else {
-			MissionList( false );
+			DisplayGameUI( false );
 			ChangeGameState( GameState.Playing );
 		}
 
@@ -649,10 +649,11 @@ public class GameManager : MonoBehaviour {
 				break;
 			case GameState.GameOver:
 				gameOverscreen.SetActive( true );
-				MissionList( false );
+				DisplayGameUI( false );
 				break;
 			case GameState.WinGame:
 				winGameScreen.SetActive( true );
+				DisplayGameUI( false );
 				break;
 			case GameState.EscScreen:
 				escScreen.SetActive( true );
@@ -677,18 +678,5 @@ public class GameManager : MonoBehaviour {
 		EscScreen
 	}
 	#endregion
-	public void SetTransformHeightFloor ( Transform transformToHeightAdjust, float heightAdjustment = 0.05f ) {
-		/* Find floor, so we can use floor.transform.position.y to find the floor height, then set ViewVisualization to floorHeight+some 
-			*	Example: https://docs.unity3d.com/ScriptReference/RaycastHit-distance.html */
-		RaycastHit hit;
 
-		if ( Physics.Raycast( transformToHeightAdjust.position, Vector3.down, out hit, Mathf.Infinity ) ) {
-			if ( hit.transform.name == "Floor" ) {
-				float adjustedFloorHeight = 0f;
-				adjustedFloorHeight = hit.point.y + heightAdjustment;
-
-				transformToHeightAdjust.position = new Vector3( transformToHeightAdjust.position.x, adjustedFloorHeight, transformToHeightAdjust.position.z );
-			}
-		}
-	}
 }

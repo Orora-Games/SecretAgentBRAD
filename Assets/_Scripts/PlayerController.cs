@@ -5,8 +5,6 @@ public class PlayerController : MonoBehaviour {
 	public float speed = 6f;
 	public float turnSmoothTime = 0.1f;
 
-	[Header( "Controls" )]
-	public bool testAbsoluteControls = false;
 	[HideInInspector]
 	public float movementRotation = 0f;
 
@@ -23,17 +21,18 @@ public class PlayerController : MonoBehaviour {
 	public float disguiseTimer;
 
 	void Start () {
+		SetTransformHeightFloor( transform, 0.05f );
+		
 		controller = GetComponent<CharacterController>();
-		if ( GameManager.Instance ) { 
-			GameManager.Instance.SetTransformHeightFloor( transform, 0.05f );
-		}
+
 		//disguiseObject = gameObject.transform.Find( "Model" ).transform.Find( "CowBoy_Brad" ).transform.Find( "disguise" ).gameObject;
 
-		if ( gameObject.tag == "Untagged" )
+		if ( gameObject.tag == "Untagged" ) { 
 			Debug.LogError( "Your " + gameObject.name + " object needs to have the correct tag to be killable." ); // Make sure to Tag your player-object Player.
-		if ( gameObject.layer == 0 )
+		}
+		if ( gameObject.layer == 0 ) { 
 			Debug.LogError( "Your " + gameObject.name + " object needs to have the correct layer to be detectable by the FieldOfView Controller." ); // Player-Layer will fix this issue.
-
+		}
 		startHeight = gameObject.transform.position.y;
 		defaultLayerMask = gameObject.layer;
 
@@ -41,6 +40,7 @@ public class PlayerController : MonoBehaviour {
 		Disguised( false );
 
 		if (!levelManager) {
+			if ( !GameManager.Instance ) return;
 			GameManager.Instance.UpdateDisguiseState( usedDisguises, disguisesAvailable );
 		} else {
 			levelManager.UpdateDisguiseNumbers();
@@ -70,25 +70,24 @@ public class PlayerController : MonoBehaviour {
 		float horizontal = Input.GetAxisRaw( "Horizontal" );
 		float vertical = Input.GetAxisRaw( "Vertical" );
 
-
-		/* We went with True North Absolute controls. */
 		Vector3 direction = new Vector3( horizontal, 0f, vertical ).normalized;
 
 		/* This next one is supposed to move Player back to the ground if they manage to bug themselves to a floating position. */
 		if ( Mathf.Abs( transform.position.y - startHeight ) >= 0.001f ) {
-			transform.position = new Vector3( transform.position.x, startHeight, transform.position.z );
+			transform.position = new Vector3( transform.position.x, startHeight, transform.position.z ); // Move player position
+			controller.height = 0f; // Tell the controller to keep their height.
 		}
 
 		/* This block makes Player Turn the way they're moving. */
-		if ( direction.magnitude >= 0.1f ) {
+		if ( (horizontal != 0f || vertical != 0f) &&  direction.magnitude >= 0.1f ) {
 			Disguised(false);
 
-			/* doubleStraightControls checks if the mapmaker wants to force people to press two buttons to go down or up a hallway. */
-			float doubleStraightControls = (testAbsoluteControls) ? 0f : 45f;
+			/* Rotate controlls 45 degrees to make up be north. */
+			float controlRotation = 45f;
 
 			/* movementRotation contains the rotation angle the cameras send the player Object, this is where we rotate the player's movement to make it "straight". 
 				*   Source: http://answers.unity.com/answers/46772/view.html */
-			direction = Quaternion.AngleAxis( movementRotation - doubleStraightControls, Vector3.up ) * direction;
+			direction = Quaternion.AngleAxis( movementRotation - controlRotation, Vector3.up ) * direction;
 
 			/* Next comes smooth rotation stuff. */
 			float targetAngle = Mathf.Atan2( direction.x, direction.z ) * Mathf.Rad2Deg;
@@ -97,6 +96,7 @@ public class PlayerController : MonoBehaviour {
 			float angle = Mathf.SmoothDampAngle( transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, (turnSmoothTime/4000) );
 			transform.rotation = Quaternion.Euler( 0f, angle, 0f );
 
+			controller.height = 0f;
 			/* Time to go move the character in our calculated direction. */
 			controller.Move( direction * speed * Time.deltaTime );
 		}
@@ -136,6 +136,20 @@ public class PlayerController : MonoBehaviour {
 			//	item.GetComponent<Renderer>().material.SetColor( "_Color", Color.black );
 			//}
 			gameObject.layer = defaultLayerMask;
+		}
+	}
+	public void SetTransformHeightFloor ( Transform transformToHeightAdjust, float heightAdjustment = 0.05f ) {
+		/* Find floor, so we can use floor.transform.position.y to find the floor height, then set ViewVisualization to floorHeight+some 
+			*	Example: https://docs.unity3d.com/ScriptReference/RaycastHit-distance.html */
+		RaycastHit hit;
+
+		if ( Physics.Raycast( transformToHeightAdjust.position, Vector3.down, out hit, Mathf.Infinity, 1 ) ) {
+			if ( hit.transform.name == "Floor" ) {
+				float adjustedFloorHeight = 0f;
+				adjustedFloorHeight = hit.point.y + heightAdjustment;
+
+				transformToHeightAdjust.position = new Vector3( transformToHeightAdjust.position.x, adjustedFloorHeight, transformToHeightAdjust.position.z );
+			}
 		}
 	}
 }
