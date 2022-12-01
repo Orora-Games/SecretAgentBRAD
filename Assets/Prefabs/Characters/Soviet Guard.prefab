@@ -85,9 +85,6 @@ MonoBehaviour:
   edgeDistanceThreshold: 2
   meshResolution: 0.1
   viewMeshFilter: {fileID: 4230393693047236905}
-  ignoreLayerMask:
-    serializedVersion: 2
-    m_Bits: 64
   visibleTargets: []
   targetTag: Player
   detectedMaterial: {fileID: 2100000, guid: b2764ce4ab5fa4a4ba412982704e46c5, type: 2}
@@ -647,7 +644,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5839716251627124969}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.34, z: 0}
+  m_LocalPosition: {x: 0, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -693,9 +690,6 @@ MonoBehaviour:
   edgeDistanceThreshold: 1.09
   meshResolution: 0.1
   viewMeshFilter: {fileID: 7678266308635150692}
-  ignoreLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
   visibleTargets: []
   targetTag: Player
   detectedMaterial: {fileID: 2100000, guid: b2764ce4ab5fa4a4ba412982704e46c5, type: 2}
