@@ -21,17 +21,18 @@ public class PlayerController : MonoBehaviour {
 	public float disguiseTimer;
 
 	void Start () {
+		SetTransformHeightFloor( transform, 0.05f );
+		
 		controller = GetComponent<CharacterController>();
-		if ( GameManager.Instance ) { 
-			GameManager.Instance.SetTransformHeightFloor( transform, 0.05f );
-		}
+
 		//disguiseObject = gameObject.transform.Find( "Model" ).transform.Find( "CowBoy_Brad" ).transform.Find( "disguise" ).gameObject;
 
-		if ( gameObject.tag == "Untagged" )
+		if ( gameObject.tag == "Untagged" ) { 
 			Debug.LogError( "Your " + gameObject.name + " object needs to have the correct tag to be killable." ); // Make sure to Tag your player-object Player.
-		if ( gameObject.layer == 0 )
+		}
+		if ( gameObject.layer == 0 ) { 
 			Debug.LogError( "Your " + gameObject.name + " object needs to have the correct layer to be detectable by the FieldOfView Controller." ); // Player-Layer will fix this issue.
-
+		}
 		startHeight = gameObject.transform.position.y;
 		defaultLayerMask = gameObject.layer;
 
@@ -134,6 +135,20 @@ public class PlayerController : MonoBehaviour {
 			//	item.GetComponent<Renderer>().material.SetColor( "_Color", Color.black );
 			//}
 			gameObject.layer = defaultLayerMask;
+		}
+	}
+	public void SetTransformHeightFloor ( Transform transformToHeightAdjust, float heightAdjustment = 0.05f ) {
+		/* Find floor, so we can use floor.transform.position.y to find the floor height, then set ViewVisualization to floorHeight+some 
+			*	Example: https://docs.unity3d.com/ScriptReference/RaycastHit-distance.html */
+		RaycastHit hit;
+
+		if ( Physics.Raycast( transformToHeightAdjust.position, Vector3.down, out hit, Mathf.Infinity ) ) {
+			if ( hit.transform.name == "Floor" ) {
+				float adjustedFloorHeight = 0f;
+				adjustedFloorHeight = hit.point.y + heightAdjustment;
+
+				transformToHeightAdjust.position = new Vector3( transformToHeightAdjust.position.x, adjustedFloorHeight, transformToHeightAdjust.position.z );
+			}
 		}
 	}
 }
