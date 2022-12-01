@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour {
 		Disguised( false );
 
 		if (!levelManager) {
+			if ( !GameManager.Instance ) return;
 			GameManager.Instance.UpdateDisguiseState( usedDisguises, disguisesAvailable );
 		} else {
 			levelManager.UpdateDisguiseNumbers();
@@ -142,7 +143,7 @@ public class PlayerController : MonoBehaviour {
 			*	Example: https://docs.unity3d.com/ScriptReference/RaycastHit-distance.html */
 		RaycastHit hit;
 
-		if ( Physics.Raycast( transformToHeightAdjust.position, Vector3.down, out hit, Mathf.Infinity ) ) {
+		if ( Physics.Raycast( transformToHeightAdjust.position, Vector3.down, out hit, Mathf.Infinity, 1 ) ) {
 			if ( hit.transform.name == "Floor" ) {
 				float adjustedFloorHeight = 0f;
 				adjustedFloorHeight = hit.point.y + heightAdjustment;
