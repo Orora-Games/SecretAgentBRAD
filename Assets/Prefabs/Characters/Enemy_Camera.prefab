@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5462809928326678619}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 3153053303645612509}
   - component: {fileID: 8678620566658804749}
   - component: {fileID: 3771694994642100747}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: Top part
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -141,7 +141,7 @@ GameObject:
   - component: {fileID: 7074340915984518942}
   - component: {fileID: 9216618467875146421}
   - component: {fileID: 4214109874357048052}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: ViewVisualization
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -156,7 +156,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1373920011394706305}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -3.116136, z: 0}
+  m_LocalPosition: {x: 0, y: -2.4951468, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 3304774331021213039}
   - component: {fileID: 7851903383884660695}
   - component: {fileID: 964461463635132945}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: Dot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -325,7 +325,7 @@ GameObject:
   - component: {fileID: 3146826228152667160}
   - component: {fileID: 1524857369662988586}
   - component: {fileID: 7656032866752029422}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemy_Camera
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -470,7 +470,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3826047449201638920}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: Exclamation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -545,9 +545,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1585454424734533147, guid: acf2ab678114663459d52551a85c7bc9, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: acf2ab678114663459d52551a85c7bc9, type: 3}
       propertyPath: m_Name
       value: camera_UV
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: acf2ab678114663459d52551a85c7bc9, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6069545571835311737, guid: acf2ab678114663459d52551a85c7bc9, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -557,6 +565,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 6cf5a1b2e0776344e8b1760b3b55cdb3, type: 2}
+    - target: {fileID: 7979243706619207087, guid: acf2ab678114663459d52551a85c7bc9, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: acf2ab678114663459d52551a85c7bc9, type: 3}
 --- !u!4 &3435204641962432772 stripped
