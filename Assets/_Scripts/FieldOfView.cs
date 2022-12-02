@@ -38,6 +38,7 @@ public class FieldOfView : MonoBehaviour {
 		viewMeshFilter.mesh = viewMesh;
 
 		SetDetectionHeight( );
+
 		SetTargetColliders();
 	}
 
@@ -46,11 +47,10 @@ public class FieldOfView : MonoBehaviour {
 		/* Find floor, so we can use floor.transform.position.y to find the floor height, then set ViewVisualization to floorHeight+some 
 		 *	Example: https://docs.unity3d.com/ScriptReference/RaycastHit-distance.html */
 		RaycastHit hit;
-
-		if ( Physics.Raycast( transform.position, Vector3.down, out hit, Mathf.Infinity ) ) {
+		if ( Physics.Raycast( transform.position + Vector3.up * 3f, Vector3.down, out hit, Mathf.Infinity, 1) ) {
 			if ( hit.transform.name == "Floor" ) {
 				float visualizationHeight = 0f;
-				visualizationHeight = hit.point.y + 0.05f;
+				visualizationHeight = hit.point.y + 0.1f;
 
 				visualizationDetectionHeight = new Vector3( viewVisualization.position.x, visualizationHeight, viewVisualization.position.z );
 				viewVisualization.position = visualizationDetectionHeight;
@@ -66,7 +66,7 @@ public class FieldOfView : MonoBehaviour {
 			targetSpottingTime = 0f;
 			FindVisibleTargets();
 		}
-		if ( visualizationDetectionHeight == Vector3.zero ) {
+		if (visualizationDetectionHeight.y != viewMeshFilter.transform.position.y) {
 			SetDetectionHeight();
 		}
 	}
