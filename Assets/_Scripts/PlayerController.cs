@@ -75,7 +75,6 @@ public class PlayerController : MonoBehaviour {
 		/* This next one is supposed to move Player back to the ground if they manage to bug themselves to a floating position. */
 		if ( Mathf.Abs( transform.position.y - startHeight ) >= 0.001f ) {
 			transform.position = new Vector3( transform.position.x, startHeight, transform.position.z ); // Move player position
-			controller.height = 0f; // Tell the controller to keep their height.
 		}
 
 		/* This block makes Player Turn the way they're moving. */
@@ -96,7 +95,6 @@ public class PlayerController : MonoBehaviour {
 			float angle = Mathf.SmoothDampAngle( transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, (turnSmoothTime/4000) );
 			transform.rotation = Quaternion.Euler( 0f, angle, 0f );
 
-			controller.height = 0f;
 			/* Time to go move the character in our calculated direction. */
 			controller.Move( direction * speed * Time.deltaTime );
 		}
